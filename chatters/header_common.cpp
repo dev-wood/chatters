@@ -96,3 +96,17 @@ RoomInfoToken & RoomInfoTokenList::find(RoomKey rKey)
 {
 	return (list.find(rKey))->second;
 }
+
+PacketStream_Base & PacketStream_Base::operator<<(const UserInfoToken & utk)
+{
+	buf << utk.key << '|' << utk.id << '|';
+
+	return *this;
+}
+
+PacketStream_Base & PacketStream_Base::operator<<(const RoomInfoToken & rtk)
+{
+	buf << rtk.key << '|' << rtk.title << '|' << rtk.numOfPeer << '|';
+
+	return *this;
+}

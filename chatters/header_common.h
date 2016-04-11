@@ -23,9 +23,9 @@ private:
 	UserKey getUniqueKey();
 public:
 	UserInfoToken();
+	UserInfoToken(const std::string& _id);
 	UserInfoToken(UserInfoToken&&);
 	UserInfoToken& operator=(UserInfoToken&&);
-	UserInfoToken(const std::string& _id);
 };
 int UserInfoToken::UniqueKey = 0;
 
@@ -41,10 +41,9 @@ private:
 	UserKey getUniqueKey();
 public:
 	RoomInfoToken();
+	RoomInfoToken(const std::string& _title);
 	RoomInfoToken(RoomInfoToken&&);
 	RoomInfoToken& operator=(RoomInfoToken&&);
-	RoomInfoToken(const std::string& _title);
-
 };
 int RoomInfoToken::UniqueKey = 0;
 
@@ -115,6 +114,11 @@ public:
 		STOC_CHAT_ROOMSTATENOTPLAYING,
 		STOC_CHAT_CHAT
 	};
+
+	std::stringstream buf;
+public:
+	PacketStream_Base& operator<<(const UserInfoToken& utk);
+	PacketStream_Base& operator<<(const RoomInfoToken& rtk);
 } PSB;
 
 #endif
