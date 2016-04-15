@@ -1,14 +1,17 @@
 #include "header_common.h"
 
+//InfoToken::InfoToken()
+//{
+//	std::cout << "InfoToken() called" << std::endl;
+//}
 
-UserKey UserInfoToken::getUniqueKey()
+UserKey UserInfoToken::_getUniqueKey()
 {
-	return UniqueKey++;
+	return _UniqueKey++;
 }
-
 UserInfoToken::UserInfoToken()
 {
-	key = getUniqueKey();
+	_key = _getUniqueKey();
 }
 UserInfoToken::UserInfoToken(UserInfoToken&& tk)
 {
@@ -19,26 +22,25 @@ UserInfoToken & UserInfoToken::operator=(UserInfoToken&& tk)
 	if (this == &tk) 
 		return *this;
 
-	this->key = tk.key;
-	std::swap(this->id, tk.id);
+	this->_key = tk._key;
+	std::swap(this->_id, tk._id);
 
 	return *this;
 }
-UserInfoToken::UserInfoToken(const std::string& _id)
+UserInfoToken::UserInfoToken(const std::string& id)
 {
-	id = _id;
-	key = getUniqueKey();
+	_id = id;
+	_key = _getUniqueKey();
 }
 
-UserKey RoomInfoToken::getUniqueKey()
+UserKey RoomInfoToken::_getUniqueKey()
 {
-	return UniqueKey++;
+	return _UniqueKey++;
 }
-
 RoomInfoToken::RoomInfoToken()
 {
-	numOfPeer = 0;
-	key = getUniqueKey();
+	_numOfPeer = 0;
+	_key = _getUniqueKey();
 }
 RoomInfoToken::RoomInfoToken(RoomInfoToken && tk)
 {
@@ -49,64 +51,81 @@ RoomInfoToken & RoomInfoToken::operator=(RoomInfoToken && tk)
 	if (this == &tk)
 		return *this;
 
-	this->key = tk.key;
-	std::swap(this->title, tk.title);
+	this->_key = tk._key;
+	std::swap(this->_title, tk._title);
 	
 	return *this;
 }
-RoomInfoToken::RoomInfoToken(const std::string& _title)
+RoomInfoToken::RoomInfoToken(const std::string& title)
 {
-	title = _title;
-	numOfPeer = 0;
-	key = getUniqueKey();
+	_title = title;
+	_numOfPeer = 0;
+	_key = _getUniqueKey();
 }
 
-void UserInfoTokenList::add(UserInfoToken tk)
+int PacketStream::extractReqType()
 {
-	list.insert(std::make_pair(tk.key, tk));
+	std::string tmp;
+	std::getline(_buf, tmp, '|');
+	
+	return std::stoi(tmp);
 }
-
-bool UserInfoTokenList::remove(UserKey uKey)
+PacketStream& PacketStream::operator<<(const UserInfoToken & utk)
 {
-	if (list.erase(uKey))
-		return true;
-	else 
-		return false;
+	_buf << utk._key << '|' << utk._id << '|';
+
+	return *this;
 }
-
-UserInfoToken & UserInfoTokenList::find(UserKey uKey)
+PacketStream& PacketStream::operator<<(const RoomInfoToken & rtk)
 {
-	return (list.find(uKey))->second;
-}
-
-void RoomInfoTokenList::add(RoomInfoToken tk)
-{
-	list.insert(std::make_pair(tk.key, tk));
-}
-
-bool RoomInfoTokenList::remove(RoomKey rKey)
-{
-	if (list.erase(rKey))
-		return true;
-	else
-		return false;
-}
-
-RoomInfoToken & RoomInfoTokenList::find(RoomKey rKey)
-{
-	return (list.find(rKey))->second;
-}
-
-PacketStream_Base & PacketStream_Base::operator<<(const UserInfoToken & utk)
-{
-	buf << utk.key << '|' << utk.id << '|';
+	_buf << rtk._key << '|' << rtk._title << '|' << rtk._numOfPeer << '|';
 
 	return *this;
 }
 
-PacketStream_Base & PacketStream_Base::operator<<(const RoomInfoToken & rtk)
+RcvMessage::RcvMessage(PType ptype, bool shr, std::stringstream ss) : _rqType(ptype), _sharable(shr)
 {
-	buf << rtk.key << '|' << rtk.title << '|' << rtk.numOfPeer << '|';
+	std::swap(_buf, ss);
+}
 
+RcvMessage::RcvMessage(RcvMessage&& rMsg)
+{
+	*this = std::move(rMsg);
+}
+
+RcvMessage & RcvMessage::operator=(RcvMessage&& rMsg)
+{
+	if (this == &rMsg)
+		return *this;
+	
+	_rqType = rMsg._rqType;
+	_sharable = rMsg._sharable;
+	std::swap(_buf, rMsg._buf);
 	return *this;
+}
+
+void RcvMessageList::push_back(RcvMessage msg)
+{
+	_queue.push(msg);
+}
+
+void RcvMessageList::pop()
+{
+	_queue.pop();
+}
+
+RcvMessage & RcvMessageList::peek()
+{
+	return _queue.front();
+}
+
+bool RcvMessageList::empty()
+{
+	return _queue.empty();
+}
+
+void RcvMessageList::clear()
+{
+	while (!_queue.empty())
+		_queue.pop();
 }

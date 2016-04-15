@@ -4,74 +4,58 @@
 #define __HEADER_COMMON_H__
 
 #include <iostream>
+#include <memory>
 #include <string>
 #include <sstream>
 #include <queue>
 #include <unordered_map>
 
+typedef int Key;
 typedef int UserKey;
 typedef int RoomKey;
 
-class UserInfoToken
+class InfoToken
+{
+public:
+	Key _key;
+protected:
+public:
+protected:
+	//InfoToken();
+};
+
+class UserInfoToken : public InfoToken
 {
 private:
-	static UserKey UniqueKey;
+	static UserKey _UniqueKey;
 public:
-	UserKey key;
-	std::string id;
+	std::string _id;
 private:
-	UserKey getUniqueKey();
+	UserKey _getUniqueKey();
 public:
 	UserInfoToken();
-	UserInfoToken(const std::string& _id);
+	UserInfoToken(const std::string& id);
 	UserInfoToken(UserInfoToken&&);
 	UserInfoToken& operator=(UserInfoToken&&);
 };
-int UserInfoToken::UniqueKey = 0;
+__declspec(selectany) UserKey UserInfoToken::_UniqueKey = 0;
 
-class RoomInfoToken
+class RoomInfoToken : public InfoToken
 {
 private:
-	static RoomKey UniqueKey;
+	static RoomKey _UniqueKey;
 public:	
-	RoomKey key;
-	std::string title;
-	int numOfPeer;
+	std::string _title;
+	int _numOfPeer;
 private:
-	UserKey getUniqueKey();
+	UserKey _getUniqueKey();
 public:
 	RoomInfoToken();
 	RoomInfoToken(const std::string& _title);
 	RoomInfoToken(RoomInfoToken&&);
 	RoomInfoToken& operator=(RoomInfoToken&&);
 };
-int RoomInfoToken::UniqueKey = 0;
-
-class UserInfoTokenList
-{
-private:
-	std::unordered_map<UserKey, UserInfoToken> list;
-public:
-	void add(UserInfoToken tk);
-	bool remove(UserKey uKey);
-	UserInfoToken& find(UserKey uKey);
-
-public:
-
-};
-
-class RoomInfoTokenList
-{
-private:
-	std::unordered_map<RoomKey, RoomInfoToken> list;
-public:
-	void add(RoomInfoToken tk);
-	bool remove(RoomKey rKey);
-	RoomInfoToken& find(RoomKey rKey);
-
-public:
-
-};
+__declspec(selectany) RoomKey RoomInfoToken::_UniqueKey = 0;
 
 class PacketStream_Base
 {
@@ -114,11 +98,59 @@ public:
 		STOC_CHAT_ROOMSTATENOTPLAYING,
 		STOC_CHAT_CHAT
 	};
+};
+typedef PacketStream_Base PSB;
 
-	std::stringstream buf;
+class PacketStream : public PacketStream_Base
+{
 public:
-	PacketStream_Base& operator<<(const UserInfoToken& utk);
-	PacketStream_Base& operator<<(const RoomInfoToken& rtk);
-} PSB;
+	std::stringstream _buf;
+protected:
+
+public:
+	virtual void serialize(PType) = 0;
+	int extractReqType();
+	virtual bool determineShrType(PType) = 0;
+	PacketStream& operator<<(const UserInfoToken & utk);
+	PacketStream& operator<<(const RoomInfoToken & rtk);
+};
+
+class PacketStreamList
+{
+public:
+	virtual PacketStream& peek() = 0;
+	virtual bool empty() = 0;
+	virtual void clear() = 0;
+};
+
+class RcvMessage : public PacketStream_Base
+{
+public:
+	PType _rqType;
+	bool _sharable;
+	std::stringstream _buf;
+protected:
+
+public:
+	RcvMessage(PType, bool, std::stringstream);
+	RcvMessage(RcvMessage&&);
+	RcvMessage& operator= (RcvMessage&&);
+};
+
+class RcvMessageList
+{
+public:
+	void push_back(RcvMessage);
+	void pop();
+	RcvMessage& peek();
+	bool empty();
+	void clear();
+protected:
+public:
+protected:
+	std::queue<RcvMessage, std::list<RcvMessage>> _queue;
+};
+
+
 
 #endif
