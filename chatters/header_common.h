@@ -21,7 +21,8 @@ public:
 protected:
 public:
 protected:
-	//InfoToken();
+	InfoToken();
+	~InfoToken();
 };
 
 class UserInfoToken : public InfoToken
@@ -35,10 +36,12 @@ private:
 public:
 	UserInfoToken();
 	UserInfoToken(const std::string& id);
+	UserInfoToken(const UserInfoToken&);
 	UserInfoToken(UserInfoToken&&);
 	UserInfoToken& operator=(UserInfoToken&&);
 };
 __declspec(selectany) UserKey UserInfoToken::_UniqueKey = 0;
+std::ostream& operator << (std::ostream&, const UserInfoToken&);
 
 class RoomInfoToken : public InfoToken
 {
@@ -52,10 +55,12 @@ private:
 public:
 	RoomInfoToken();
 	RoomInfoToken(const std::string& _title);
+	RoomInfoToken(const RoomInfoToken&);
 	RoomInfoToken(RoomInfoToken&&);
 	RoomInfoToken& operator=(RoomInfoToken&&);
 };
 __declspec(selectany) RoomKey RoomInfoToken::_UniqueKey = 0;
+std::ostream& operator<< (std::ostream&, const RoomInfoToken&);
 
 class PacketStream_Base
 {
@@ -66,37 +71,39 @@ public:
 		CTOS_LOGIN_REQUEST = 0,
 		
 		CTOS_LOBBY_JOINROOM,
-		CTOS_LOBBY_LOADLIST,
-		CTOS_LOBBY_CREATEROOM,
+		CTOS_LOBBY_LOAD_ROOMLIST,
 		
 		CTOS_CREATEROOM_CREATEROOM,
 		
 		CTOS_CHAT_QUITROOM,
+		CTOS_CHAT_CHAT,
+		// 추후 확장 가능한 기능
 		CTOS_CHAT_MYSTATEREADY,
 		CTOS_CHAT_MYSTATENOTREADY,
 		CTOS_CHAT_ROOMSTATEPLAYING,
 		CTOS_CHAT_ROOMSTATENOTPLAYING,
-		CTOS_CHAT_CHAT,
+		
 
 		// Server to Client packet
 		STOC_LOGIN_ACCEPT,
 		STOC_LOGIN_FAIL,
 		
-		STOC_LOBBY_CREATEROOMOK,
-		STOC_LOBBY_CREATEROOMFAIL,
 		STOC_LOBBY_JOINROOMOK,
 		STOC_LOBBY_JOINROOMFAIL,
-		STOC_LOBBY_LOADLIST,
+		STOC_LOBBY_LOAD_ROOMLIST,
 		
 		STOC_CREATEROOM_OK,
 		STOC_CREATEROOM_FAIL,
 		
 		STOC_CHAT_QUITUSER,
+		STOC_CHAT_CHAT,
+		STOC_CHAT_LOAD_USERLIST,
+		// 추후 확장 가능한 기능 
 		STOC_CHAT_GUESTSTATEREADY,
 		STOC_CHAT_GUESTSTATENOTREADY,
 		STOC_CHAT_ROOMSTATEPLAYING,
-		STOC_CHAT_ROOMSTATENOTPLAYING,
-		STOC_CHAT_CHAT
+		STOC_CHAT_ROOMSTATENOTPLAYING
+		
 	};
 };
 typedef PacketStream_Base PSB;
@@ -132,7 +139,9 @@ public:
 protected:
 
 public:
+	RcvMessage();
 	RcvMessage(PType, bool, std::stringstream);
+	RcvMessage(const RcvMessage&);
 	RcvMessage(RcvMessage&&);
 	RcvMessage& operator= (RcvMessage&&);
 };

@@ -2,16 +2,21 @@
 
 int main()
 {
-	//UserInfoTokenList ulist;
-	////InfoTokenList rlist;
+	UserInfoToken utk1;
+	UserInfoToken utk2("Hong");
+	UserInfoToken utk3(utk2);
+	UserInfoToken utk4("Kim");
 
-	//ulist.add(std::make_shared<UserInfoToken>("HGD"));
-	//ulist.add(std::make_shared<UserInfoToken>("OWD"));
-	//ulist.add(std::make_shared<UserInfoToken>("KSM"));
-
-	//auto pt = ulist.getObj(1);
-	//
-	//std::cout << "key: " << pt->_key << ", id: " << pt->_id << std::endl;
+	std::cout << utk1;
+	std::cout << utk2;
+	std::cout << utk3;
+	std::cout << utk4;
+	std::cout << "-----------------" << std::endl;
+	std::cout << utk2;
+	std::cout << "-----------------" << std::endl;
+	UserInfoToken utk5(std::move(utk2));
+	std::cout << utk2;
+	std::cout << utk5;
 
 	return 0;
 }
