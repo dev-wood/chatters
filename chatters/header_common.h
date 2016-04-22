@@ -17,8 +17,8 @@ typedef int RoomKey;
 class InfoToken
 {
 public:
-	Key _key;
 protected:
+	Key _key;
 public:
 protected:
 	InfoToken();
@@ -29,8 +29,8 @@ class UserInfoToken : public InfoToken
 {
 private:
 	static UserKey _UniqueKey;
-public:
 	std::string _id;
+public:
 private:
 	UserKey _getUniqueKey();
 public:
@@ -39,6 +39,11 @@ public:
 	UserInfoToken(const UserInfoToken&);
 	UserInfoToken(UserInfoToken&&);
 	UserInfoToken& operator=(UserInfoToken&&);
+	UserInfoToken& operator=(const UserInfoToken& utk);
+
+	// accessor	
+	UserKey get_key();
+	const std::string& get_id();
 };
 __declspec(selectany) UserKey UserInfoToken::_UniqueKey = 0;
 std::ostream& operator << (std::ostream&, const UserInfoToken&);
@@ -47,8 +52,8 @@ class RoomInfoToken : public InfoToken
 {
 private:
 	static RoomKey _UniqueKey;
-public:	
 	std::string _title;
+public:
 	int _numOfPeer;
 private:
 	UserKey _getUniqueKey();
@@ -58,6 +63,11 @@ public:
 	RoomInfoToken(const RoomInfoToken&);
 	RoomInfoToken(RoomInfoToken&&);
 	RoomInfoToken& operator=(RoomInfoToken&&);
+	RoomInfoToken& operator=(const RoomInfoToken& rtk);	
+
+	// accessor
+	RoomKey get_key();
+	const std::string& get_title();
 };
 __declspec(selectany) RoomKey RoomInfoToken::_UniqueKey = 0;
 std::ostream& operator<< (std::ostream&, const RoomInfoToken&);
@@ -122,14 +132,6 @@ public:
 	PacketStream& operator<<(const RoomInfoToken & rtk);
 };
 
-class PacketStreamList
-{
-public:
-	virtual PacketStream& peek() = 0;
-	virtual bool empty() = 0;
-	virtual void clear() = 0;
-};
-
 class RcvMessage : public PacketStream_Base
 {
 public:
@@ -144,20 +146,6 @@ public:
 	RcvMessage(const RcvMessage&);
 	RcvMessage(RcvMessage&&);
 	RcvMessage& operator= (RcvMessage&&);
-};
-
-class RcvMessageList
-{
-public:
-	void push_back(RcvMessage);
-	void pop();
-	RcvMessage& peek();
-	bool empty();
-	void clear();
-protected:
-public:
-protected:
-	std::queue<RcvMessage, std::list<RcvMessage>> _queue;
 };
 
 

@@ -15,7 +15,6 @@ UserKey UserInfoToken::_getUniqueKey()
 }
 UserInfoToken::UserInfoToken()
 {
-	//InfoToken();
 	_key = -1;
 	_id = "DEFAULT";
 }
@@ -34,6 +33,21 @@ UserInfoToken & UserInfoToken::operator=(UserInfoToken&& tk)
 
 	return *this;
 }
+UserInfoToken & UserInfoToken::operator=(const UserInfoToken & utk)
+{
+	_key = utk._key;
+	_id = utk._id;
+
+	return *this;
+}
+UserKey UserInfoToken::get_key()
+{
+	return _key;
+}
+const std::string & UserInfoToken::get_id()
+{
+	return _id;
+}
 UserInfoToken::UserInfoToken(const std::string& id)
 {
 	_id = id;
@@ -46,8 +60,8 @@ UserInfoToken::UserInfoToken(const UserInfoToken & tk)
 }
 std::ostream & operator<<(std::ostream & os, const UserInfoToken &utk)
 {
-	return os << "UserInfoToken object(key: " << utk._key
-		<< ", id: " << utk._id
+	return os << "UserInfoToken object(key: " << utk.get_key()
+		<< ", id: " << utk.get_id()
 		<< ")" << std::endl;
 }
 
@@ -84,10 +98,26 @@ RoomInfoToken & RoomInfoToken::operator=(RoomInfoToken && tk)
 
 	return *this;
 }
+RoomInfoToken & RoomInfoToken::operator=(const RoomInfoToken & rtk)
+{
+	_key = rtk._key;
+	_title = rtk._title;
+	_numOfPeer = rtk._numOfPeer;
+
+	return *this;
+}
+RoomKey RoomInfoToken::get_key()
+{
+	return _key;
+}
+const std::string & RoomInfoToken::get_title()
+{
+	return _title;
+}
 std::ostream & operator<<(std::ostream & os, const RoomInfoToken & rtk)
 {
-	return os << "RoomInfoToken object(key: " << rtk._key
-		<< ", title: " << rtk._title
+	return os << "RoomInfoToken object(key: " << rtk.get_key()
+		<< ", title: " << rtk.get_title()
 		<< ", numOfPeer: " << rtk._numOfPeer
 		<< ")" << std::endl;
 }
@@ -101,13 +131,13 @@ int PacketStream::extractReqType()
 }
 PacketStream& PacketStream::operator<<(const UserInfoToken & utk)
 {
-	_buf << utk._key << '|' << utk._id << '|';
+	_buf << utk.get_key() << '|' << utk.get_id() << '|';
 
 	return *this;
 }
 PacketStream& PacketStream::operator<<(const RoomInfoToken & rtk)
 {
-	_buf << rtk._key << '|' << rtk._title << '|' << rtk._numOfPeer << '|';
+	_buf << rtk.get_key() << '|' << rtk.get_title() << '|' << rtk._numOfPeer << '|';
 
 	return *this;
 }
@@ -137,25 +167,4 @@ RcvMessage & RcvMessage::operator=(RcvMessage&& rMsg)
 	return *this;
 }
 
-void RcvMessageList::push_back(RcvMessage msg)
-{
-	_queue.push(msg);
-}
-void RcvMessageList::pop()
-{
-	_queue.pop();
-}
-RcvMessage & RcvMessageList::peek()
-{
-	return _queue.front();
-}
-bool RcvMessageList::empty()
-{
-	return _queue.empty();
-}
-void RcvMessageList::clear()
-{
-	while (!_queue.empty())
-		_queue.pop();
-}
 
