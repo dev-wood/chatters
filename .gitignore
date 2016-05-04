@@ -3,6 +3,7 @@
 
 # custom ignore files
 *.opendb
+*.VC.db
 
 # User-specific files
 *.suo
