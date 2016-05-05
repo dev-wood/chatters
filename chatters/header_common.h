@@ -9,10 +9,17 @@
 #include <sstream>
 #include <queue>
 #include <unordered_map>
+#include <WinSock2.h>
 
 typedef int Key;
 typedef int UserKey;
 typedef int RoomKey;
+
+namespace CHATTERS
+{
+	const int MAX_PARTICIPANT = 4;
+	const int NO_ROOM = -1;
+}
 
 class InfoToken
 {
@@ -42,8 +49,8 @@ public:
 	UserInfoToken& operator=(const UserInfoToken& utk);
 
 	// accessor	
-	UserKey get_key();
-	const std::string& get_id();
+	UserKey get_key() const;
+	std::string get_id() const;
 };
 __declspec(selectany) UserKey UserInfoToken::_UniqueKey = 0;
 std::ostream& operator << (std::ostream&, const UserInfoToken&);
@@ -64,10 +71,11 @@ public:
 	RoomInfoToken(RoomInfoToken&&);
 	RoomInfoToken& operator=(RoomInfoToken&&);
 	RoomInfoToken& operator=(const RoomInfoToken& rtk);	
+	~RoomInfoToken();
 
 	// accessor
-	RoomKey get_key();
-	const std::string& get_title();
+	RoomKey get_key() const;
+	std::string get_title() const;
 };
 __declspec(selectany) RoomKey RoomInfoToken::_UniqueKey = 0;
 std::ostream& operator<< (std::ostream&, const RoomInfoToken&);

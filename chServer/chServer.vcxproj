@@ -147,10 +147,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="header_server.cpp" />
+    <ClCompile Include="..\chatters\header_common.cpp" />
+    <ClCompile Include="..\chatters\header_server.cpp" />
+    <ClCompile Include="svmain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="header_server.h" />
+    <ClInclude Include="..\chatters\header_common.h" />
+    <ClInclude Include="..\chatters\header_server.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

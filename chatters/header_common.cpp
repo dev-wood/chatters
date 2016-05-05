@@ -13,10 +13,10 @@ UserKey UserInfoToken::_getUniqueKey()
 {
 	return _UniqueKey++;
 }
-UserInfoToken::UserInfoToken()
+UserInfoToken::UserInfoToken() : _id("DEFAULT")
 {
 	_key = -1;
-	_id = "DEFAULT";
+	//_id = "DEFAULT";
 }
 UserInfoToken::UserInfoToken(UserInfoToken&& tk)
 {
@@ -40,11 +40,11 @@ UserInfoToken & UserInfoToken::operator=(const UserInfoToken & utk)
 
 	return *this;
 }
-UserKey UserInfoToken::get_key()
+UserKey UserInfoToken::get_key() const
 {
 	return _key;
 }
-const std::string & UserInfoToken::get_id()
+std::string UserInfoToken::get_id() const
 {
 	return _id;
 }
@@ -53,10 +53,10 @@ UserInfoToken::UserInfoToken(const std::string& id)
 	_id = id;
 	_key = _getUniqueKey();
 }
-UserInfoToken::UserInfoToken(const UserInfoToken & tk)
+UserInfoToken::UserInfoToken(const UserInfoToken & tk) : _id(tk._id)
 {
 	_key = tk._key;
-	_id = tk._id;
+	//_id = tk._id;
 }
 std::ostream & operator<<(std::ostream & os, const UserInfoToken &utk)
 {
@@ -106,11 +106,13 @@ RoomInfoToken & RoomInfoToken::operator=(const RoomInfoToken & rtk)
 
 	return *this;
 }
-RoomKey RoomInfoToken::get_key()
+RoomInfoToken::~RoomInfoToken()
+{}
+RoomKey RoomInfoToken::get_key() const
 {
 	return _key;
 }
-const std::string & RoomInfoToken::get_title()
+std::string RoomInfoToken::get_title() const
 {
 	return _title;
 }
