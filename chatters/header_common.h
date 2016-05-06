@@ -126,6 +126,8 @@ public:
 };
 typedef PacketStream_Base PSB;
 
+int ptoi(PSB::PType pt);
+
 class PacketStream : public PacketStream_Base
 {
 public:

@@ -4,6 +4,7 @@
 # custom ignore files
 *.opendb
 *.VC.db
+chatters.VC.db
 
 # User-specific files
 *.suo

@@ -124,6 +124,11 @@ std::ostream & operator<<(std::ostream & os, const RoomInfoToken & rtk)
 		<< ")" << std::endl;
 }
 
+int ptoi(PSB::PType pt)
+{
+	return static_cast<int>(pt);
+}
+
 int PacketStream::extractReqType()
 {
 	std::string tmp;
