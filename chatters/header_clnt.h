@@ -4,7 +4,11 @@
 #define _HEADER_CLNT_H_
 
 #include <WinSock2.h>
-#include "../chatters/header_common.h"
+#include "header_common.h"
+#include "packet.h"
+#include "PT_CS_Data.h"
+#include "PT_SC_Data.h"
+
 
 
 /***********************************************************

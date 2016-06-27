@@ -24,6 +24,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\chatters\header_clnt.h" />
+    <ClInclude Include="..\chatters\packet.h" />
+    <ClInclude Include="..\chatters\PT_CS_Data.h" />
+    <ClInclude Include="..\chatters\PT_SC_Data.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8041E8FF-405B-4919-B165-24C0E4A52148}</ProjectGuid>

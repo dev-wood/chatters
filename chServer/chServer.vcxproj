@@ -154,6 +154,9 @@
   <ItemGroup>
     <ClInclude Include="..\chatters\header_common.h" />
     <ClInclude Include="..\chatters\header_server.h" />
+    <ClInclude Include="..\chatters\packet.h" />
+    <ClInclude Include="..\chatters\PT_CS_Data.h" />
+    <ClInclude Include="..\chatters\PT_SC_Data.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
