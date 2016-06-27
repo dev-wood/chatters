@@ -24,6 +24,15 @@
     <ClInclude Include="..\chatters\packet.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\chatters\header_server.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\chatters\header_common.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\chClient\header_clnt.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\chatters\PT_SC_Data.cpp">

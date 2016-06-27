@@ -18,6 +18,13 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\chatters\clmain.cpp" />
+    <ClCompile Include="..\chatters\header_clnt.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\chatters\header_clnt.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8041E8FF-405B-4919-B165-24C0E4A52148}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -146,13 +153,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="header_clnt.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="header_clnt.cpp" />
-    <ClCompile Include="main.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

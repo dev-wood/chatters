@@ -15,13 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="svmain.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\chatters\header_common.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="..\chatters\header_server.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\chatters\svmain.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
