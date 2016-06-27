@@ -87,6 +87,7 @@ bool LoginState::handle()
 	init();
 
 	std::cout << "Please put your information" << std::endl;
+	std::cout << "All information cannot have character '|'." << std::endl;
 	std::cout << "ID:";
 	std::cin >> _id;
 	std::cout << "PASSWORD:";
@@ -94,16 +95,28 @@ bool LoginState::handle()
 
 	//rev handle 내부 함수 작성
 	// packet generating
+	PK_CS_LOGIN_REQUEST packet;
 
 	// packet set in PacketManager
+	_pClientState->_pPM->_setPacket(packet);
+	_pClientState->_pPM->_serialize();
 
-	
+	// sending packet
+	_pClientState->_sending();
+
+	// receiving packet
+	_pClientState->_receiving();
+
+	// process packet
+	_pClientState->_pPM->_deserialize();	
 }
 
 LoginState & LoginState::operator=(LoginState && loginState)
 {
-	_id.swap(loginState._id);
-	_pw.swap(loginState._pw);
+	if (&loginState != this) {
+		_id.swap(loginState._id);
+		_pw.swap(loginState._pw);
+	}
 
 	return *this;
 }
@@ -121,6 +134,11 @@ LoginState::LoginState(const LoginState &)
 LoginState & LoginState::operator=(const LoginState &)
 {
 	return *this;
+}
+
+ClientState::ClientState(ConnectInfo conInfo, StateMachine * pState, PacketManager * pm) : _pPM(pm), _conInfo(conInfo), _pState(pState)
+{
+	// left blank intentionally
 }
 
 bool ClientState::request()
@@ -156,6 +174,11 @@ void ClientState::set_conInfo(ConnectInfo cInfo)
 void ClientState::set_myInfo(UserInfoToken uInfoToken)
 {
 	_myInfo = std::move(uInfoToken);
+}
+
+ClientState::ClientState()
+{//rev
+	// left blanck intentionally
 }
 
 

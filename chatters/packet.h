@@ -49,9 +49,9 @@ class PacketManager
 public:
 	PacketManager(SvMach * mach);
 	//PacketManager(ClMach * mach);	//rev
-	//void setPacket(Packet_Base&);	//rev 필요 없을 듯
-	void serialize(Packet_Base&);
-	void deserialize(Packet_Base&);
+	//void _setPacket(Packet_Base&);	//rev 필요 없을 듯
+	void _serialize(Packet_Base&);
+	void _deserialize(Packet_Base&);
 public:
 	SvMach * _svMach;
 	//ClMach * _clMach;	//rev

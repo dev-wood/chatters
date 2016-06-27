@@ -67,7 +67,7 @@ protected:
 	StateMachine(ClientState * pClntState);
 	void changeState(ClientState *, StateMachine *);
 protected:
-	const ClientState * _pClientState;
+	ClientState * const _pClientState;
 };
 
 class LoginState : public StateMachine
@@ -76,10 +76,10 @@ public:
 	LoginState(ClientState *);
 	LoginState(LoginState&&);
 
-	virtual void init();
-	virtual bool handle();	//rev
-
 	LoginState& operator=(LoginState&&);
+	
+	virtual void init();
+	virtual bool handle();
 public:
 
 protected:
@@ -134,7 +134,10 @@ protected:
 class ClientState
 {
 public:
-	ClientState();
+	ClientState(ConnectInfo conInfo, StateMachine * pState, PacketManager * pm);
+
+	void _sending();	//rev
+	void _receiving();
 
 	bool request();
 
@@ -148,8 +151,9 @@ public:
 	void set_conInfo(ConnectInfo);
 	void set_myInfo(UserInfoToken);
 public:
-
+	PacketManager * const _pPM;
 protected:
+	ClientState();
 protected:
 	ConnectInfo _conInfo;	// tcp connection related inform structure
 	UserInfoToken _myInfo;	// client's inform
