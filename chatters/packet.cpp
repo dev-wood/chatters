@@ -1,4 +1,8 @@
 #include "packet.h"
+#include "packet.h"
+#include "packet.h"
+#include "packet.h"
+#include "packet.h"
 
 int Packet_Base::ptoi(PTYPE::SC pt)
 {
@@ -9,24 +13,57 @@ int Packet_Base::ptoi(PTYPE::CS pt)
 	return static_cast<int>(pt);
 }
 Packet_Base::Packet_Base(PacketManager * const pm) : _pm(pm) 
-{}
-int Packet_Base::get_bufSize() const
 {
-	return 0;	//rev
+	_setHeaderSpace();
+}
+int Packet_Base::get_bufSize()
+{
+	int bufSz = 0;
+	auto cPos = _buf.tellg();	// store current input sequence pos
+	_buf.seekg(_buf.end);
+	bufSz = static_cast<int>(_buf.tellg());
+
+	_buf.seekg(cPos);	// restore previous input sequence pos
+
+	bufSz -= sizeof(size_t);	// exclude packet header space
+	
+	return bufSz;
 }
 Packet_Base::Packet_Base() : _pm(nullptr)
-{}
+{
+	_setHeaderSpace();
+}
+
+void Packet_Base::_setHeaderSpace()
+{
+	int headerSz = sizeof(size_t);
+	for (int i = 0; i < headerSz; ++i)
+		_buf << '0';
+}
+
+void Packet_Base::_skipHeaderg()
+{
+	_buf.seekg(sizeof(size_t));
+}
 
 // PacketManager class
-PacketManager::PacketManager(SvMach * mach) : _svMach(mach)
-{}
-void PacketManager::serialize(Packet_Base & pk)
+PacketManager::PacketManager(MachObject * mach) : _mach(mach)
 {
-	pk.serialize();
+	// left black intentionally
 }
-void PacketManager::deserialize(Packet_Base & pk)
+void PacketManager::_setPacket(Packet_Base * pk)
 {
-	pk.deserialize();
+	_pk = pk;
+}
+void PacketManager::_serialize()
+{
+	_pk->serialize();
+}
+void PacketManager::_deserialize()
+{
+	_pk->deserialize();
 }
 PacketManager::PacketManager()
-{}
+{
+	// left black intentionally
+}

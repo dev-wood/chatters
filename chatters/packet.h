@@ -27,15 +27,17 @@ public:
 	virtual void deserialize() = 0;
 	virtual void process() = 0;
 	//void setPacketManager(const PacketManager * pm);	//rev
-	int get_bufSize() const;
+	int get_bufSize();
 	//std::stringstream& get_buf() const;	//rev
 	//const char * get_bufAddr() const;
 	
 protected:
 	Packet_Base();
+	void _setHeaderSpace();
+	void _skipHeaderg();
 
 	std::stringstream _buf;
-	PacketManager * _pm;
+	PacketManager * const _pm;
 };
 
 /*******************************************************
@@ -47,16 +49,16 @@ protected:
 class PacketManager
 {
 public:
-	PacketManager(SvMach * mach);
-	//PacketManager(ClMach * mach);	//rev
-	//void _setPacket(Packet_Base&);	//rev 필요 없을 듯
-	void _serialize(Packet_Base&);
-	void _deserialize(Packet_Base&);
+	PacketManager(MachObject * mach);
+	void _setPacket(Packet_Base * pk);
+	void _serialize();
+	void _deserialize();
 public:
-	SvMach * _svMach;
-	//ClMach * _clMach;	//rev
+	MachObject * _mach;
 protected:
 	PacketManager();
+protected:
+	Packet_Base * _pk;
 
 };
 
