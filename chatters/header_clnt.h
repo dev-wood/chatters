@@ -20,18 +20,14 @@ class ClientState;
 
 
 /***********************************************************
- * client class declarations
+ * client-related class declarations
  *
  ***********************************************************/
 
 class ConnectInfo
 {
 public:
-	ConnectInfo(WSADATA wsaData, SOCKET sock, sockaddr sockAddr) : _wsaData(wsaData), _sock(sock)
-	{
-		//rev sockaddr 초기화.
-	}
-	//rev 복사, 이동 constructor, assignment op 정의
+	ConnectInfo();
 
 	// accessor
 	const WSADATA& get_wsaData() const;
@@ -48,7 +44,6 @@ public:
 public:
 
 private:
-	ConnectInfo();
 private:
 	WSADATA _wsaData;
 	SOCKET _sock;
@@ -67,7 +62,7 @@ protected:
 	StateMachine(ClientState * pClntState);
 	void changeState(ClientState *, StateMachine *);
 protected:
-	ClientState * const _pClientState;
+	ClientState * const _pContext;
 };
 
 class LoginState : public StateMachine
@@ -131,11 +126,13 @@ protected:
 
 };
 
-class ClientState
+// context of state pattern
+class ClientState : public MachObject
 {
 public:
+	ClientState();
 	ClientState(ConnectInfo conInfo, StateMachine * pState, PacketManager * pm);
-
+	void init();		//rev
 	void _sending();	//rev
 	void _receiving();
 
@@ -147,17 +144,19 @@ public:
 	
 	ConnectInfo& get_conInfo();
 	UserInfoToken& get_myInfo();
+	PacketManager& get_pPm();
 	// mutator
 	void set_conInfo(ConnectInfo);
 	void set_myInfo(UserInfoToken);
+	void set_pPM(PacketManager *);
 public:
-	PacketManager * const _pPM;
+	
 protected:
-	ClientState();
 protected:
 	ConnectInfo _conInfo;	// tcp connection related inform structure
 	UserInfoToken _myInfo;	// client's inform
 	StateMachine * _pState;	// state context
+	PacketManager * _pPM;
 private:
 	friend StateMachine;
 };
@@ -169,6 +168,8 @@ private:
  * 
  ***********************************************************/
 
+void init();
+void close();
 std::string& stringCheck(std::string& str);
 
 

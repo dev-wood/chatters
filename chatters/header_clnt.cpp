@@ -6,12 +6,6 @@
  *
  ***********************************************************/
 
-ClientState cState;		// Current state
-
-LoginState stLogin(&cState);		// Login state
-LobbyState stLobby(&cState);		// Lobby state
-CreateRoomState stCrRoom(&cState);	// Create room state
-ChatState stChat(&cState);		// Chatting state
 
 
 
@@ -19,6 +13,11 @@ ChatState stChat(&cState);		// Chatting state
  * client class member definitions
  *
  ***********************************************************/
+
+ConnectInfo::ConnectInfo()
+{
+	// left blank intentionally
+}
 
 const WSADATA & ConnectInfo::get_wsaData() const
 {
@@ -50,12 +49,12 @@ sockaddr & ConnectInfo::get_servaddr()
 	return _servAddr;
 }
 
-StateMachine::StateMachine() : _pClientState(nullptr)
+StateMachine::StateMachine() : _pContext(nullptr)
 {
 	// left blank intentionally
 }
 
-StateMachine::StateMachine(ClientState * pClntState) : _pClientState(pClntState)
+StateMachine::StateMachine(ClientState * pClntState) : _pContext(pClntState)
 {
 	// left blank intentionally
 }
@@ -98,17 +97,17 @@ bool LoginState::handle()
 	PK_CS_LOGIN_REQUEST packet;
 
 	// packet set in PacketManager
-	_pClientState->_pPM->_setPacket(packet);
-	_pClientState->_pPM->_serialize();
+	_pContext->_pPM->_setPacket(packet);
+	_pContext->_pPM->_serialize();
 
 	// sending packet
-	_pClientState->_sending();
+	_pContext->_sending();
 
 	// receiving packet
-	_pClientState->_receiving();
+	_pContext->_receiving();
 
 	// process packet
-	_pClientState->_pPM->_deserialize();	
+	_pContext->_pPM->_deserialize();	
 }
 
 LoginState & LoginState::operator=(LoginState && loginState)
@@ -166,6 +165,11 @@ UserInfoToken & ClientState::get_myInfo()
 	return _myInfo;
 }
 
+PacketManager & ClientState::get_pPm()
+{
+	return *_pPM;
+}
+
 void ClientState::set_conInfo(ConnectInfo cInfo)
 {
 	_conInfo = std::move(cInfo);
@@ -174,6 +178,11 @@ void ClientState::set_conInfo(ConnectInfo cInfo)
 void ClientState::set_myInfo(UserInfoToken uInfoToken)
 {
 	_myInfo = std::move(uInfoToken);
+}
+
+void ClientState::set_pPM(PacketManager * pm)
+{
+	_pPM = pm;
 }
 
 ClientState::ClientState()
@@ -187,6 +196,12 @@ ClientState::ClientState()
 * etc functions definitions
 *
 ***********************************************************/
+
+void init()
+{
+	static ConnectInfo conInfo;
+	static PacketManager pm;
+}
 
 std::string & stringCheck(std::string & str)
 {

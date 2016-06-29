@@ -63,7 +63,3 @@ void PacketManager::_deserialize()
 {
 	_pk->deserialize();
 }
-PacketManager::PacketManager()
-{
-	// left black intentionally
-}
