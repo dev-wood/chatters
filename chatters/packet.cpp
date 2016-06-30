@@ -3,6 +3,12 @@
 #include "packet.h"
 #include "packet.h"
 #include "packet.h"
+#include "packet.h"
+#include "packet.h"
+#include "packet.h"
+#include "packet.h"
+#include "packet.h"
+#include "packet.h"
 
 int Packet_Base::ptoi(PTYPE::SC pt)
 {
@@ -47,13 +53,17 @@ void Packet_Base::_skipHeaderg()
 }
 
 // PacketManager class
+PacketManager::PacketManager() : _mach(nullptr), _pk(nullptr)
+{
+	// left blank intentionally
+}
 PacketManager::PacketManager(MachObject * mach) : _mach(mach)
 {
 	// left black intentionally
 }
 void PacketManager::_setPacket(Packet_Base * pk)
 {
-	_pk = pk;
+	set_pk(pk);
 }
 void PacketManager::_serialize()
 {
@@ -62,4 +72,24 @@ void PacketManager::_serialize()
 void PacketManager::_deserialize()
 {
 	_pk->deserialize();
+}
+
+Packet_Base & PacketManager::get_pk()
+{
+	return *_pk;
+}
+
+MachObject & PacketManager::get_mach()
+{
+	return *_mach;
+}
+
+void PacketManager::set_pk(Packet_Base * pk)
+{
+	_pk = pk;
+}
+
+void PacketManager::set_mach(MachObject * mach)
+{
+	_mach = mach;
 }

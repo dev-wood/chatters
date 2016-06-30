@@ -49,15 +49,23 @@ protected:
 class PacketManager
 {
 public:
+	PacketManager();
 	PacketManager(MachObject * mach);
 	void _setPacket(Packet_Base * pk);
 	void _serialize();
 	void _deserialize();
+
+	// accessor
+	Packet_Base& get_pk();
+	MachObject& get_mach();
+
+	// mutator
+	void set_pk(Packet_Base * pk);
+	void set_mach(MachObject * mach);
 public:
+protected:
+protected:
 	MachObject * _mach;
-protected:
-	PacketManager();
-protected:
 	Packet_Base * _pk;
 
 };
