@@ -185,7 +185,7 @@ void ClientState::set_pPM(PacketManager * pm)
 	_pPM = pm;
 }
 
-ClientState::ClientState() : _conInfo(), _myInfo(), _pState(nullptr), _pPm(nullptr)
+ClientState::ClientState() : _conInfo(), _myInfo(), _pState(nullptr), _pPM(nullptr)
 {
 	// left blanck intentionally
 }
@@ -199,18 +199,7 @@ ClientState::ClientState() : _conInfo(), _myInfo(), _pState(nullptr), _pPm(nullp
 
 void init()
 {
-	static ConnectInfo conInfo;
-	static PacketManager pm;
-
-	// declaration of context of client state
-	static ClientState cState();		// Current state
-
-	// declaration of client state
-	static LoginState stLogin(&cState);		// Login state
-	static LobbyState stLobby(&cState);		// Lobby state
-	static CreateRoomState stCrRoom(&cState);	// Create room state
-	static ChatState stChat(&cState);		// Chatting state
-
+	//rev
 }
 
 std::string & stringCheck(std::string & str)

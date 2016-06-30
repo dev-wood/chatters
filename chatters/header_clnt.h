@@ -37,10 +37,6 @@ public:
 	WSADATA& get_wsaData();
 	SOCKET& get_sock();
 	sockaddr& get_servaddr();
-	// mutator
-	void set_wsaData(WSADATA wsaData);	//rev
-	void set_sock(SOCKET sock);
-	void set_servaddr(sockaddr sockAddr);
 public:
 
 private:
@@ -168,7 +164,7 @@ private:
  * 
  ***********************************************************/
 
-void init();
+void init();	//rev
 void close();
 std::string& stringCheck(std::string& str);
 
