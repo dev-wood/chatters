@@ -58,7 +58,7 @@ protected:
 	StateMachine(ClientState * pClntState);
 	void changeState(ClientState *, StateMachine *);
 protected:
-	ClientState * const _pContext;
+	ClientState * _pContext;
 };
 
 class LoginState : public StateMachine
@@ -140,7 +140,7 @@ public:
 	
 	ConnectInfo& get_conInfo();
 	UserInfoToken& get_myInfo();
-	PacketManager& get_pPm();
+	PacketManager& get_pPM();
 	// mutator
 	void set_conInfo(ConnectInfo);
 	void set_myInfo(UserInfoToken);

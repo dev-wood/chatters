@@ -97,8 +97,8 @@ bool LoginState::handle()
 	PK_CS_LOGIN_REQUEST packet;
 
 	// packet set in PacketManager
-	_pContext->_pPM->_setPacket(packet);
-	_pContext->_pPM->_serialize();
+	_pContext->get_pPM()._setPacket(&packet);
+	_pContext->get_pPM()._serialize();
 
 	// sending packet
 	_pContext->_sending();
@@ -107,7 +107,7 @@ bool LoginState::handle()
 	_pContext->_receiving();
 
 	// process packet
-	_pContext->_pPM->_deserialize();	
+	_pContext->get_pPM()._deserialize();	
 }
 
 LoginState & LoginState::operator=(LoginState && loginState)
@@ -165,7 +165,7 @@ UserInfoToken & ClientState::get_myInfo()
 	return _myInfo;
 }
 
-PacketManager & ClientState::get_pPm()
+PacketManager & ClientState::get_pPM()
 {
 	return *_pPM;
 }
@@ -200,6 +200,7 @@ ClientState::ClientState() : _conInfo(), _myInfo(), _pState(nullptr), _pPM(nullp
 void init()
 {
 	//rev
+
 }
 
 std::string & stringCheck(std::string & str)
