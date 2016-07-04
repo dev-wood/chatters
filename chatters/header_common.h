@@ -19,6 +19,7 @@ namespace CHATTERS
 {
 	const int MAX_PARTICIPANT = 4;
 	const int NO_ROOM = -1;
+	const int NUM_OF_ROOM_PER_PAGE = 20;
 }
 
 class InfoToken
