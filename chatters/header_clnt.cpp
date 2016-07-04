@@ -87,7 +87,6 @@ bool LoginState::handle()
 	std::cout << "PASSWORD:";
 	std::cin >> _pw;
 
-	//rev handle 내부 함수 작성
 	// packet generating
 	PK_CS_LOGIN_REQUEST packet;
 
@@ -127,10 +126,51 @@ LobbyState & LobbyState::Instance()
 	return _instance;
 }
 
+void LobbyState::init()
+{
+	// roomList initializing and reserve memory space.
+	_roomList.clear();
+	_roomList.reserve(CHATTERS::NUM_OF_ROOM_PER_PAGE);
+	
+	return;
+}
+
+bool LobbyState::handle()
+{	
+	// sending request for room list in lobby.
+	// Packet generation
+	PK_CS_LOBBY_LOAD_ROOMLIST packet;
+	
+	// Packet set in PacketManager
+	//_pContext->	//rev
+	
+	
+	/*
+	<<예제 보고 따라하기>>
+	
+	// packet generating
+	PK_CS_LOGIN_REQUEST packet;
+
+	// packet set in PacketManager
+	_pContext->get_pPM()._setPacket(&packet);
+	_pContext->get_pPM()._serialize();
+
+	// sending packet
+	_pContext->_sending();
+
+	// receiving packet
+	_pContext->_receiving();
+
+	// process packet
+	_pContext->get_pPM()._deserialize();*/
+
+	return false;
+}
+
 LobbyState::LobbyState()
 {
-	//rev
-	// roomList 초기화
+	// roomList initializing and reserve memory space.
+	_roomList.reserve(CHATTERS::NUM_OF_ROOM_PER_PAGE);
 }
 
 CreateRoomState & CreateRoomState::Instance()

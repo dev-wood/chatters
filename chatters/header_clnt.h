@@ -54,6 +54,11 @@ class StateMachine : public MachObject
 public:
 	virtual void init() = 0;	// State 초기화. 초기값, 데이터 등.
 	virtual bool handle() = 0;
+	
+	// Accessor
+	ClientState& get_pContext();
+
+	// Mutator
 	void set_pContext(ClientState& context);
 public:
 
@@ -90,7 +95,7 @@ protected:
 };
 
 /************************************************************************
- * //class name
+ * LobbyState class
  *
  ************************************************************************/
 class LobbyState : public StateMachine
@@ -98,11 +103,11 @@ class LobbyState : public StateMachine
 public:
 	static LobbyState& Instance();
 	virtual void init();
-	virtual bool handle();
+	virtual bool handle();	//rev
 public:
 
 protected:
-	LobbyState();	//rev
+	LobbyState();
 protected:
 	static LobbyState _instance;
 	std::vector<RoomInfoToken> _roomList;

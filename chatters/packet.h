@@ -51,7 +51,7 @@ class PacketManager
 public:
 	PacketManager();
 	PacketManager(MachObject * mach);
-	void _setPacket(Packet_Base * pk);
+	void _setPacket(Packet_Base & pk);
 	void _serialize();
 	void _deserialize();
 

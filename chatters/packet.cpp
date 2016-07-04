@@ -61,9 +61,9 @@ PacketManager::PacketManager(MachObject * mach) : _mach(mach)
 {
 	// left black intentionally
 }
-void PacketManager::_setPacket(Packet_Base * pk)
+void PacketManager::_setPacket(Packet_Base & pk)
 {
-	set_pk(pk);
+	set_pk(&pk);
 }
 void PacketManager::_serialize()
 {
