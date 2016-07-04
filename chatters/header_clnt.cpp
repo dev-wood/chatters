@@ -102,7 +102,7 @@ bool LoginState::handle()
 	_pContext->_receiving();
 
 	// process packet
-	_pContext->get_pPM()._deserialize();	
+	_pContext->get_pPM()._deserialize();
 }
 
 LoginState & LoginState::Instance()
@@ -121,10 +121,6 @@ LoginState::LoginState(const LoginState &)
 	// left blank intentionally
 }
 
-LoginState & LoginState::operator=(const LoginState &)
-{
-	return *this;
-}
 LobbyState & LobbyState::Instance()
 {
 	static LobbyState _instance;
