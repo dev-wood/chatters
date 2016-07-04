@@ -49,6 +49,11 @@ sockaddr & ConnectInfo::get_servaddr()
 	return _servAddr;
 }
 
+void StateMachine::set_pContext(ClientState & context)
+{
+	_pContext = &context;
+}
+
 StateMachine::StateMachine() : _pContext(nullptr)
 {
 	// left blank intentionally
@@ -63,16 +68,6 @@ void StateMachine::changeState(ClientState * cState, StateMachine * nextState)
 {
 	cState->_pState = nextState;
 	return;
-}
-
-LoginState::LoginState(ClientState * pClnt) : StateMachine(pClnt)
-{
-	// left blank intentionally
-}
-
-LoginState::LoginState(LoginState && loginState)
-{
-	*this = std::move(loginState);
 }
 
 void LoginState::init()
@@ -110,14 +105,10 @@ bool LoginState::handle()
 	_pContext->get_pPM()._deserialize();	
 }
 
-LoginState & LoginState::operator=(LoginState && loginState)
+LoginState & LoginState::Instance()
 {
-	if (&loginState != this) {
-		_id.swap(loginState._id);
-		_pw.swap(loginState._pw);
-	}
-
-	return *this;
+	static LoginState _instance;
+	return _instance;
 }
 
 LoginState::LoginState()
@@ -133,6 +124,40 @@ LoginState::LoginState(const LoginState &)
 LoginState & LoginState::operator=(const LoginState &)
 {
 	return *this;
+}
+LobbyState & LobbyState::Instance()
+{
+	static LobbyState _instance;
+	return _instance;
+}
+
+LobbyState::LobbyState()
+{
+	//rev
+	// roomList 초기화
+}
+
+CreateRoomState & CreateRoomState::Instance()
+{
+	static CreateRoomState _instance;
+	return _instance;
+}
+
+CreateRoomState::CreateRoomState()
+{
+	//rev
+}
+
+ChatState & ChatState::Instance()
+{
+	static ChatState _instance;
+	return _instance;
+}
+
+ChatState::ChatState()
+{
+	//rev
+	// peerList 초기화
 }
 
 ClientState::ClientState(ConnectInfo conInfo, StateMachine * pState, PacketManager * pm) : _pPM(pm), _conInfo(conInfo), _pState(pState)
@@ -199,7 +224,15 @@ ClientState::ClientState() : _conInfo(), _myInfo(), _pState(nullptr), _pPM(nullp
 
 void init()
 {
-	//rev
+	LoginState::Instance();
+	LobbyState::Instance();
+	CreateRoomState::Instance();
+	ChatState::Instance();
+
+	//LoginState::Instance();
+	//LobbyState::Instance();
+	//CreateRoomState::Instance();
+	//ChatState::Instance();
 
 }
 
@@ -213,5 +246,4 @@ std::string & stringCheck(std::string & str)
 
 	return str;
 }
-
 

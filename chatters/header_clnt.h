@@ -51,6 +51,7 @@ class StateMachine : public MachObject
 public:
 	virtual void init() = 0;	// State 초기화. 초기값, 데이터 등.
 	virtual bool handle() = 0;
+	void set_pContext(ClientState& context);
 public:
 
 protected:
@@ -63,22 +64,19 @@ protected:
 
 class LoginState : public StateMachine
 {
-public:
-	LoginState(ClientState *);
-	LoginState(LoginState&&);
+public:	
+	static LoginState& Instance();
 
-	LoginState& operator=(LoginState&&);
-	
 	virtual void init();
 	virtual bool handle();
 public:
 
 protected:
 	LoginState();
-	LoginState(const LoginState&);
 
 	LoginState& operator=(const LoginState&);	// object copy is prohibited
 protected:
+	static LoginState _instance;
 	std::string _id;
 	std::string _pw;
 };
@@ -86,38 +84,44 @@ protected:
 class LobbyState : public StateMachine
 {
 public:
+	static LobbyState& Instance();
 	virtual void init();
 	virtual bool handle();
 public:
 
 protected:
+	LobbyState();	//rev
 protected:
+	static LobbyState _instance;
 	std::vector<RoomInfoToken> _roomList;
 };
 
 class CreateRoomState : public StateMachine
 {
 public:
+	static CreateRoomState& Instance();
 	virtual void init();
 	virtual bool handle();
-
-
 public:
 
 protected:
+	CreateRoomState();	//rev
 protected:
-
+	static CreateRoomState _instance;
 };
 
 class ChatState : public StateMachine
 {
 public:
+	static ChatState& Instance();
 	virtual void init();
 	virtual bool handle();
 public:
 
 protected:
+	ChatState();	//rev
 protected:
+	static ChatState _instance;
 	static std::vector<UserInfoToken> _peerList;
 
 };
