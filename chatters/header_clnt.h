@@ -49,11 +49,10 @@ private:
  * StateMachine class
 	- abstract base class of all other 'state' class of state machine.
  ************************************************************************/
-class StateMachine : public MachObject
+class State : public MachObject
 {
 public:
-	virtual void init() = 0;	// State 초기화. 초기값, 데이터 등.
-	virtual bool handle() = 0;
+	virtual void run() = 0;
 	
 	// Accessor
 	ClientState& get_pContext();
@@ -63,19 +62,42 @@ public:
 public:
 
 protected:
-	StateMachine();
-	StateMachine(ClientState * pClntState);
-	void changeState(ClientState *, StateMachine *);
+	State();
+	State(ClientState * pClntState);
+
+	virtual void init() = 0;	// State 초기화. 초기값, 데이터 등.
 protected:
 	ClientState * _pContext;
+	bool _exitFlag;	//rev constructor에서 field 초기화해줄 것.
+};
+
+/************************************************************************
+ * InitState class
+	- State loop 들어가기 전에 TCP 연결 및 자료구조 등 초기화하는 state
+ *
+ ************************************************************************/
+class InitState : public State
+{
+public:
+	static InitState& Instance();
+
+	virtual void init();
+	virtual bool handle();
+public:
+
+protected:
+	InitState();
+	InitState& operator=(const InitState&);	// prohibit object copying
+protected:
+	static InitState _instance;
 };
 
 /************************************************************************
  * LoginState class
-	- 
+	- Login 과 관련된 프로세스를 담당하는 state
  *
  ************************************************************************/
-class LoginState : public StateMachine
+class LoginState : public State
 {
 public:	
 	static LoginState& Instance();
@@ -86,8 +108,7 @@ public:
 
 protected:
 	LoginState();
-
-	LoginState& operator=(const LoginState&);	// object copy is prohibited
+	LoginState& operator=(const LoginState&);	// prohibit object copying.
 protected:
 	static LoginState _instance;
 	std::string _id;
@@ -96,9 +117,10 @@ protected:
 
 /************************************************************************
  * LobbyState class
+	- 
  *
  ************************************************************************/
-class LobbyState : public StateMachine
+class LobbyState : public State
 {
 public:
 	static LobbyState& Instance();
@@ -108,16 +130,18 @@ public:
 
 protected:
 	LobbyState();
+	LobbyState& operator=(const LobbyState&);	// prohibit object copying.
 protected:
 	static LobbyState _instance;
 	std::vector<RoomInfoToken> _roomList;
 };
 
 /************************************************************************
- * //class name
+ * CreateRoomState class
+	- 
  *
  ************************************************************************/
-class CreateRoomState : public StateMachine
+class CreateRoomState : public State
 {
 public:
 	static CreateRoomState& Instance();
@@ -135,7 +159,7 @@ protected:
  * //class name
  *
  ************************************************************************/
-class ChatState : public StateMachine
+class ChatState : public State
 {
 public:
 	static ChatState& Instance();
@@ -151,21 +175,40 @@ protected:
 
 };
 
-// context of state pattern
 /************************************************************************
- * //class name
+ * ExitState class
+	- 프로그램 종료 전 TCP 연결 해제 등 각종 wrap up process를 진행하는 state
  *
+ ************************************************************************/
+class ExitState :State
+{
+public:
+	static ExitState& Instance();
+public:
+
+protected:
+	ExitState();
+	ExitState& operator=(const ExitState&);	// prohibit object copying.
+protected:
+	static ExitState _instance;
+};
+
+/************************************************************************
+ * ClientState
+	- context of state pattern
  ************************************************************************/
 class ClientState : public MachObject
 {
 public:
 	ClientState();
-	ClientState(ConnectInfo conInfo, StateMachine * pState, PacketManager * pm);
+	ClientState(ConnectInfo conInfo, State * pState, PacketManager * pm);
 	void init();		//rev
 	void _sending();	//rev
 	void _receiving();
 
 	bool request();
+
+	void changeState(State&);
 
 	// accessor
 	const ConnectInfo& get_conInfo() const;
@@ -184,10 +227,10 @@ protected:
 protected:
 	ConnectInfo _conInfo;	// tcp connection related inform structure
 	UserInfoToken _myInfo;	// client's inform
-	StateMachine * _pState;	// state context
+	State * _pState;	// state context
 	PacketManager * _pPM;
 private:
-	friend StateMachine;
+	friend State;
 };
 
 

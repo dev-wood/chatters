@@ -49,25 +49,24 @@ sockaddr & ConnectInfo::get_servaddr()
 	return _servAddr;
 }
 
-void StateMachine::set_pContext(ClientState & context)
+ClientState & State::get_pContext()
+{
+	return *_pContext;
+}
+
+void State::set_pContext(ClientState & context)
 {
 	_pContext = &context;
 }
 
-StateMachine::StateMachine() : _pContext(nullptr)
+State::State() : _pContext(nullptr)
 {
 	// left blank intentionally
 }
 
-StateMachine::StateMachine(ClientState * pClntState) : _pContext(pClntState)
+State::State(ClientState * pClntState) : _pContext(pClntState)
 {
 	// left blank intentionally
-}
-
-void StateMachine::changeState(ClientState * cState, StateMachine * nextState)
-{
-	cState->_pState = nextState;
-	return;
 }
 
 void LoginState::init()
@@ -76,7 +75,7 @@ void LoginState::init()
 	_pw.clear();
 }
 
-bool LoginState::handle()
+void LoginState::run()
 {
 	init();
 
@@ -91,8 +90,8 @@ bool LoginState::handle()
 	PK_CS_LOGIN_REQUEST packet;
 
 	// packet set in PacketManager
-	_pContext->get_pPM()._setPacket(&packet);
-	_pContext->get_pPM()._serialize();
+	get_pContext().get_pPM()._setPacket(packet);
+	get_pContext().get_pPM()._serialize();
 
 	// sending packet
 	_pContext->_sending();
@@ -137,34 +136,111 @@ void LobbyState::init()
 
 bool LobbyState::handle()
 {	
-	// sending request for room list in lobby.
+
+	// 
+	std::cout << "Loading chatting room list.." << std::endl;
+	
+	// Sending request for room list in lobby.
 	// Packet generation
 	PK_CS_LOBBY_LOAD_ROOMLIST packet;
 	
 	// Packet set in PacketManager
-	//_pContext->	//rev
+	get_pContext().get_pPM()._setPacket(packet);
+	get_pContext().get_pPM()._serialize();
+
+	// Sending packet
+	get_pContext()._sending();
 	
-	
-	/*
-	<<예제 보고 따라하기>>
-	
-	// packet generating
-	PK_CS_LOGIN_REQUEST packet;
+	// Receiving packet
+	get_pContext()._receiving();
 
-	// packet set in PacketManager
-	_pContext->get_pPM()._setPacket(&packet);
-	_pContext->get_pPM()._serialize();
+	// Processing packet
+	//	printing chatting room list.
+	get_pContext().get_pPM()._deserialize();
 
-	// sending packet
-	_pContext->_sending();
+	// 
+	char input;
+	char conLoopFlag = true;
+	while(conLoopFlag) {
+		std::cout << "Please put your command. ";
+		std::cout << "(C: Create room, J: Join, R: Reload list, E: Exit)" << std::endl;
+		std::cout << "> ";
+		std::cin >> input;
 
-	// receiving packet
-	_pContext->_receiving();
+		switch (input) {
+		case 'c':
+		case 'C':
+			std::cout << "Select to create room." << std::endl;
+			
+			// change state to CreateRoom state
+			get_pContext().changeState(CreateRoomState::Instance());
 
-	// process packet
-	_pContext->get_pPM()._deserialize();*/
+			conLoopFlag = false;
+			break;
+		case 'j':
+		case 'J':
+			std::cout << "Select to join room." << std::endl;
+			
+			//rev
+			// choose room # to join process
+			int rNum;	// room number
+			while (1)	// valid input checking loop
+			{
+				std::cout << "Put the room number to join (0: Return to lobby): ";
+				std::cin >> rNum;
 
-	return false;
+				if (rNum >= 0) {
+					break;
+				}
+				std::cout << "Wrong input. Please try again." << std::endl;
+			}
+
+			if (rNum == 0) {
+				// change state to lobby.
+				//	go back to lobby
+				break;
+			}
+			else {
+				// Processing packet
+				//	
+				//rev 
+				// input value receiving 과정이 packet::_serialize()에 
+				//	포함되어야할까..? 
+				//	그게 아니라면 input을 어떻게 packet에 전해주나?
+
+
+			}
+			
+			conLoopFlag = false;
+			break;
+		case 'r':
+		case 'R':
+			std::cout << "Select to reload room list." << std::endl;
+			//rev
+			// change state to this state (iterate)
+
+			conLoopFlag = false;
+			break;
+		case 'e':
+		case 'E':
+			std::cout << "Select to exit program." << std::endl;
+			//rev 
+			// change state to Close state
+
+			conLoopFlag = false;
+			break;
+		default:
+			std::cout << "Wrong input. Try again." << std::endl;
+			conLoopFlag = true;
+			break;
+		}
+
+	}
+
+	return false;	
+	//rev 
+	// InitState calss implementation.
+	// CloseState class implementation.
 }
 
 LobbyState::LobbyState()
@@ -196,7 +272,7 @@ ChatState::ChatState()
 	// peerList 초기화
 }
 
-ClientState::ClientState(ConnectInfo conInfo, StateMachine * pState, PacketManager * pm) : _pPM(pm), _conInfo(conInfo), _pState(pState)
+ClientState::ClientState(ConnectInfo conInfo, State * pState, PacketManager * pm) : _pPM(pm), _conInfo(conInfo), _pState(pState)
 {
 	// left blank intentionally
 }
@@ -204,6 +280,11 @@ ClientState::ClientState(ConnectInfo conInfo, StateMachine * pState, PacketManag
 bool ClientState::request()
 {
 	return _pState->handle();
+}
+
+void ClientState::changeState(State & nextState)
+{
+	_pState = &nextState;
 }
 
 const ConnectInfo & ClientState::get_conInfo() const
