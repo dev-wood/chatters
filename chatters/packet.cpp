@@ -1,40 +1,36 @@
 #include "packet.h"
-#include "packet.h"
-#include "packet.h"
-#include "packet.h"
-#include "packet.h"
-#include "packet.h"
-#include "packet.h"
-#include "packet.h"
-#include "packet.h"
-#include "packet.h"
-#include "packet.h"
 
+
+
+/*********************************************************************
+* PacketInfo class implementation
+*********************************************************************/
 PacketInfo::PacketInfo() : _code(EMPTY), _msg("")
 {
 	// left blank intentionally
 }
-
 PkInfo::ProcCode PacketInfo::get_code() const
 {
 	return _code;
 }
-
 std::string PacketInfo::get_msg() const
 {
 	return _msg;
 }
-
 void PacketInfo::set_code(ProcCode code)
 {
 	_code = code;
 }
-
 void PacketInfo::set_msg(std::string && str)
 {
 	_msg = str;
 }
 
+
+
+/*********************************************************************
+ * Packet_Base class implementation 
+ *********************************************************************/
 int Packet_Base::ptoi(PTYPE::SC pt)
 {
 	return static_cast<int>(pt);
@@ -43,11 +39,7 @@ int Packet_Base::ptoi(PTYPE::CS pt)
 {
 	return static_cast<int>(pt);
 }
-Packet_Base::Packet_Base(PacketManager * const pm) : _pm(pm) 
-{
-	_setHeaderSpace();
-}
-int Packet_Base::get_bufSize()
+int Packet_Base::_bufSize()
 {
 	int bufSz = 0;
 	auto cPos = _buf.tellg();	// store current input sequence pos
@@ -57,27 +49,37 @@ int Packet_Base::get_bufSize()
 	_buf.seekg(cPos);	// restore previous input sequence pos
 
 	bufSz -= sizeof(size_t);	// exclude packet header space
-	
+
 	return bufSz;
 }
-Packet_Base::Packet_Base() : _pm(nullptr)
+int Packet_Base::_packetSize()
+{
+	return _bufSize() + sizeof(size_t);
+}
+void Packet_Base::set_pm(PacketManager & pm)
+{
+	_pm = &pm;
+}
+Packet_Base::Packet_Base() : _pm(nullptr), _pkInfo()
 {
 	_setHeaderSpace();
 }
-
 void Packet_Base::_setHeaderSpace()
 {
 	int headerSz = sizeof(size_t);
 	for (int i = 0; i < headerSz; ++i)
 		_buf << '0';
 }
-
 void Packet_Base::_skipHeaderg()
 {
 	_buf.seekg(sizeof(size_t));
 }
 
-// PacketManager class
+
+
+/*********************************************************************
+* PacketManager class implementation
+*********************************************************************/
 PacketManager::PacketManager() : _mach(nullptr), _pk(nullptr)
 {
 	// left blank intentionally
@@ -98,22 +100,18 @@ void PacketManager::_deserialize()
 {
 	_pk->deserialize();
 }
-
 Packet_Base & PacketManager::get_pk()
 {
 	return *_pk;
 }
-
 MachObject & PacketManager::get_mach()
 {
 	return *_mach;
 }
-
 void PacketManager::set_pk(Packet_Base * pk)
 {
 	_pk = pk;
 }
-
 void PacketManager::set_mach(MachObject * mach)
 {
 	_mach = mach;

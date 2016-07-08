@@ -54,25 +54,31 @@ public:
 	static int ptoi(PTYPE::SC pt);
 	static int ptoi(PTYPE::CS pt);
 
-	Packet_Base();
-	Packet_Base(PacketManager * const pm);
 	virtual void serialize() = 0;
 	virtual void deserialize() = 0;
 	virtual void process() = 0;
-	//void setPacketManager(const PacketManager * pm);	//rev
-	int get_bufSize();
-	//std::stringstream& get_buf() const;	//rev
+	
+	// Accessor
+	//rev bufSize는 proteced, packetSize는 public으로..?
+	int _bufSize();		// The size of serialized information excluding header space
+	int _packetSize();	// The size of whole packet include header space.
+	const std::stringstream& get_buf() const;	//rev
+	std::stringstream& get_buf();	//rev
 	//const char * get_bufAddr() const;
+	// Mutator
+	void set_pm(PacketManager& pm);
 public:
 
 protected:
 	Packet_Base();
-	void _setHeaderSpace();
-	void _skipHeaderg();
+
+	void _setHeaderSpace();	// _buf에 packet size 저장을 위한 (header) space 확보하는 함수.
+	void _skipHeaderg();	// Packet을 deserialize 시 header space를 건너뛰는 함수.
 
 protected:
+	//rev packet id 넣기, ctor에 적용.
 	std::stringstream _buf;
-	PacketManager * const _pm;
+	PacketManager * _pm;
 	PacketInfo _pkInfo;
 
 };
