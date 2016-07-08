@@ -10,6 +10,31 @@
 #include "packet.h"
 #include "packet.h"
 
+PacketInfo::PacketInfo() : _code(EMPTY), _msg("")
+{
+	// left blank intentionally
+}
+
+PkInfo::ProcCode PacketInfo::get_code() const
+{
+	return _code;
+}
+
+std::string PacketInfo::get_msg() const
+{
+	return _msg;
+}
+
+void PacketInfo::set_code(ProcCode code)
+{
+	_code = code;
+}
+
+void PacketInfo::set_msg(std::string && str)
+{
+	_msg = str;
+}
+
 int Packet_Base::ptoi(PTYPE::SC pt)
 {
 	return static_cast<int>(pt);

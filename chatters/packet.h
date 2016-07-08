@@ -9,19 +9,52 @@
 #include "PT_SC_Data.h"
 #include "PT_CS_Data.h"
 
-//rev
-/****************************************************
- * Packet_Base class
+/*****************************************************************
+ * PacketInfo class
+	- packet processing(de/serialize) 의 결과 및 관련 정보를 저장
  *
+ *****************************************************************/
+typedef class PacketInfo
+{
+public:
+	enum ProcCode :int {
+		EMPTY,		// Packet was initialized but no follow-up processing.
+		SUCCESS,	// Packet processing successfully.
+		FAIL,		// Packet processing failed.
+		ABORT		// Packet processing aborted by user.
+	};
+public:		// method
+	PacketInfo();
 
+	// Accessor
+	ProcCode get_code() const;
+	std::string get_msg() const;
 
-****************************************************/
+public:		// field
+
+	friend class Packet_Base;
+private:	// method
+	// Mutator
+	void set_code(ProcCode);
+	void set_msg(std::string&&);
+private:	// field
+	ProcCode _code;
+	std::string _msg;
+} PkInfo;
+
+//rev
+/*****************************************************************
+ * Packet_Base class
+	-
+ *
+ *****************************************************************/
 struct Packet_Base
 {
 public:
 	static int ptoi(PTYPE::SC pt);
 	static int ptoi(PTYPE::CS pt);
 
+	Packet_Base();
 	Packet_Base(PacketManager * const pm);
 	virtual void serialize() = 0;
 	virtual void deserialize() = 0;
@@ -30,22 +63,26 @@ public:
 	int get_bufSize();
 	//std::stringstream& get_buf() const;	//rev
 	//const char * get_bufAddr() const;
-	
+public:
+
 protected:
 	Packet_Base();
 	void _setHeaderSpace();
 	void _skipHeaderg();
 
+protected:
 	std::stringstream _buf;
 	PacketManager * const _pm;
+	PacketInfo _pkInfo;
+
 };
 
-/*******************************************************
+/********************************************************************
  * PacketManager class 
  * 
 
 
-*******************************************************/
+********************************************************************/
 class PacketManager
 {
 public:
