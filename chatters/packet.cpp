@@ -31,48 +31,70 @@ void PacketInfo::set_msg(std::string && str)
 /*********************************************************************
  * Packet_Base class implementation 
  *********************************************************************/
-int Packet_Base::ptoi(PTYPE::SC pt)
+//class PacketManager;
+
+int Packet_Base::ptoi(PTYPE pt)
 {
 	return static_cast<int>(pt);
 }
-int Packet_Base::ptoi(PTYPE::CS pt)
+void Packet_Base::_setHeaderSpace()
 {
-	return static_cast<int>(pt);
+	char ch[sizeof(size_t) + 1];
+	std::fill_n(ch, sizeof(size_t), '0');
+	ch[sizeof(size_t)] = 0;
+
+	_buf << ch;
 }
-int Packet_Base::_bufSize()
+void Packet_Base::_writeHeader()
 {
-	int bufSz = 0;
+	size_t bufSize = _bufSize();	// get packet size
+
+	auto prevPos = _buf.tellp();	// store current input sequence pos
+	_buf.seekp(_buf.beg);	// move input sequence pos to header space
+
+	_buf.write((const char*)&bufSize, sizeof(bufSize));	// write packet size in header space
+
+	_buf.seekp(prevPos);	// restore previous input sequence pos	
+}
+void Packet_Base::_skipHeaderg()
+{
+	_buf.seekg(sizeof(size_t));
+}
+size_t Packet_Base::_packetSize()
+{
+	return _bufSize() + sizeof(size_t);
+}
+const char * Packet_Base::get_bufAddr() const
+{
+	return _buf.str().c_str();
+}
+size_t Packet_Base::_bufSize()
+{
+	size_t bufSz = 0;
 	auto cPos = _buf.tellg();	// store current input sequence pos
 	_buf.seekg(_buf.end);
 	bufSz = static_cast<int>(_buf.tellg());
 
 	_buf.seekg(cPos);	// restore previous input sequence pos
 
-	bufSz -= sizeof(size_t);	// exclude packet header space
+	bufSz -= sizeof(bufSz);	// exclude packet header space
 
 	return bufSz;
 }
-int Packet_Base::_packetSize()
-{
-	return _bufSize() + sizeof(size_t);
-}
-void Packet_Base::set_pm(PacketManager & pm)
+void Packet_Base::set_pm(PacketManager& pm)
 {
 	_pm = &pm;
 }
-Packet_Base::Packet_Base() : _pm(nullptr), _pkInfo()
+Packet_Base::Packet_Base() : _id(PTYPE::PT_BASE), _pm(nullptr), _pkInfo()
 {
 	_setHeaderSpace();
+
+	_buf << _id << '|';
 }
-void Packet_Base::_setHeaderSpace()
+
+Packet_Base::~Packet_Base()
 {
-	int headerSz = sizeof(size_t);
-	for (int i = 0; i < headerSz; ++i)
-		_buf << '0';
-}
-void Packet_Base::_skipHeaderg()
-{
-	_buf.seekg(sizeof(size_t));
+	// left blank intentionally
 }
 
 
