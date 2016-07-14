@@ -9,6 +9,7 @@
 #include "PT_SC_Data.h"
 #include "PT_CS_Data.h"
 
+#include "PTYPE.h"
 
 
 /*****************************************************************

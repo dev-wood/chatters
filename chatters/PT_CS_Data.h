@@ -5,26 +5,7 @@
 
 #include "packet.h"
 
-namespace PTYPE {
-	enum struct CS : int
-	{
-		// Client to Server packet
-		LOGIN_REQUEST = 0,
 
-		LOBBY_JOINROOM,
-		LOBBY_LOAD_ROOMLIST,
-
-		CREATEROOM_CREATEROOM,
-
-		CHAT_QUITROOM,
-		CHAT_CHAT,
-		// 추후 확장 가능한 기능
-		CHAT_MYSTATEREADY,
-		CHAT_MYSTATENOTREADY,
-		CHAT_ROOMSTATEPLAYING,
-		CHAT_ROOMSTATENOTPLAYING
-	};
-};
 
 //rev
 struct PK_CS_LOGIN_REQUEST : Packet_Base

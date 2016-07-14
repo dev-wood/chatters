@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header_clnt.h" />
+    <ClInclude Include="PTYPE.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

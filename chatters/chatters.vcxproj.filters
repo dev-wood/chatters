@@ -38,5 +38,8 @@
     <ClInclude Include="header_clnt.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="PTYPE.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
