@@ -9,6 +9,7 @@
 #include "PT_SC_Data.h"
 #include "PT_CS_Data.h"
 
+#include "PTYPE.h"
 
 
 /*****************************************************************
@@ -31,14 +32,13 @@ public:		// method
 	// Accessor
 	ProcCode get_code() const;
 	std::string get_msg() const;
-
-public:		// field
-
-	friend class Packet_Base;
-private:	// method
 	// Mutator
 	void set_code(ProcCode);
 	void set_msg(std::string&&);
+
+public:		// field
+
+private:	// method
 private:	// field
 	ProcCode _code;
 	std::string _msg;
@@ -55,28 +55,27 @@ struct Packet_Base
 {
 public:
 	static int ptoi(PTYPE);
+	static std::shared_ptr<Packet_Base> cast();	// return empty packet object.	//rev
 
-	virtual void serialize() = 0;
-	virtual void deserialize() = 0;
-	virtual void process() = 0;
-	virtual std::shared_ptr<Packet_Base> cast() = 0;	// return empty packet object.
+	void serialize();	// Template method for serialize process
+	void deserialize();	// Template method for serialize process	//rev
 
+	virtual void doSerialProc() = 0;
+	virtual void doDeserialProc() = 0;
+	
 	// Accessor
 	size_t _packetSize();	// The size of whole packet include header space.
 	const char * get_bufAddr() const;
+	const PkInfo& get_pkInfo() const;
 
 	// Mutator
 	void set_pm(PacketManager& pm);
 public:
 
 protected:
-	Packet_Base();
+	Packet_Base(PTYPE);
 	virtual ~Packet_Base();
 
-	void _setHeaderSpace();	// _buf에 packet(_buf) size 저장을 위한 (header) space 확보하는 함수.
-	void _writeHeader();	// deserialize 과정. Write _buf size on header space calling at the end of serialization.
-	void _skipHeaderg();	// deserialize 과정에서, header space를 건너뛰는 함수.
-	size_t _bufSize();		// The size of serialized information excluding header space
 	
 protected:
 	//rev packet id 넣기, ctor에 적용.
@@ -84,6 +83,13 @@ protected:
 	std::stringstream _buf;
 	PacketManager * _pm;
 	PacketInfo _pkInfo;
+
+private:
+	Packet_Base();
+	void _setHeaderSpace();	// Make (header) space for packet(_buf) size in _buf.
+	void _writeHeader();	// At the end of serialize process, write _buf size on header space calling at the end of serialization.
+	void _skipHeaderg();	// deserialize 과정에서, header space를 건너뛰는 함수.
+	size_t _bufSize();		// The size of serialized information excluding header space
 
 };
 

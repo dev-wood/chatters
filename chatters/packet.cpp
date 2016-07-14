@@ -37,8 +37,27 @@ int Packet_Base::ptoi(PTYPE pt)
 {
 	return static_cast<int>(pt);
 }
+void Packet_Base::serialize()
+{
+	// Reserve header space for buf length.
+	_setHeaderSpace();
+
+	// Write packet ID on buf.
+	_buf << ptoi(_id) << '|';
+
+	// Do serialize process depend on each Packet class.
+	doSerialProc();
+
+	// Write header at the last of serialize process.
+	_writeHeader();
+}
+void Packet_Base::deserialize()
+{
+	//rev
+}
 void Packet_Base::_setHeaderSpace()
 {
+	//rev setfill, width 사용해서 수정.
 	char ch[sizeof(size_t) + 1];
 	std::fill_n(ch, sizeof(size_t), '0');
 	ch[sizeof(size_t)] = 0;
@@ -68,6 +87,10 @@ const char * Packet_Base::get_bufAddr() const
 {
 	return _buf.str().c_str();
 }
+const PkInfo & Packet_Base::get_pkInfo() const
+{
+	return _pkInfo;
+}
 size_t Packet_Base::_bufSize()
 {
 	size_t bufSz = 0;
@@ -87,9 +110,12 @@ void Packet_Base::set_pm(PacketManager& pm)
 }
 Packet_Base::Packet_Base() : _id(PTYPE::PT_BASE), _pm(nullptr), _pkInfo()
 {
-	_setHeaderSpace();
+	// left blank intentionally
+}
 
-	_buf << _id << '|';
+Packet_Base::Packet_Base(PTYPE pt) : _id(pt), _pm(nullptr), _pkInfo()
+{
+	// left blank intentionally
 }
 
 Packet_Base::~Packet_Base()
