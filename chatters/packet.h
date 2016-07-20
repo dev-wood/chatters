@@ -51,6 +51,7 @@ private:	// field
 	-
  *
  *****************************************************************/
+class PacketManager;
 struct Packet_Base
 {
 public:
@@ -58,25 +59,24 @@ public:
 	static std::shared_ptr<Packet_Base> cast();	// return empty packet object.	//rev
 
 	void serialize();	// Template method for serialize process
-	void deserialize();	// Template method for serialize process	//rev
+	void deserialize();	// Template method for serialize process
 
-	virtual void doSerialProc() = 0;
-	virtual void doDeserialProc() = 0;
-	
 	// Accessor
 	size_t _packetSize();	// The size of whole packet include header space.
 	const char * get_bufAddr() const;
 	const PkInfo& get_pkInfo() const;
 
 	// Mutator
-	void set_pm(PacketManager& pm);
+	void set_pm(PacketManager& pm);	//rev PacketManager pre-declare 문제 확인할 것.
 public:
 
 protected:
 	Packet_Base(PTYPE);
 	virtual ~Packet_Base();
 
-	
+	virtual void doSerialProc() = 0;
+	virtual void doDeserialProc() = 0;
+
 protected:
 	//rev packet id 넣기, ctor에 적용.
 	const PTYPE _id;

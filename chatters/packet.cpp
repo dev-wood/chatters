@@ -31,8 +31,6 @@ void PacketInfo::set_msg(std::string && str)
 /*********************************************************************
  * Packet_Base class implementation 
  *********************************************************************/
-//class PacketManager;
-
 int Packet_Base::ptoi(PTYPE pt)
 {
 	return static_cast<int>(pt);
@@ -53,7 +51,11 @@ void Packet_Base::serialize()
 }
 void Packet_Base::deserialize()
 {
-	//rev
+	// Skip header space.
+	_skipHeaderg();
+
+	// Do deserailize process depend on each Packet class.
+	doDeserialProc();
 }
 void Packet_Base::_setHeaderSpace()
 {
@@ -112,12 +114,10 @@ Packet_Base::Packet_Base() : _id(PTYPE::PT_BASE), _pm(nullptr), _pkInfo()
 {
 	// left blank intentionally
 }
-
 Packet_Base::Packet_Base(PTYPE pt) : _id(pt), _pm(nullptr), _pkInfo()
 {
 	// left blank intentionally
 }
-
 Packet_Base::~Packet_Base()
 {
 	// left blank intentionally
