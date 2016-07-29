@@ -14,61 +14,79 @@
  *
  ***********************************************************/
 
+ // ConnectInfo class definition.
 ConnectInfo::ConnectInfo()
 {
 	// left blank intentionally
 }
-
 const WSADATA & ConnectInfo::get_wsaData() const
 {
 	return _wsaData;
 }
-
 const SOCKET & ConnectInfo::get_sock() const
 {
 	return _sock;
 }
-
 const sockaddr & ConnectInfo::get_servaddr() const
 {
 	return _servAddr;
 }
-
 WSADATA & ConnectInfo::get_wsaData()
 {
 	return _wsaData;
 }
-
 SOCKET & ConnectInfo::get_sock()
 {
 	return _sock;
 }
-
 sockaddr & ConnectInfo::get_servaddr()
 {
 	return _servAddr;
 }
 
+// State class definition.
 ClientState & State::get_pContext()
 {
 	return *_pContext;
 }
-
 void State::set_pContext(ClientState & context)
 {
 	_pContext = &context;
 }
-
-State::State() : _pContext(nullptr)
+State::State() : _pContext(nullptr), _terminateFlag(false)
 {
 	// left blank intentionally
 }
-
 State::State(ClientState * pClntState) : _pContext(pClntState)
 {
 	// left blank intentionally
 }
 
+
+// InitState class definition
+InitState & InitState::Instance()
+{
+	static InitState _instance;
+
+	return _instance;
+}
+void InitState::run()
+{
+	_init();
+	//rev
+	// Initializing process
+
+	
+}
+void InitState::_init()
+{
+	// left blank intentionally
+	//rev
+
+}
+
+
+// LoginState class definition
 void LoginState::init()
 {
 	_id.clear();

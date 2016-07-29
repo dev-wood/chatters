@@ -162,13 +162,13 @@ public:
 class MachObject
 {
 public:
-	virtual void init() = 0;
 
 protected:
 	MachObject()
 	{
 		// left blank intentionally
 	}
+	virtual void _dcastEnableFunc() = 0;
 };
 
 

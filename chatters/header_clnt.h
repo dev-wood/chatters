@@ -65,10 +65,10 @@ protected:
 	State();
 	State(ClientState * pClntState);
 
-	virtual void init() = 0;	// State 초기화. 초기값, 데이터 등.
+	virtual void _init() = 0;	// State 초기화. 초기값, 데이터 등.
 protected:
 	ClientState * _pContext;
-	bool _exitFlag;	//rev constructor에서 field 초기화해줄 것.
+	bool _terminateFlag;	
 };
 
 /************************************************************************
@@ -81,13 +81,14 @@ class InitState : public State
 public:
 	static InitState& Instance();
 
-	virtual void init();
-	virtual bool handle();
+	virtual void run();
 public:
 
 protected:
 	InitState();
 	InitState& operator=(const InitState&);	// prohibit object copying
+
+	virtual void _init();
 protected:
 	static InitState _instance;
 };
@@ -202,11 +203,6 @@ class ClientState : public MachObject
 public:
 	ClientState();
 	ClientState(ConnectInfo conInfo, State * pState, PacketManager * pm);
-	void init();		//rev
-	void _sending();	//rev
-	void _receiving();
-
-	bool request();
 
 	void changeState(State&);
 
@@ -224,7 +220,8 @@ public:
 public:
 	
 protected:
-protected:
+	virtual void _dcastEnableFunc();
+	protected:
 	ConnectInfo _conInfo;	// tcp connection related inform structure
 	UserInfoToken _myInfo;	// client's inform
 	State * _pState;	// state context
