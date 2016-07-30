@@ -26,8 +26,8 @@ class ClientState;
 class ConnectInfo
 {
 public:
-	ConnectInfo();
-
+	static ConnectInfo& Instance();	//rev
+	
 	// accessor
 	const WSADATA& get_wsaData() const;
 	const SOCKET& get_sock() const;
@@ -39,7 +39,11 @@ public:
 public:
 
 private:
+	ConnectInfo();
+	ConnectInfo& operator=(const ConnectInfo&);
+
 private:
+	static ConnectInfo _instance;
 	WSADATA _wsaData;
 	SOCKET _sock;
 	sockaddr _servAddr;
@@ -54,20 +58,17 @@ class State : public MachObject
 public:
 	virtual void run() = 0;
 	
-	// Accessor
-	ClientState& get_pContext();
-
-	// Mutator
-	void set_pContext(ClientState& context);
 public:
 
 protected:
 	State();
-	State(ClientState * pClntState);
 
-	virtual void _init() = 0;	// State 초기화. 초기값, 데이터 등.
+	void _changeState(ClientState * pClntState, State * pNextState);
+	virtual void _clear() = 0;	// State 초기화. 초기값, 데이터 등.
+
+	void _sendPacket(std::shared_ptr<Packet_Base> packet);
+	std::shared_ptr<Packet_Base> _receivePacket();
 protected:
-	ClientState * _pContext;
 	bool _terminateFlag;	
 };
 
@@ -88,7 +89,7 @@ protected:
 	InitState();
 	InitState& operator=(const InitState&);	// prohibit object copying
 
-	virtual void _init();
+	virtual void _clear();
 protected:
 	static InitState _instance;
 };
@@ -103,17 +104,16 @@ class LoginState : public State
 public:	
 	static LoginState& Instance();
 
-	virtual void init();
-	virtual bool handle();
+	virtual void run();	//rev
 public:
 
 protected:
 	LoginState();
 	LoginState& operator=(const LoginState&);	// prohibit object copying.
+
+	virtual void _clear();
 protected:
 	static LoginState _instance;
-	std::string _id;
-	std::string _pw;
 };
 
 /************************************************************************
@@ -125,13 +125,15 @@ class LobbyState : public State
 {
 public:
 	static LobbyState& Instance();
-	virtual void init();
-	virtual bool handle();	//rev
+
+	virtual void run();	//rev
 public:
 
 protected:
 	LobbyState();
 	LobbyState& operator=(const LobbyState&);	// prohibit object copying.
+
+	virtual void _clear();
 protected:
 	static LobbyState _instance;
 	std::vector<RoomInfoToken> _roomList;
@@ -146,14 +148,18 @@ class CreateRoomState : public State
 {
 public:
 	static CreateRoomState& Instance();
-	virtual void init();
-	virtual bool handle();
+
+	virtual void run();	//rev
 public:
 
 protected:
-	CreateRoomState();	//rev
+	CreateRoomState();
+	CreateRoomState& operator=(const CreateRoomState&);
+
+	virtual void _clear();
 protected:
 	static CreateRoomState _instance;
+
 };
 
 /************************************************************************
@@ -164,12 +170,15 @@ class ChatState : public State
 {
 public:
 	static ChatState& Instance();
-	virtual void init();
-	virtual bool handle();
+	
+	virtual void run();	//rev
 public:
 
 protected:
 	ChatState();	//rev
+	ChatState& operator=(const ChatState&);
+
+	virtual void _clear();
 protected:
 	static ChatState _instance;
 	static std::vector<UserInfoToken> _peerList;
@@ -184,12 +193,16 @@ protected:
 class ExitState :State
 {
 public:
-	static ExitState& Instance();
+	static ExitState& Instance();	//rev
+
+	virtual void run();
 public:
 
 protected:
 	ExitState();
 	ExitState& operator=(const ExitState&);	// prohibit object copying.
+
+	virtual void _clear();
 protected:
 	static ExitState _instance;
 };
@@ -207,25 +220,17 @@ public:
 	void changeState(State&);
 
 	// accessor
-	const ConnectInfo& get_conInfo() const;
 	const UserInfoToken& get_myInfo() const;
 	
-	ConnectInfo& get_conInfo();
 	UserInfoToken& get_myInfo();
-	PacketManager& get_pPM();
 	// mutator
-	void set_conInfo(ConnectInfo);
 	void set_myInfo(UserInfoToken);
-	void set_pPM(PacketManager *);
 public:
 	
 protected:
-	virtual void _dcastEnableFunc();
 	protected:
-	ConnectInfo _conInfo;	// tcp connection related inform structure
 	UserInfoToken _myInfo;	// client's inform
 	State * _pState;	// state context
-	PacketManager * _pPM;
 private:
 	friend State;
 };
