@@ -164,12 +164,8 @@ class MachObject
 public:
 
 protected:
-	MachObject()
-	{
-		// left blank intentionally
-	}
-
-	virtual void _dcastEnableFunc() = 0;	// Function which is enable dynamic casting.
+	MachObject();
+	virtual void _dcastEnableFunc();
 };
 
 
