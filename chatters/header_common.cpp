@@ -175,3 +175,11 @@ RcvMessage & RcvMessage::operator=(RcvMessage&& rMsg)
 }
 
 
+MachObject::MachObject()
+{
+	// left blank intentionally
+}
+void MachObject::_dcastEnableFunc()
+{
+	// left blank intentionally
+}
