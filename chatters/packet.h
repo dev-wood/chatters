@@ -54,43 +54,40 @@ private:	// field
 class PacketManager;
 struct Packet_Base
 {
-public:
-	static int ptoi(PTYPE);
-	static std::shared_ptr<Packet_Base> cast();	// return empty packet object.	//rev
+public:	
+	/* Member method */
+	virtual ~Packet_Base();
 
+	static int ptoi(PTYPE);
+	
 	void serialize();	// Template method for serialize process
 	void deserialize();	// Template method for serialize process
+	virtual void processPacket(MachObject& const targetMObject) = 0;	// Process packet using strategy pattern
 
 	// Accessor
-	size_t _packetSize();	// The size of whole packet include header space.
+	size_t get_packetSize();	// The size of whole packet include header space.
 	const char * get_bufAddr() const;
 	const PkInfo& get_pkInfo() const;
-
-	// Mutator
-	void set_pm(PacketManager& pm);	//rev PacketManager pre-declare 문제 확인할 것.
 public:
-
+	/* Member field */
 protected:
+	/* Member method */
 	Packet_Base(PTYPE);
-	virtual ~Packet_Base();
 
 	virtual void doSerialProc() = 0;
 	virtual void doDeserialProc() = 0;
-
 protected:
-	//rev packet id 넣기, ctor에 적용.
+	/* Member field */
 	const PTYPE _id;
 	std::stringstream _buf;
-	PacketManager * _pm;
 	PacketInfo _pkInfo;
-
 private:
+	/* Member method */
 	Packet_Base();
 	void _setHeaderSpace();	// Make (header) space for packet(_buf) size in _buf.
 	void _writeHeader();	// At the end of serialize process, write _buf size on header space calling at the end of serialization.
 	void _skipHeaderg();	// deserialize 과정에서, header space를 건너뛰는 함수.
 	size_t _bufSize();		// The size of serialized information excluding header space
-
 };
 
 

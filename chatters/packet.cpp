@@ -31,6 +31,10 @@ void PacketInfo::set_msg(std::string && str)
 /*********************************************************************
  * Packet_Base class implementation 
  *********************************************************************/
+Packet_Base::~Packet_Base()
+{
+	// left blank intentionally
+}
 int Packet_Base::ptoi(PTYPE pt)
 {
 	return static_cast<int>(pt);
@@ -57,6 +61,26 @@ void Packet_Base::deserialize()
 	// Do deserailize process depend on each Packet class.
 	doDeserialProc();
 }
+size_t Packet_Base::get_packetSize()
+{
+	return _bufSize() + sizeof(size_t);
+}
+const char * Packet_Base::get_bufAddr() const
+{
+	return _buf.str().c_str();
+}
+const PkInfo & Packet_Base::get_pkInfo() const
+{
+	return _pkInfo;
+}
+Packet_Base::Packet_Base(PTYPE pt) : _id(pt), _pkInfo()
+{
+	// left blank intentionally
+}
+Packet_Base::Packet_Base() : _id(PTYPE::PT_BASE), _pkInfo()
+{
+	// left blank intentionally
+}
 void Packet_Base::_setHeaderSpace()
 {
 	//rev setfill, width 사용해서 수정.
@@ -81,18 +105,6 @@ void Packet_Base::_skipHeaderg()
 {
 	_buf.seekg(sizeof(size_t));
 }
-size_t Packet_Base::_packetSize()
-{
-	return _bufSize() + sizeof(size_t);
-}
-const char * Packet_Base::get_bufAddr() const
-{
-	return _buf.str().c_str();
-}
-const PkInfo & Packet_Base::get_pkInfo() const
-{
-	return _pkInfo;
-}
 size_t Packet_Base::_bufSize()
 {
 	size_t bufSz = 0;
@@ -105,22 +117,6 @@ size_t Packet_Base::_bufSize()
 	bufSz -= sizeof(bufSz);	// exclude packet header space
 
 	return bufSz;
-}
-void Packet_Base::set_pm(PacketManager& pm)
-{
-	_pm = &pm;
-}
-Packet_Base::Packet_Base() : _id(PTYPE::PT_BASE), _pm(nullptr), _pkInfo()
-{
-	// left blank intentionally
-}
-Packet_Base::Packet_Base(PTYPE pt) : _id(pt), _pm(nullptr), _pkInfo()
-{
-	// left blank intentionally
-}
-Packet_Base::~Packet_Base()
-{
-	// left blank intentionally
 }
 
 
