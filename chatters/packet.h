@@ -51,7 +51,7 @@ private:	// field
 	-
  *
  *****************************************************************/
-class PacketManager;
+class PacketManager_Base;
 struct Packet_Base
 {
 public:	
@@ -93,33 +93,37 @@ private:
 
 
 /********************************************************************
- * PacketManager class 
+ * PacketManager_Base class 
 	- 
  * 
 ********************************************************************/
-class PacketManager
+class PacketManager_Base
 {
 public:
-	PacketManager();
-	PacketManager(MachObject * mach);
-	void _setPacket(Packet_Base & pk);
-	void _serialize();
-	void _deserialize();
+	/* Member method */
+	~PacketManager_Base();
 
-	// accessor
-	Packet_Base& get_pk();
-	MachObject& get_mach();
-
-	// mutator
-	void set_pk(Packet_Base * pk);		//rev 모든 인터페이스는 reference param.로 통일하는게..?
-	void set_mach(MachObject * mach);	//rev 위와 동
+	void addAgent(std::shared_ptr<MachObject>);		// add a new agent(server or client) to agent list
+	void removeAgent(std::shared_ptr<MachObject>);	// remove agent(server or client) from agent list
+	std::shared_ptr<MachObject> getAgent(int nth = 0);	// get agent(server or client) from agent list
+	
+	void sendPacket(std::shared_ptr<Packet_Base>);	// add packet to outgoing queue.
+	std::shared_ptr<Packet_Base> recvPacket();		// get packet from incoming queue.
 public:
+	/* Member field */
 protected:
-protected:
-	MachObject * _mach;
-	Packet_Base * _pk;
+	/* Member method */
+	PacketManager_Base();
 
+	virtual void _sending() = 0;	// transmit packet in outgoing queue via network.
+	virtual void _receiving() = 0;	// receive packet to incoming queue via network.
+protected:
+	/* Member field */
+	std::list<std::shared_ptr<MachObject>> _agentList;	// list of agent related to PM
+	std::queue<std::shared_ptr<Packet_Base>> _outgoingQueue;	// queue storing packet to transmit
+	std::queue<std::shared_ptr<Packet_Base>> _incomingQueue;	// queue storing packet received
 };
+
 
 
 #endif // !_PACKET_H_
@@ -127,3 +131,5 @@ protected:
 
 
 //rev 모든 상속에 virtual dtor 정의
+//? 서버측의 packet 처리 절차에서, 만약 서버의 MachObject가 여러개라면 
+//	 packet이 MachObject의 정보를 수정해야할 때 MachObject 에 어떻게 접근?

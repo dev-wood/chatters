@@ -124,39 +124,63 @@ size_t Packet_Base::_bufSize()
 /*********************************************************************
 * PacketManager class implementation
 *********************************************************************/
-PacketManager::PacketManager() : _mach(nullptr), _pk(nullptr)
+PacketManager_Base::~PacketManager_Base()
 {
 	// left blank intentionally
 }
-PacketManager::PacketManager(MachObject * mach) : _mach(mach)
+void PacketManager_Base::addAgent(std::shared_ptr<MachObject> pAgent)
 {
-	// left black intentionally
+	_agentList.push_back(pAgent);
 }
-void PacketManager::_setPacket(Packet_Base & pk)
+void PacketManager_Base::removeAgent(std::shared_ptr<MachObject> pAgent)
 {
-	set_pk(&pk);
+	// check list if it is empty
+	if (_agentList.empty()) {
+		std::cout << "Error: PacketManager_Base::removeMachObject(): List is empty." << std::endl;
+		exit(1);
+	}
+
+	// find target in the list
+	auto it = std::find(_agentList.begin(), _agentList.end(), pAgent);
+	if (it == _agentList.end()) {
+		std::cout << "Error: PacketManager_Base::removeMachObject(): Cannot find target." << std::endl;
+		exit(1);
+	}
+	_agentList.remove(*it);
 }
-void PacketManager::_serialize()
+std::shared_ptr<MachObject> PacketManager_Base::getAgent(int pos)
 {
-	_pk->serialize();
+	if (pos >= _agentList.size() || pos < 0) {
+		std::cout << "Error: PacketManater_Base::getMachObject(): Out of the range." << std::endl;
+		exit(1);
+	}
+
+	auto it = _agentList.begin();
+	std::advance(it, pos);
+
+	return *it;
 }
-void PacketManager::_deserialize()
+void PacketManager_Base::sendPacket(std::shared_ptr<Packet_Base> pPacket)
 {
-	_pk->deserialize();
+	if (_outgoingQueue.empty()) {
+		_outgoingQueue.push(pPacket);
+		return _sending();
+	}
+	else
+	{
+		_outgoingQueue.push(pPacket);	
+		return;
+	}
 }
-Packet_Base & PacketManager::get_pk()
+std::shared_ptr<Packet_Base> PacketManager_Base::recvPacket()
 {
-	return *_pk;
+	while (_incomingQueue.empty())	// wait if there is no received packet.
+		;
+	auto rtnPk = _incomingQueue.front();
+	_incomingQueue.pop();
+	return rtnPk;
 }
-MachObject & PacketManager::get_mach()
+PacketManager_Base::PacketManager_Base()
 {
-	return *_mach;
-}
-void PacketManager::set_pk(Packet_Base * pk)
-{
-	_pk = pk;
-}
-void PacketManager::set_mach(MachObject * mach)
-{
-	_mach = mach;
+	// left blank intentionally
 }
