@@ -33,12 +33,36 @@
     <ClCompile Include="svmain.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="packet.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PT_CS_Data.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="PT_SC_Data.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header_clnt.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="PTYPE.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="header_common.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="header_server.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="packet.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PT_CS_Data.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="PT_SC_Data.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

@@ -26,7 +26,8 @@ public:
 		FAIL,		// Packet processing failed.
 		ABORT		// Packet processing aborted by user.
 	};
-public:		// method
+public:	
+	/* Member method */
 	PacketInfo();
 
 	// Accessor
@@ -36,10 +37,13 @@ public:		// method
 	void set_code(ProcCode);
 	void set_msg(std::string&&);
 
-public:		// field
+public:
+	/* Member field */		
 
-private:	// method
-private:	// field
+private:
+	/* Member method */
+private:
+	/* Member field */
 	ProcCode _code;
 	std::string _msg;
 } PkInfo;
