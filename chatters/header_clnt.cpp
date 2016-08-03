@@ -14,7 +14,7 @@
  *
  ***********************************************************/
 
- // ConnectInfo class definition.
+ /*  ConnectInfo class definition  */
 ConnectInfo::ConnectInfo()
 {
 	// left blank intentionally
@@ -44,26 +44,13 @@ sockaddr & ConnectInfo::get_servaddr()
 	return _servAddr;
 }
 
-// State class definition.
-ClientState & State::get_pContext()
-{
-	return *_pContext;
-}
-void State::set_pContext(ClientState & context)
-{
-	_pContext = &context;
-}
-State::State() : _pContext(nullptr), _terminateFlag(false)
-{
-	// left blank intentionally
-}
-State::State(ClientState * pClntState) : _pContext(pClntState)
-{
-	// left blank intentionally
-}
 
 
-// InitState class definition
+/*  State class definition  */
+
+
+
+/*  InitState class definition  */
 InitState & InitState::Instance()
 {
 	static InitState _instance;
@@ -72,13 +59,13 @@ InitState & InitState::Instance()
 }
 void InitState::run()
 {
-	_init();
+	_clear();
 	//rev
 	// Initializing process
 
 	
 }
-void InitState::_init()
+void InitState::_clear()
 {
 	// left blank intentionally
 	//rev
@@ -86,23 +73,25 @@ void InitState::_init()
 }
 
 
-// LoginState class definition
-void LoginState::init()
+/*  LoginState class definition  */
+void LoginState::_clear()
 {
-	_id.clear();
-	_pw.clear();
+	// left blank intentionally
 }
 
 void LoginState::run()
 {
-	init();
+	_clear();
+
+	//rev 순서부터 전체적으로 전부 뜯어 고쳐야 함.
+	std::string id, pw;
 
 	std::cout << "Please put your information" << std::endl;
 	std::cout << "All information cannot have character '|'." << std::endl;
 	std::cout << "ID:";
-	std::cin >> _id;
+	std::cin >> id;
 	std::cout << "PASSWORD:";
-	std::cin >> _pw;
+	std::cin >> pw;
 
 	// packet generating
 	PK_CS_LOGIN_REQUEST packet;
@@ -143,7 +132,7 @@ LobbyState & LobbyState::Instance()
 	return _instance;
 }
 
-void LobbyState::init()
+void LobbyState::_clear()
 {
 	// roomList initializing and reserve memory space.
 	_roomList.clear();
@@ -152,7 +141,7 @@ void LobbyState::init()
 	return;
 }
 
-bool LobbyState::handle()
+void LobbyState::run()
 {	
 
 	// 
@@ -267,6 +256,9 @@ LobbyState::LobbyState()
 	_roomList.reserve(CHATTERS::NUM_OF_ROOM_PER_PAGE);
 }
 
+
+
+/*  CreateRoomState class definition */
 CreateRoomState & CreateRoomState::Instance()
 {
 	static CreateRoomState _instance;
@@ -278,6 +270,9 @@ CreateRoomState::CreateRoomState()
 	//rev
 }
 
+
+
+/*  ChatState class definition  */
 ChatState & ChatState::Instance()
 {
 	static ChatState _instance;
@@ -290,72 +285,12 @@ ChatState::ChatState()
 	// peerList 초기화
 }
 
-ClientState::ClientState(ConnectInfo conInfo, State * pState, PacketManager * pm) : _pPM(pm), _conInfo(conInfo), _pState(pState)
-{
-	// left blank intentionally
-}
-
-bool ClientState::request()
-{
-	return _pState->handle();
-}
-
-void ClientState::changeState(State & nextState)
-{
-	_pState = &nextState;
-}
-
-const ConnectInfo & ClientState::get_conInfo() const
-{
-	return _conInfo;
-}
-
-const UserInfoToken & ClientState::get_myInfo() const
-{
-	return _myInfo;
-}
-
-ConnectInfo & ClientState::get_conInfo()
-{
-	return _conInfo;
-}
-
-UserInfoToken & ClientState::get_myInfo()
-{
-	return _myInfo;
-}
-
-PacketManager & ClientState::get_pPM()
-{
-	return *_pPM;
-}
-
-void ClientState::set_conInfo(ConnectInfo cInfo)
-{
-	_conInfo = std::move(cInfo);
-}
-
-void ClientState::set_myInfo(UserInfoToken uInfoToken)
-{
-	_myInfo = std::move(uInfoToken);
-}
-
-void ClientState::set_pPM(PacketManager * pm)
-{
-	_pPM = pm;
-}
-
-ClientState::ClientState() : _conInfo(), _myInfo(), _pState(nullptr), _pPM(nullptr)
-{
-	// left blanck intentionally
-}
-
 
 
 /***********************************************************
-* etc functions definitions
-*
-***********************************************************/
+ * etc functions definitions
+ *
+ ***********************************************************/
 
 void init()
 {
@@ -382,3 +317,19 @@ std::string & stringCheck(std::string & str)
 	return str;
 }
 
+ClntPacketManager & ClntPacketManager::Instance()
+{
+	static ClntPacketManager _instance;
+
+	return _instance;
+}
+
+void ClntPacketManager::_sending()
+{
+	//rev Packet을 c 스타일 TCP sending으로 TCP 전송.
+}
+
+void ClntPacketManager::_receiving()
+{
+	//rev Packet을 c 스타일 TCP sending으로 TCP 전송.
+}

@@ -49,6 +49,8 @@ private:
 	sockaddr _servAddr;
 };
 
+
+
 /************************************************************************
  * StateMachine class
 	- abstract base class of all other 'state' class of state machine.
@@ -66,11 +68,11 @@ protected:
 	void _changeState(ClientState * pClntState, State * pNextState);
 	virtual void _clear() = 0;	// State 초기화. 초기값, 데이터 등.
 
-	void _sendPacket(std::shared_ptr<Packet_Base> packet);
-	std::shared_ptr<Packet_Base> _receivePacket();
 protected:
 	bool _terminateFlag;	
 };
+
+
 
 /************************************************************************
  * InitState class
@@ -94,6 +96,8 @@ protected:
 	static InitState _instance;
 };
 
+
+
 /************************************************************************
  * LoginState class
 	- Login 과 관련된 프로세스를 담당하는 state
@@ -115,6 +119,8 @@ protected:
 protected:
 	static LoginState _instance;
 };
+
+
 
 /************************************************************************
  * LobbyState class
@@ -139,6 +145,8 @@ protected:
 	std::vector<RoomInfoToken> _roomList;
 };
 
+
+
 /************************************************************************
  * CreateRoomState class
 	- 
@@ -161,6 +169,8 @@ protected:
 	static CreateRoomState _instance;
 
 };
+
+
 
 /************************************************************************
  * //class name
@@ -185,6 +195,8 @@ protected:
 
 };
 
+
+
 /************************************************************************
  * ExitState class
 	- 프로그램 종료 전 TCP 연결 해제 등 각종 wrap up process를 진행하는 state
@@ -207,6 +219,8 @@ protected:
 	static ExitState _instance;
 };
 
+
+
 /************************************************************************
  * ClientState
 	- context of state pattern
@@ -215,7 +229,7 @@ class ClientState : public MachObject
 {
 public:
 	ClientState();
-	ClientState(ConnectInfo conInfo, State * pState, PacketManager * pm);
+	ClientState(ConnectInfo conInfo, State * pState);
 
 	void changeState(State&);
 
@@ -233,6 +247,25 @@ protected:
 	State * _pState;	// state context
 private:
 	friend State;
+};
+
+
+
+/************************************************************************
+* ClntPacketManager class
+	- Singleton pattern.
+*
+************************************************************************/
+class ClntPacketManager : public PacketManager_Base
+{
+public:
+	static ClntPacketManager& Instance();
+public:
+protected:	//rev
+	virtual void _sending();	// transmit packet in outgoing queue via network.
+	virtual void _receiving();	// receive packet to incoming queue via network.
+protected:
+	static ClntPacketManager _instance;
 };
 
 
