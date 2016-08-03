@@ -15,7 +15,7 @@
  * class pre-declarations
  *
  ************************************************************************/
-class ClientState;
+class StateContext;
 
 
 
@@ -65,7 +65,7 @@ public:
 protected:
 	State();
 
-	void _changeState(ClientState * pClntState, State * pNextState);
+	void _changeState(State * pNextState);
 	virtual void _clear() = 0;	// State 초기화. 초기값, 데이터 등.
 
 protected:
@@ -222,30 +222,33 @@ protected:
 
 
 /************************************************************************
- * ClientState
+ * StateContext
 	- context of state pattern
  ************************************************************************/
-class ClientState : public MachObject
+class StateContext : public MachObject
 {
 public:
-	ClientState();
-	ClientState(ConnectInfo conInfo, State * pState);
+	static StateContext& Instance();
 
-	void changeState(State&);
-
+	void run();
+	
 	// accessor
 	const UserInfoToken& get_myInfo() const;
-	
+	const State * get_pCurState() const;
 	UserInfoToken& get_myInfo();
 	// mutator
-	void set_myInfo(UserInfoToken);
+	void set_myInfo(UserInfoToken&&);
+	void set_pCurState(State * pCurState);
 public:
-	
 protected:
-	protected:
+	StateContext();
+
+	void changeState(State&);
+protected:
 	UserInfoToken _myInfo;	// client's inform
-	State * _pState;	// state context
+	State * _pCurState;		// state context (current state)
 private:
+	static StateContext _instance;
 	friend State;
 };
 
