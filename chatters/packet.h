@@ -32,14 +32,13 @@ public:		// method
 	// Accessor
 	ProcCode get_code() const;
 	std::string get_msg() const;
-
-public:		// field
-
-	friend class Packet_Base;
-private:	// method
 	// Mutator
 	void set_code(ProcCode);
 	void set_msg(std::string&&);
+
+public:		// field
+
+private:	// method
 private:	// field
 	ProcCode _code;
 	std::string _msg;
@@ -52,72 +51,79 @@ private:	// field
 	-
  *
  *****************************************************************/
+class PacketManager_Base;
 struct Packet_Base
 {
-public:
-	static int ptoi(PTYPE);
-
-	virtual void serialize() = 0;
-	virtual void deserialize() = 0;
-	virtual void process() = 0;
-	virtual std::shared_ptr<Packet_Base> cast() = 0;	// return empty packet object.
-
-	// Accessor
-	size_t _packetSize();	// The size of whole packet include header space.
-	const char * get_bufAddr() const;
-
-	// Mutator
-	void set_pm(PacketManager& pm);
-public:
-
-protected:
-	Packet_Base();
+public:	
+	/* Member method */
 	virtual ~Packet_Base();
 
-	void _setHeaderSpace();	// _buf에 packet(_buf) size 저장을 위한 (header) space 확보하는 함수.
-	void _writeHeader();	// deserialize 과정. Write _buf size on header space calling at the end of serialization.
-	void _skipHeaderg();	// deserialize 과정에서, header space를 건너뛰는 함수.
-	size_t _bufSize();		// The size of serialized information excluding header space
+	static int ptoi(PTYPE);
 	
+	void serialize();	// Template method for serialize process
+	void deserialize();	// Template method for serialize process
+	virtual void processPacket(MachObject& const targetMObject) = 0;	// Process packet using strategy pattern
+
+	// Accessor
+	size_t get_packetSize();	// The size of whole packet include header space.
+	const char * get_bufAddr() const;
+	const PkInfo& get_pkInfo() const;
+public:
+	/* Member field */
 protected:
-	//rev packet id 넣기, ctor에 적용.
+	/* Member method */
+	Packet_Base(PTYPE);
+
+	virtual void doSerialProc() = 0;
+	virtual void doDeserialProc() = 0;
+protected:
+	/* Member field */
 	const PTYPE _id;
 	std::stringstream _buf;
-	PacketManager * _pm;
 	PacketInfo _pkInfo;
-
+private:
+	/* Member method */
+	Packet_Base();
+	void _setHeaderSpace();	// Make (header) space for packet(_buf) size in _buf.
+	void _writeHeader();	// At the end of serialize process, write _buf size on header space calling at the end of serialization.
+	void _skipHeaderg();	// deserialize 과정에서, header space를 건너뛰는 함수.
+	size_t _bufSize();		// The size of serialized information excluding header space
 };
 
 
 
 /********************************************************************
- * PacketManager class 
+ * PacketManager_Base class 
 	- 
  * 
 ********************************************************************/
-class PacketManager
+class PacketManager_Base
 {
 public:
-	PacketManager();
-	PacketManager(MachObject * mach);
-	void _setPacket(Packet_Base & pk);
-	void _serialize();
-	void _deserialize();
+	/* Member method */
+	~PacketManager_Base();
 
-	// accessor
-	Packet_Base& get_pk();
-	MachObject& get_mach();
-
-	// mutator
-	void set_pk(Packet_Base * pk);		//rev 모든 인터페이스는 reference param.로 통일하는게..?
-	void set_mach(MachObject * mach);	//rev 위와 동
+	void addAgent(std::shared_ptr<MachObject>);		// add a new agent(server or client) to agent list
+	void removeAgent(std::shared_ptr<MachObject>);	// remove agent(server or client) from agent list
+	std::shared_ptr<MachObject> getAgent(int nth = 0);	// get agent(server or client) from agent list
+	
+	void sendPacket(std::shared_ptr<Packet_Base>);	// add packet to outgoing queue.
+	std::shared_ptr<Packet_Base> recvPacket();		// get packet from incoming queue.
 public:
+	/* Member field */
 protected:
-protected:
-	MachObject * _mach;
-	Packet_Base * _pk;
+	/* Member method */
+	PacketManager_Base();
 
+	virtual void _sending() = 0;	// transmit packet in outgoing queue via network.
+	virtual void _receiving() = 0;	// receive packet to incoming queue via network.
+protected:
+	/* Member field */
+	std::list<std::shared_ptr<MachObject>> _agentList;	// list of agent related to PM
+	std::queue<std::shared_ptr<Packet_Base>> _outgoingQueue;	// queue storing packet to transmit
+	std::queue<std::shared_ptr<Packet_Base>> _incomingQueue;	// queue storing packet received
 };
+
 
 
 #endif // !_PACKET_H_
@@ -125,3 +131,5 @@ protected:
 
 
 //rev 모든 상속에 virtual dtor 정의
+//? 서버측의 packet 처리 절차에서, 만약 서버의 MachObject가 여러개라면 
+//	 packet이 MachObject의 정보를 수정해야할 때 MachObject 에 어떻게 접근?
