@@ -48,7 +48,7 @@ public:
 	virtual void processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
-	UserKey userKey;
+	UserKey userKey;	//rev 필요없을 듯..?
 protected:
 	/* Member method */
 	virtual void doSerialProc();
