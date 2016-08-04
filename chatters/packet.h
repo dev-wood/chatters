@@ -66,7 +66,7 @@ public:
 	
 	void serialize();	// Template method for serialize process
 	void deserialize();	// Template method for serialize process
-	virtual void processPacket(MachObject& const targetMObject) = 0;	// Process packet using strategy pattern
+	virtual void processPacket(MachObject& const targetMObject) = 0;	// Process received packet using strategy pattern
 
 	// Accessor
 	size_t get_packetSize();	// The size of whole packet include header space.
