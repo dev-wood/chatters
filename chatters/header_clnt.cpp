@@ -84,7 +84,38 @@ void LoginState::run()
 	_clear();
 
 	//rev 순서부터 전체적으로 전부 뜯어 고쳐야 함.
-	std::string id, pw;
+	// Packet generation
+	auto pPacket = std::make_shared<PK_CS_LOGIN_REQUEST>();
+
+	// Run state procedure depening on it's state.
+	std::cout << "Please put your information" << std::endl;
+	std::cout << "All information cannot have character '|'." << std::endl;
+	std::cout << "ID:";
+	std::cin >> pPacket->userId;
+	std::cout << "PASSWORD:";
+	std::cin >> pPacket->userPassword;
+
+	// Sending packet (Add packet to PM outgoing queue)
+	ClntPacketManager::Instance().sendPacket(pPacket);
+
+	// Set expected receving packet type.
+	StateContext::Instance().setExpectPType({ PTYPE::PT_SC_LOGIN_ACCEPT, PTYPE::PT_SC_LOGIN_FAIL });
+
+
+	// Receiving packet (Get packet from PM incoming queue)
+	// Process packet received depending on packet type.
+
+
+
+	//rev 
+	//?	Set expected receving packet type. 어디로..?   >> 각 state에서 담당..
+	//?	ConnectionInfo 정보 보관 어디서..?   >> PM에서..
+	//? Packet::processPacket() 시 정보수정하려면 server/clnt에 access해야하는데, 
+	//		어떻게 접근하나?   >> PM의 _agentLIst 통해서..
+
+	
+	
+/*	std::string id, pw;
 
 	std::cout << "Please put your information" << std::endl;
 	std::cout << "All information cannot have character '|'." << std::endl;
@@ -108,6 +139,7 @@ void LoginState::run()
 
 	// process packet
 	_pContext->get_pPM()._deserialize();
+*/
 }
 
 LoginState & LoginState::Instance()
