@@ -130,6 +130,52 @@ protected:
 
 
 
+/************************************************************************
+* ClntPacketManager class
+- Singleton pattern.
+*
+************************************************************************/
+class ClntPacketManager : public PacketManager_Base
+{
+public:
+	/* Member method */
+	static ClntPacketManager& Instance();
+public:
+	/* Member field */
+protected:	//rev
+	/* Member method */
+	virtual void _sending();	// transmit packet in outgoing queue via network.
+	virtual void _receiving();	// receive packet to incoming queue via network.
+protected:
+	/* Member field */
+	static ClntPacketManager _instance;
+};
+
+
+
+/************************************************************************
+ * SvPacketManager class
+	- Singleton pattern.
+ *
+ ************************************************************************/
+class SvPacketManager : public PacketManager_Base
+{
+public:
+	/* Member method */
+	static SvPacketManager& Instance();
+public:
+	/* Member field */
+protected:
+	/* Member method */
+	virtual void _sending();	// transmit packet in outgoing queue via network.
+	virtual void _receiving();	// receive packet to incoming queue via network.
+protected:
+	/* Member field */
+	static SvPacketManager _intance;
+};
+
+
+
 #endif // !_PACKET_H_
 
 

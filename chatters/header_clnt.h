@@ -255,25 +255,6 @@ private:
 
 
 /************************************************************************
-* ClntPacketManager class
-	- Singleton pattern.
-*
-************************************************************************/
-class ClntPacketManager : public PacketManager_Base
-{
-public:
-	static ClntPacketManager& Instance();
-public:
-protected:	//rev
-	virtual void _sending();	// transmit packet in outgoing queue via network.
-	virtual void _receiving();	// receive packet to incoming queue via network.
-protected:
-	static ClntPacketManager _instance;
-};
-
-
-
-/************************************************************************
  * etc functions declarations
  * 
  ************************************************************************/
