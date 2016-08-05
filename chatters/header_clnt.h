@@ -231,6 +231,8 @@ public:
 	static StateContext& Instance();
 
 	void run();
+	void setExpectPType(std::initializer_list<PTYPE> PTypes);	// 
+	bool isExpectPType(PTYPE ptype);
 	
 	// accessor
 	const UserInfoToken& get_myInfo() const;
@@ -247,6 +249,7 @@ protected:
 protected:
 	UserInfoToken _myInfo;	// client's inform
 	State * _pCurState;		// state context (current state)
+	std::vector<PTYPE> _expectPType;
 private:
 	static StateContext _instance;
 	friend State;
