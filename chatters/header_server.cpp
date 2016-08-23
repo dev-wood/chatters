@@ -1,26 +1,27 @@
 #include "header_server.h"
 
+/* SvConInfo class definition */
 SvConInfo::SvConInfo()
 {
 }
-SvConInfo::SvConInfo(WSADATA wsaData, SOCKET sock, sockaddr servAddr)
+SvConInfo::SvConInfo(WSADATA newWsaData, SOCKET newSock, sockaddr newServAddr)
 {
-	_wsaData = wsaData;
-	_sock = sock;
-	_servAddr = servAddr;
+	wsaData = newWsaData;
+	sock = newSock;
+	servAddr = newServAddr;
 }
-SvUserInfo::SvUserInfo()
+
+/* SvUserInfo class definition */
+SvUserInfo::SvUserInfo(const std::string & id, std::shared_ptr<HandleData> hData) 
+	: utk(id), 
+	curRmNum(CHATTERS::NO_ROOM),
+	spHData(hData)
 {
-}
-SvUserInfo::SvUserInfo(const std::string & id, SOCKET sock) : _utk(id), _curRmNum(CHATTERS::NO_ROOM)
-{
-	_sockNum = sock;
+	// left blank intentionally
 }
 SvUserInfo::SvUserInfo(const SvUserInfo & ui)
 {
-	_utk = ui._utk;
-	_curRmNum = ui._curRmNum;
-	_sockNum = ui._sockNum;
+	*this = ui;
 }
 SvUserInfo::SvUserInfo(SvUserInfo && ui)
 {
@@ -30,40 +31,44 @@ SvUserInfo & SvUserInfo::operator=(SvUserInfo && ui)
 {
 	if (this != &ui)
 	{
-		_utk = std::move(ui._utk);
-		_curRmNum = ui._curRmNum;
-		_sockNum = ui._sockNum;
+		utk = std::move(ui.utk);
+		curRmNum = ui.curRmNum;
+		spHData = ui.spHData;
 	}
 
 	return *this;
 }
 SvUserInfo & SvUserInfo::operator=(const SvUserInfo & ui)
 {
-	_utk = ui._utk;
-	_curRmNum = ui._curRmNum;
-	_sockNum = ui._sockNum;
+	if (this != &ui)
+	{
+		utk = ui.utk;
+		curRmNum = ui.curRmNum;
+		spHData = ui.spHData;
+	}
 
 	return *this;
 }
 
-SvRoomInfo::SvRoomInfo(const std::string & title) : _rtk(title)
+/* SvRoomInfo definition */
+SvRoomInfo::SvRoomInfo(const std::string & title) : rtk(title)
 {
-	_sockList.reserve(4);
+	userList.reserve(CHATTERS::MAX_PARTICIPANT);
 }
-bool SvRoomInfo::addUser(UserKey uKey, SOCKET uSock)
+bool SvRoomInfo::addUser(UserKey uKey)
 {
-	if (_sockList.size() < CHATTERS::MAX_PARTICIPANT) {
-		_sockList.push_back(std::make_pair(uKey, uSock));
+	if (userList.size() < CHATTERS::MAX_PARTICIPANT) {
+		userList.push_back(uKey);
 		return true;
 	}
 	return false;
 }
 bool SvRoomInfo::removeUser(UserKey uKey)
 {
-	for (std::vector<std::pair<UserKey, SOCKET>>::const_iterator & it = _sockList.cbegin(); it != _sockList.cend(); ++it)
+	for (std::vector<UserKey>::const_iterator & it = userList.cbegin(); it != userList.cend(); ++it)
 	{
-		if (it->first == uKey) {
-			_sockList.erase(it);
+		if (*it == uKey) {
+			userList.erase(it);
 			return true;
 		}
 	}
@@ -93,13 +98,13 @@ SvSndMessage& SvSndMessage::operator<<(const RoomInfoToken & rtk)
 }
 SvSndMessage & SvSndMessage::operator<<(const SvRoomInfo & ri)
 {
-	*this << ri._rtk;
+	*this << ri.rtk;
 
 	return *this;
 }
 SvSndMessage & SvSndMessage::operator<<(const SvUserInfo & ui)
 {
-	*this << ui._utk;
+	*this << ui.utk;
 
 	return *this;
 }
