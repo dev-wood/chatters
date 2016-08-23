@@ -95,40 +95,29 @@ private:
 	/* Member field */
 };
 
-class SvSndMessage: public PacketStream
-{
-public:	// member
+/*********************************************************************
+ * SvRoomInfo class
+	- 현재 생성되어 있는 채팅방 관련 정보를 저장하는 클래스
 
-public:	// methods
-	SvSndMessage(PType, SvMach);	//rev
-	
-	SvSndMessage& operator<< (const UserInfoToken & utk);
-	SvSndMessage& operator<< (const RoomInfoToken & rtk);
-	SvSndMessage& operator<< (const SvRoomInfo&);
-	SvSndMessage& operator<< (const SvUserInfo&);
-
-private:
-private:	//rev
-	SvSndMessage();
-	//void _callSerialization(PType pt, SvMach svm);	
-	void _serialize(PType pt);	// Packet type 만 가지는 packet
-	void _serialize(PType pt, std::unordered_map<RoomKey, SvRoomInfo> roomList);	// room list 정보를 가지는 packet
-	//void _serialize(PType pt, std::vector<std::pair<UserKey, SOCKET>> userList);	//rev user info가 필요할 수 있는데 이런 파라미터 형태로 필요한 것은 아닌데.. 수정 필요.
-};
-
+ *********************************************************************/
 class SvMach
 {
-	//rev
 public:
+	/* Member method */
+	bool addUser(UserInfoToken&& utk);
+	bool removeUser(UserKey uKey);
+	bool enterRoom(RoomKey rKey, UserKey uKey);
+	bool exitRoom(RoomKey rKey, UserKey uKey);
+	bool updateUserInfo(/**/);
+	bool updateRoomInfo(/**/);
 public:
+	/* Member field */
 
 private:
+	/* Member method */
+private:
+	/* Member field */
 	std::unordered_map<UserKey, SvUserInfo> _uList;
 	std::unordered_map<RoomKey, SvRoomInfo> _rList;
 
-	std::deque<std::pair<SOCKET, RcvMessage>> _rcvMsgQue;
-	std::deque<std::pair<std::vector<SOCKET>, SvSndMessage>> _sndMsgQue;
-private:
-
-	friend SvSndMessage;
 };
