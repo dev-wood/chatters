@@ -86,7 +86,7 @@ public:
 public:
 	/* Member field */
 	RoomInfoToken rtk;
-	std::vector<UserKey> userList;
+	std::vector<std::pair<UserKey, std::shared_ptr<HandleData>>> userList;
 
 private:
 	/* Member method */
@@ -104,12 +104,20 @@ class SvMach
 {
 public:
 	/* Member method */
-	bool addUser(UserInfoToken&& utk);
-	bool removeUser(UserKey uKey);
-	bool enterRoom(RoomKey rKey, UserKey uKey);
-	bool exitRoom(RoomKey rKey, UserKey uKey);
-	bool updateUserInfo(/**/);
-	bool updateRoomInfo(/**/);
+	bool addUser(const std::string& id, std::shared_ptr<HandleData> hData);	// add new user to user info list
+	bool removeUser(UserKey uKey);				// remove user from user info list
+	bool joinRoom(RoomKey rKey, UserKey uKey);	// user join in the chatting room
+	bool leaveRoom(RoomKey rKey, UserKey uKey);	// user leaves the chatting room
+	bool openRoom(const std::string& title);		// add new chatting room in chatting room list
+	bool closeRoom(RoomKey rKey);		// remove the chatting room from the chatting room list
+	bool updateUserInfo(UserKey uKey, RoomKey rmKey);	// update user infomation
+	
+	std::unordered_map<UserKey, SvUserInfo>::const_iterator findUser(UserKey uKey) const;	//rev return type¿ª πª∑Œ..?
+	std::unordered_map<RoomKey, SvRoomInfo>::const_iterator findRoom(RoomKey rKey) const;	//rev return type¿ª πª∑Œ..?
+
+	// accessor
+	const std::unordered_map<UserKey, SvUserInfo>& get_userList() const;
+	const std::unordered_map<RoomKey, SvRoomInfo>& get_roomList() const;
 public:
 	/* Member field */
 
@@ -119,5 +127,4 @@ private:
 	/* Member field */
 	std::unordered_map<UserKey, SvUserInfo> _uList;
 	std::unordered_map<RoomKey, SvRoomInfo> _rList;
-
 };
