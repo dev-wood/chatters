@@ -316,20 +316,3 @@ std::string & stringCheck(std::string & str)
 
 	return str;
 }
-
-ClntPacketManager & ClntPacketManager::Instance()
-{
-	static ClntPacketManager _instance;
-
-	return _instance;
-}
-
-void ClntPacketManager::_sending()
-{
-	//rev Packet을 c 스타일 TCP sending으로 TCP 전송.
-}
-
-void ClntPacketManager::_receiving()
-{
-	//rev Packet을 c 스타일 TCP sending으로 TCP 전송.
-}

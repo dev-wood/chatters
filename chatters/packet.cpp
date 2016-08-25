@@ -3,6 +3,7 @@
 #include "packet.h"
 #include "packet.h"
 #include "packet.h"
+#include "packet.h"
 
 
 
@@ -32,9 +33,14 @@ void PacketInfo::set_msg(std::string && str)
 
 
 
+
 /*********************************************************************
  * Packet_Base class implementation 
  *********************************************************************/
+Packet_Base::Packet_Base(PTYPE pType, char * buf) : _id(pType)
+{
+	_buf << buf;
+}
 Packet_Base::~Packet_Base()
 {
 	// left blank intentionally
@@ -78,7 +84,7 @@ const PkInfo & Packet_Base::get_pkInfo() const
 {
 	return _pkInfo;
 }
-const Packet_Base & Packet_Base::operator<<(const char * buf)
+Packet_Base & Packet_Base::operator<<(const char * buf)
 {
 	_buf << buf;
 }
@@ -145,3 +151,48 @@ PacketManager_Base::PacketManager_Base() : _pMachObject(nullptr)
 {
 	// left blank intentionally
 }
+
+/*********************************************************************
+ * ClntPacketManager class implementation
+
+*********************************************************************/
+ClntPacketManager & ClntPacketManager::Instance()
+{
+	static ClntPacketManager _instance;
+
+	return _instance;
+}
+void ClntPacketManager::sendPacket(SOCKET sock, std::shared_ptr<Packet_Base> spPk)
+{
+	send(sock, spPk->get_bufAddr, spPk->get_packetSize, 0);
+}
+std::shared_ptr<Packet_Base> ClntPacketManager::recvPacket(SOCKET& sock)
+{
+	//rev Packet을 c 스타일 TCP sending으로 TCP 전송.
+	size_t pkSize, recvBytes, headerSize;
+	
+	headerSize = sizeof(size_t);
+	recvBytes = 0;
+	while (recvBytes < headerSize)
+		recvBytes += recv(sock, (char *)(&pkSize) + recvBytes, headerSize - recvBytes, 0);
+
+	recvBytes = 0;
+	char * buf = new char[pkSize + 1];
+	while(recvBytes<headerSize) 
+		recvBytes += recv(sock, buf + recvBytes, pkSize - recvBytes, 0);
+	buf[pkSize] = NULL;
+
+	return extractPacketFromBuffer(buf);
+}
+
+/*********************************************************************
+ * SvPacketManager class implementation
+
+*********************************************************************/
+
+
+
+/*********************************************************************
+* Etc. implementation
+
+*********************************************************************/

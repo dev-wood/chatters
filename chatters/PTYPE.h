@@ -49,6 +49,30 @@ enum struct PTYPE : int
 	PT_CS_CHAT_ROOMSTATENOTPLAYING
 };
 
+std::shared_ptr<Packet_Base> extractPacketFromBuffer(char * buf)
+{
+	int pType;
+	memcpy_s(&pType, sizeof(int), buf, sizeof(int));
+
+	switch ((PTYPE)pType)
+	{
+	case PTYPE::PT_CS_LOGIN_REQUEST:
+		return std::make_shared<PK_CS_LOGIN_REQUEST>((PTYPE)pType, buf);
+	case PTYPE::PT_CS_LOBBY_JOINROOM:
+		return std::make_shared<PK_CS_LOBBY_JOINROOM>((PTYPE)pType, buf);
+	case PTYPE::PT_CS_LOBBY_LOAD_ROOMLIST:
+		return std::make_shared<PK_CS_LOBBY_LOAD_ROOMLIST>((PTYPE)pType, buf);
+	case PTYPE::PT_CS_CREATEROOM_CREATEROOM:
+		return std::make_shared<PK_CS_CREATEROOM_CREATEROOM>((PTYPE)pType, buf);
+	case PTYPE::PT_CS_CHAT_QUITROOM:
+		return std::make_shared<PK_CS_CHAT_QUITROOM>((PTYPE)pType, buf);
+	case PTYPE::PT_CS_CHAT_CHAT:
+		return std::make_shared<PK_CS_CHAT_CHAT>((PTYPE)pType, buf);
+	default:
+		return nullptr;
+	}
+}
+
 
 
 #endif   // !_PTYPE_H_

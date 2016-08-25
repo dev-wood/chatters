@@ -24,7 +24,8 @@ public:
 		EMPTY,		// Packet was initialized but no follow-up processing.
 		SUCCESS,	// Packet processing successfully.
 		FAIL,		// Packet processing failed.
-		ABORT		// Packet processing aborted by user.
+		ABORT,		// Packet processing aborted by user.
+		SOCKET_CLOSED	// Socket closed. Disconnected.
 	};
 public:	
 	/* Member method */
@@ -60,6 +61,7 @@ struct Packet_Base
 {
 public:	
 	/* Member method */
+	Packet_Base(PTYPE pType, char * buf);
 	virtual ~Packet_Base();
 
 	static int ptoi(PTYPE);
@@ -74,7 +76,7 @@ public:
 	const char * get_bufAddr() const;
 	const PkInfo& get_pkInfo() const;
 
-	const Packet_Base& operator<<(const char * buf);
+	Packet_Base& operator<<(const char * buf);
 public:
 	/* Member field */
 protected:
@@ -113,7 +115,7 @@ public:
 	MachObject& getAgent();
 	
 	virtual void sendPacket(SOCKET, std::shared_ptr<Packet_Base>) = 0;			// add packet to outgoing queue.
-	virtual std::pair<SOCKET, std::shared_ptr<Packet_Base>> recvPacket() = 0;	// get packet from incoming queue.
+	virtual std::shared_ptr<Packet_Base> recvPacket(SOCKET& sock) = 0;	// get packet from incoming queue.
 public:
 	/* Member field */
 protected:
@@ -137,12 +139,13 @@ class ClntPacketManager : public PacketManager_Base
 public:
 	/* Member method */
 	static ClntPacketManager& Instance();
+	
+	void sendPacket(SOCKET sock, std::shared_ptr<Packet_Base> spPk);// send packet via network.
+	std::shared_ptr<Packet_Base> recvPacket(SOCKET& sock);	// receive packet in outgoing queue via network.
 public:
 	/* Member field */
-protected:	//rev
+protected:
 	/* Member method */
-	virtual void _sending();	// transmit packet in outgoing queue via network.
-	virtual void _receiving();	// receive packet to incoming queue via network.
 protected:
 	/* Member field */
 	static ClntPacketManager _instance;
@@ -160,16 +163,27 @@ class SvPacketManager : public PacketManager_Base
 public:
 	/* Member method */
 	static SvPacketManager& Instance();
+
+	void sendPacket(SOCKET sock, std::shared_ptr<Packet_Base> spPk);// transmit packet via network.
+	std::shared_ptr<Packet_Base> recvPacket(SOCKET& sock);	// get packet from incoming packet queue.
 public:
 	/* Member field */
 protected:
 	/* Member method */
-	virtual void _sending();	// transmit packet in outgoing queue via network.
-	virtual void _receiving();	// receive packet to incoming queue via network.
 protected:
 	/* Member field */
 	static SvPacketManager _intance;
+
+	//rev incoming queue
+
 };
+
+
+
+/*********************************************************************
+* Etc. implementation
+
+*********************************************************************/
 
 
 
@@ -177,9 +191,7 @@ protected:
 
 
 
-//rev 모든 상속에 virtual dtor 정의
-//? 서버측의 packet 처리 절차에서, 만약 서버의 MachObject가 여러개라면 >> PM::agent 필드가 있음. (list)
-//	 packet이 MachObject의 정보를 수정해야할 때 MachObject 에 어떻게 접근? >> PM::agent 필드가 있음. 이를 통해 접근
+//?	 packet이 MachObject의 정보를 수정해야할 때 MachObject 에 어떻게 접근? >> PM::agent 필드가 있음. 이를 통해 접근
 
 //? IOCP에서 LPPER_IO_INFO?
 //? IOCP에서 LPPER_HANDLE_DATA?
@@ -198,5 +210,5 @@ protected:
 
 //rev packet에 const char* type을 argument로 받는 생성자 추가
 
-//?	Packet 생성 절차 어떻게 되나? char buf에서 생성하는 방법.
+//?	Packet 생성 절차 어떻게 되나? char chunk에서 생성하는 방법이..?
 //? sending 시 sendPacket() 또는 _sending() 함수로 어떻게 연결정보를 보내줄까?
