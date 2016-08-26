@@ -33,6 +33,9 @@
     <ClInclude Include="..\chatters\PT_SC_Data.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="..\chatters\PTYPE.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\chatters\PT_SC_Data.cpp">
