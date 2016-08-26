@@ -1,4 +1,9 @@
 #include "packet.h"
+#include "packet.h"
+#include "packet.h"
+#include "packet.h"
+#include "packet.h"
+#include "packet.h"
 
 
 
@@ -28,9 +33,14 @@ void PacketInfo::set_msg(std::string && str)
 
 
 
+
 /*********************************************************************
  * Packet_Base class implementation 
  *********************************************************************/
+Packet_Base::Packet_Base(PTYPE pType, char * buf) : _id(pType)
+{
+	_buf << buf;
+}
 Packet_Base::~Packet_Base()
 {
 	// left blank intentionally
@@ -55,15 +65,16 @@ void Packet_Base::serialize()
 }
 void Packet_Base::deserialize()
 {
-	// Skip header space.
-	_skipHeaderg();
-
 	// Do deserailize process depend on each Packet class.
 	doDeserialProc();
 }
 size_t Packet_Base::get_packetSize()
 {
 	return _bufSize() + sizeof(size_t);
+}
+size_t Packet_Base::get_bufSize()
+{
+	return _bufSize();
 }
 const char * Packet_Base::get_bufAddr() const
 {
@@ -72,6 +83,10 @@ const char * Packet_Base::get_bufAddr() const
 const PkInfo & Packet_Base::get_pkInfo() const
 {
 	return _pkInfo;
+}
+Packet_Base & Packet_Base::operator<<(const char * buf)
+{
+	_buf << buf;
 }
 Packet_Base::Packet_Base(PTYPE pt) : _id(pt), _pkInfo()
 {
@@ -101,10 +116,6 @@ void Packet_Base::_writeHeader()
 
 	_buf.seekp(prevPos);	// restore previous input sequence pos	
 }
-void Packet_Base::_skipHeaderg()
-{
-	_buf.seekg(sizeof(size_t));
-}
 size_t Packet_Base::_bufSize()
 {
 	size_t bufSz = 0;
@@ -128,59 +139,60 @@ PacketManager_Base::~PacketManager_Base()
 {
 	// left blank intentionally
 }
-void PacketManager_Base::addAgent(std::shared_ptr<MachObject> pAgent)
+void PacketManager_Base::setAgent(MachObject * pMObj)
 {
-	_agentList.push_back(pAgent);
+	_pMachObject = pMObj;
 }
-void PacketManager_Base::removeAgent(std::shared_ptr<MachObject> pAgent)
+MachObject & PacketManager_Base::getAgent()
 {
-	// check list if it is empty
-	if (_agentList.empty()) {
-		std::cout << "Error: PacketManager_Base::removeMachObject(): List is empty." << std::endl;
-		exit(1);
-	}
-
-	// find target in the list
-	auto it = std::find(_agentList.begin(), _agentList.end(), pAgent);
-	if (it == _agentList.end()) {
-		std::cout << "Error: PacketManager_Base::removeMachObject(): Cannot find target." << std::endl;
-		exit(1);
-	}
-	_agentList.remove(*it);
+	return *_pMachObject;
 }
-std::shared_ptr<MachObject> PacketManager_Base::getAgent(int pos)
-{
-	if (pos >= _agentList.size() || pos < 0) {
-		std::cout << "Error: PacketManater_Base::getMachObject(): Out of the range." << std::endl;
-		exit(1);
-	}
-
-	auto it = _agentList.begin();
-	std::advance(it, pos);
-
-	return *it;
-}
-void PacketManager_Base::sendPacket(std::shared_ptr<Packet_Base> pPacket)
-{
-	if (_outgoingQueue.empty()) {
-		_outgoingQueue.push(pPacket);
-		return _sending();
-	}
-	else
-	{
-		_outgoingQueue.push(pPacket);	
-		return;
-	}
-}
-std::shared_ptr<Packet_Base> PacketManager_Base::recvPacket()
-{
-	while (_incomingQueue.empty())	// wait if there is no received packet.
-		;
-	auto rtnPk = _incomingQueue.front();
-	_incomingQueue.pop();
-	return rtnPk;
-}
-PacketManager_Base::PacketManager_Base()
+PacketManager_Base::PacketManager_Base() : _pMachObject(nullptr)
 {
 	// left blank intentionally
 }
+
+/*********************************************************************
+ * ClntPacketManager class implementation
+
+*********************************************************************/
+ClntPacketManager & ClntPacketManager::Instance()
+{
+	static ClntPacketManager _instance;
+
+	return _instance;
+}
+void ClntPacketManager::sendPacket(SOCKET sock, std::shared_ptr<Packet_Base> spPk)
+{
+	send(sock, spPk->get_bufAddr, spPk->get_packetSize, 0);
+}
+std::shared_ptr<Packet_Base> ClntPacketManager::recvPacket(SOCKET& sock)
+{
+	//rev Packet을 c 스타일 TCP sending으로 TCP 전송.
+	size_t pkSize, recvBytes, headerSize;
+	
+	headerSize = sizeof(size_t);
+	recvBytes = 0;
+	while (recvBytes < headerSize)
+		recvBytes += recv(sock, (char *)(&pkSize) + recvBytes, headerSize - recvBytes, 0);
+
+	recvBytes = 0;
+	char * buf = new char[pkSize + 1];
+	while(recvBytes<headerSize) 
+		recvBytes += recv(sock, buf + recvBytes, pkSize - recvBytes, 0);
+	buf[pkSize] = NULL;
+
+	return extractPacketFromBuffer(buf);
+}
+
+/*********************************************************************
+ * SvPacketManager class implementation
+
+*********************************************************************/
+
+
+
+/*********************************************************************
+* Etc. implementation
+
+*********************************************************************/

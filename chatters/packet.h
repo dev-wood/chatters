@@ -24,7 +24,8 @@ public:
 		EMPTY,		// Packet was initialized but no follow-up processing.
 		SUCCESS,	// Packet processing successfully.
 		FAIL,		// Packet processing failed.
-		ABORT		// Packet processing aborted by user.
+		ABORT,		// Packet processing aborted by user.
+		SOCKET_CLOSED	// Socket closed. Disconnected.
 	};
 public:	
 	/* Member method */
@@ -60,18 +61,22 @@ struct Packet_Base
 {
 public:	
 	/* Member method */
+	Packet_Base(PTYPE pType, char * buf);
 	virtual ~Packet_Base();
 
 	static int ptoi(PTYPE);
 	
 	void serialize();	// Template method for serialize process
 	void deserialize();	// Template method for serialize process
-	virtual void processPacket(MachObject& const targetMObject) = 0;	// Process received packet using strategy pattern
+	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& const targetMObject) = 0;	// Process received packet using strategy pattern
 
 	// Accessor
 	size_t get_packetSize();	// The size of whole packet include header space.
+	size_t get_bufSize();		// The size of buffer(serialized information).
 	const char * get_bufAddr() const;
 	const PkInfo& get_pkInfo() const;
+
+	Packet_Base& operator<<(const char * buf);
 public:
 	/* Member field */
 protected:
@@ -90,7 +95,6 @@ private:
 	Packet_Base();
 	void _setHeaderSpace();	// Make (header) space for packet(_buf) size in _buf.
 	void _writeHeader();	// At the end of serialize process, write _buf size on header space calling at the end of serialization.
-	void _skipHeaderg();	// deserialize 과정에서, header space를 건너뛰는 함수.
 	size_t _bufSize();		// The size of serialized information excluding header space
 };
 
@@ -105,47 +109,43 @@ class PacketManager_Base
 {
 public:
 	/* Member method */
-	~PacketManager_Base();
+	virtual ~PacketManager_Base();
 
-	void addAgent(std::shared_ptr<MachObject>);		// add a new agent(server or client) to agent list
-	void removeAgent(std::shared_ptr<MachObject>);	// remove agent(server or client) from agent list
-	std::shared_ptr<MachObject> getAgent(int nth = 0);	// get agent(server or client) from agent list
+	void setAgent(MachObject * pMObj);
+	MachObject& getAgent();
 	
-	void sendPacket(std::shared_ptr<Packet_Base>);	// add packet to outgoing queue.
-	std::shared_ptr<Packet_Base> recvPacket();		// get packet from incoming queue.
+	virtual void sendPacket(SOCKET, std::shared_ptr<Packet_Base>) = 0;			// add packet to outgoing queue.
+	virtual std::shared_ptr<Packet_Base> recvPacket(SOCKET& sock) = 0;	// get packet from incoming queue.
 public:
 	/* Member field */
 protected:
 	/* Member method */
 	PacketManager_Base();
 
-	virtual void _sending() = 0;	// transmit packet in outgoing queue via network.
-	virtual void _receiving() = 0;	// receive packet to incoming queue via network.
 protected:
 	/* Member field */
-	std::list<std::shared_ptr<MachObject>> _agentList;	// list of agent related to PM
-	std::queue<std::shared_ptr<Packet_Base>> _outgoingQueue;	// queue storing packet to transmit
-	std::queue<std::shared_ptr<Packet_Base>> _incomingQueue;	// queue storing packet received
+	MachObject * _pMachObject;
 };
 
 
 
 /************************************************************************
-* ClntPacketManager class
-- Singleton pattern.
-*
-************************************************************************/
+ * ClntPacketManager class
+	- Singleton pattern.
+ *
+ ************************************************************************/
 class ClntPacketManager : public PacketManager_Base
 {
 public:
 	/* Member method */
 	static ClntPacketManager& Instance();
+	
+	void sendPacket(SOCKET sock, std::shared_ptr<Packet_Base> spPk);// send packet via network.
+	std::shared_ptr<Packet_Base> recvPacket(SOCKET& sock);	// receive packet in outgoing queue via network.
 public:
 	/* Member field */
-protected:	//rev
+protected:
 	/* Member method */
-	virtual void _sending();	// transmit packet in outgoing queue via network.
-	virtual void _receiving();	// receive packet to incoming queue via network.
 protected:
 	/* Member field */
 	static ClntPacketManager _instance;
@@ -163,16 +163,27 @@ class SvPacketManager : public PacketManager_Base
 public:
 	/* Member method */
 	static SvPacketManager& Instance();
+
+	void sendPacket(SOCKET sock, std::shared_ptr<Packet_Base> spPk);// transmit packet via network.
+	std::shared_ptr<Packet_Base> recvPacket(SOCKET& sock);	// get packet from incoming packet queue.
 public:
 	/* Member field */
 protected:
 	/* Member method */
-	virtual void _sending();	// transmit packet in outgoing queue via network.
-	virtual void _receiving();	// receive packet to incoming queue via network.
 protected:
 	/* Member field */
 	static SvPacketManager _intance;
+
+	//rev incoming queue
+
 };
+
+
+
+/*********************************************************************
+* Etc. implementation
+
+*********************************************************************/
 
 
 
@@ -180,6 +191,24 @@ protected:
 
 
 
-//rev 모든 상속에 virtual dtor 정의
-//? 서버측의 packet 처리 절차에서, 만약 서버의 MachObject가 여러개라면 
-//	 packet이 MachObject의 정보를 수정해야할 때 MachObject 에 어떻게 접근?
+//?	 packet이 MachObject의 정보를 수정해야할 때 MachObject 에 어떻게 접근? >> PM::agent 필드가 있음. 이를 통해 접근
+
+//? IOCP에서 LPPER_IO_INFO?
+//? IOCP에서 LPPER_HANDLE_DATA?
+//? IOCP에서 CompletionPortIO?
+
+//rev packet incoming, outgoing에 목적지 socket 정보도 같이 저장..?
+//		이 경우 servaddr 등 addr 관련 정보도 같이 저장되나? 
+//		그렇다면 packet 하나 당 저장해야하는 정보량이 너무 늘어나니 
+//		그냥 user 정보 참조하게 하는게 나을 수도
+
+//rev outgoing Queue는 필요 없을 것 같은데.. 그럼 chat packet을 전송할 때 
+//		같은 방 참가자의 socket list를 저장해 놓는 것은 어떻게 구현해야
+//		할까..? 
+//			- client: outgoing queue 필요 없음. 연결 정보는 불변하므로 신경 쓸 필요X
+//			- Server: outgoing queue 필요 없음. WSASend 여러번 호출 하는 걸로..
+
+//rev packet에 const char* type을 argument로 받는 생성자 추가
+
+//?	Packet 생성 절차 어떻게 되나? char chunk에서 생성하는 방법이..?
+//? sending 시 sendPacket() 또는 _sending() 함수로 어떻게 연결정보를 보내줄까?
