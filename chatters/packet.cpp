@@ -277,19 +277,41 @@ SvPacketManager & SvPacketManager::Instance()
 }
 void SvPacketManager::sendPacket(SOCKET sock, std::shared_ptr<Packet_Base> spPk)
 {
-	//rev
+	SOCKET hClntSock;
+	size_t pkSz;
+	DWORD flags = 0;
+	LPPER_IO_DATA ioInfo;
+	
+	hClntSock = sock;
+	pkSz = spPk->get_packetSize();
+		
+	ioInfo = new PerIoData(pkSz);
+	memset(&(ioInfo->overlapped), 0, sizeof(OVERLAPPED));
+	memcpy_s(ioInfo->get_buffer(), ioInfo->get_bufferLen(), spPk->get_bufAddr(), pkSz);
+	ioInfo->rwMode = PerIoData::WRITE;
+
+	WSASend(hClntSock, &(ioInfo->wsaBuf), 1, NULL, 0, &(ioInfo->overlapped), NULL);
 }
 std::shared_ptr<Packet_Base> SvPacketManager::recvPacket(SOCKET & sock)
 {
-	//rev
+	auto svMach = dynamic_cast<SvMach&>(SvPacketManager::Instance().getAgent());
+	
+	auto pm = SvPacketManager::Instance();
 
-	return std::shared_ptr<Packet_Base>();
+	while (pm._msgQueue.empty())	// queue에 packet이 없으면 대기
+		;
+
+	//rev lock..? pop 한줄에만 걸어도 될 것 같은데?
+	auto pair = pm._msgQueue.front();
+	pm._msgQueue.pop();
+	sock = pair.first;	
+	return pair.second;
 }
+
 
 
 /*********************************************************************
 * Etc. implementation
 
 *********************************************************************/
-
-
+ 

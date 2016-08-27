@@ -23,6 +23,12 @@ typedef struct
 typedef struct PerIoData
 {
 public:
+	enum : int {
+		READ_HEADER = 0,
+		READ_PACKET,
+		WRITE
+	};
+public:
 	PerIoData();
 	PerIoData(size_t bufSz);
 	~PerIoData();
@@ -98,6 +104,8 @@ private:
 class PacketManager_Base;
 struct Packet_Base
 {
+public:
+	static const size_t HEADER_SIZE = sizeof(size_t);
 public:	
 	/* Member method */
 	Packet_Base(PTYPE pType, char * buf);
@@ -211,10 +219,9 @@ protected:
 	/* Member method */
 protected:
 	/* Member field */
-	static SvPacketManager _intance;
+	static SvPacketManager _instance;
 
-	//rev incoming queue
-
+	std::queue<std::pair<SOCKET, std::shared_ptr<Packet_Base>>> _msgQueue;	// incoming packet queue
 };
 
 
