@@ -12,6 +12,45 @@
 #include "PTYPE.h"
 
 
+
+typedef struct
+{
+	SOCKET hClntSock;
+	SOCKADDR_IN clntAdr;
+} PER_HANDLE_DATA, *LPPER_HANDLE_DATA;
+
+// do not allocate object of PerIoData type using malloc(). Use only new op.
+typedef struct PerIoData
+{
+public:
+	PerIoData();
+	PerIoData(size_t bufSz);
+	~PerIoData();
+
+	int get_refCount() const;
+	void inc_refCount();
+	void allocBuffer(size_t bufSz);
+	void set_Buffer(char * bufPtr, int bufSz);
+	char * get_buffer() const;
+	size_t get_bufferLen() const;
+
+	void operator delete(void * p);
+public:
+	OVERLAPPED overlapped;
+	WSABUF wsaBuf;
+	int rwMode;		// read mode / write mode distinguisher
+private:
+	void set_refCount(int newVal);
+	void dec_refCount();
+	void _releaseBuffer();
+private:
+	char * _buffer;	//rev
+	size_t _bufferLen;
+	int _refCount;
+} PER_IO_DATA, *LPPER_IO_DATA;
+
+
+
 /*****************************************************************
  * PacketInfo class
 	- packet processing(de/serialize) 의 결과 및 관련 정보를 저장
@@ -163,7 +202,7 @@ class SvPacketManager : public PacketManager_Base
 public:
 	/* Member method */
 	static SvPacketManager& Instance();
-
+	//rev
 	void sendPacket(SOCKET sock, std::shared_ptr<Packet_Base> spPk);// transmit packet via network.
 	std::shared_ptr<Packet_Base> recvPacket(SOCKET& sock);	// get packet from incoming packet queue.
 public:
