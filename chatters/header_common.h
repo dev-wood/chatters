@@ -31,7 +31,7 @@ public:
 protected:
 	/* Member method */
 	InfoToken();
-	~InfoToken();
+	virtual ~InfoToken();
 protected:
 	/* Member field */
 	Key _key;
