@@ -1,8 +1,15 @@
 #pragma once
 
-#include "header_common.h"
 #include <memory>
 #include <WinSock2.h>
+#include <process.h>
+
+#include "header_common.h"
+#include "packet.h"
+
+using std::cin;
+using std::cout;
+using std::endl;
 
 /*********************************************************************
  * HandleData class
@@ -86,7 +93,7 @@ public:
 public:
 	/* Member field */
 	RoomInfoToken rtk;
-	std::vector<std::pair<UserKey, std::shared_ptr<HandleData>>> userList;
+	std::vector<UserKey> userList;
 
 private:
 	/* Member method */
@@ -100,7 +107,7 @@ private:
 	- 현재 생성되어 있는 채팅방 관련 정보를 저장하는 클래스
 
  *********************************************************************/
-class SvMach
+class SvMach : public MachObject
 {
 public:
 	/* Member method */
@@ -112,8 +119,11 @@ public:
 	bool closeRoom(RoomKey rKey);		// remove the chatting room from the chatting room list
 	bool updateUserInfo(UserKey uKey, RoomKey rmKey);	// update user infomation
 	
-	std::unordered_map<UserKey, SvUserInfo>::const_iterator findUser(UserKey uKey) const;	//rev return type을 뭘로..?
-	std::unordered_map<RoomKey, SvRoomInfo>::const_iterator findRoom(RoomKey rKey) const;	//rev return type을 뭘로..?
+	std::unordered_map<UserKey, SvUserInfo>::const_iterator findUser(UserKey uKey) const;
+	std::unordered_map<RoomKey, SvRoomInfo>::const_iterator findRoom(RoomKey rKey) const;
+
+	std::unordered_map<UserKey, SvUserInfo>::iterator findUser(UserKey uKey);
+	std::unordered_map<RoomKey, SvRoomInfo>::iterator findRoom(RoomKey rKey);
 
 	// accessor
 	const std::unordered_map<UserKey, SvUserInfo>& get_userList() const;
@@ -128,3 +138,14 @@ private:
 	std::unordered_map<UserKey, SvUserInfo> _uList;
 	std::unordered_map<RoomKey, SvRoomInfo> _rList;
 };
+
+
+
+/*********************************************************************
+ * etc. functions
+	- 기타 함수 선언
+
+*********************************************************************/
+DWORD WINAPI recvThreadMain(LPVOID pComPort);	//rev
+DWORD WINAPI packetProcessWorkerThreadMain(LPVOID pComPort);
+void ErrorHandling(char * mesaage);
