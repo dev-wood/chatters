@@ -246,7 +246,7 @@ void ClntPacketManager::sendPacket(SOCKET sock, std::shared_ptr<Packet_Base> spP
 }
 std::shared_ptr<Packet_Base> ClntPacketManager::recvPacket(SOCKET& sock)
 {
-	//rev Packet을 c 스타일 TCP sending으로 TCP 전송.
+	// Packet을 TCP 전송.
 	size_t pkSize, recvBytes, headerSize;
 	
 	headerSize = sizeof(size_t);

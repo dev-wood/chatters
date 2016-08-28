@@ -50,7 +50,7 @@ private:
 	void dec_refCount();
 	void _releaseBuffer();
 private:
-	char * _buffer;	//rev
+	char * _buffer;
 	size_t _bufferLen;
 	int _refCount;
 } PER_IO_DATA, *LPPER_IO_DATA;
@@ -210,7 +210,7 @@ class SvPacketManager : public PacketManager_Base
 public:
 	/* Member method */
 	static SvPacketManager& Instance();
-	//rev
+
 	void sendPacket(SOCKET sock, std::shared_ptr<Packet_Base> spPk);// transmit packet via network.
 	std::shared_ptr<Packet_Base> recvPacket(SOCKET& sock);	// get packet from incoming packet queue.
 public:
@@ -237,11 +237,7 @@ protected:
 
 
 
-//?	 packet이 MachObject의 정보를 수정해야할 때 MachObject 에 어떻게 접근? >> PM::agent 필드가 있음. 이를 통해 접근
 
-//? IOCP에서 LPPER_IO_INFO?
-//? IOCP에서 LPPER_HANDLE_DATA?
-//? IOCP에서 CompletionPortIO?
 
 //rev packet incoming, outgoing에 목적지 socket 정보도 같이 저장..?
 //		이 경우 servaddr 등 addr 관련 정보도 같이 저장되나? 
