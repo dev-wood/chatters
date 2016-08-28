@@ -126,6 +126,7 @@ public:
 	Packet_Base& operator<<(const char * buf);
 public:
 	/* Member field */
+	const PTYPE _id;
 protected:
 	/* Member method */
 	Packet_Base(PTYPE);
@@ -134,7 +135,6 @@ protected:
 	virtual void doDeserialProc() = 0;
 protected:
 	/* Member field */
-	const PTYPE _id;
 	std::stringstream _buf;
 	PacketInfo _pkInfo;
 private:
