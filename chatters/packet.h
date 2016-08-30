@@ -5,7 +5,7 @@
 
 #include "header_common.h"
 #include "header_server.h"
-//#include "../chClient/header_clnt.h"	//rev
+#include "header_clnt.h"
 #include "PT_SC_Data.h"
 #include "PT_CS_Data.h"
 
@@ -162,8 +162,8 @@ public:
 	void setAgent(MachObject * pMObj);
 	MachObject& getAgent();
 	
-	virtual void sendPacket(SOCKET, std::shared_ptr<Packet_Base>) = 0;			// add packet to outgoing queue.
-	virtual std::shared_ptr<Packet_Base> recvPacket(SOCKET& sock) = 0;	// get packet from incoming queue.
+	virtual void sendPacket(std::shared_ptr<Packet_Base>) = 0;			// add packet to outgoing queue.
+	virtual std::shared_ptr<Packet_Base> recvPacket() = 0;	// get packet from incoming queue.
 public:
 	/* Member field */
 protected:
@@ -188,8 +188,8 @@ public:
 	/* Member method */
 	static ClntPacketManager& Instance();
 	
-	void sendPacket(SOCKET sock, std::shared_ptr<Packet_Base> spPk);// send packet via network.
-	std::shared_ptr<Packet_Base> recvPacket(SOCKET& sock);	// receive packet in outgoing queue via network.
+	void sendPacket(std::shared_ptr<Packet_Base> spPk);// send packet via network.
+	std::shared_ptr<Packet_Base> recvPacket();	// receive packet in outgoing queue via network.
 public:
 	/* Member field */
 protected:
@@ -212,8 +212,8 @@ public:
 	/* Member method */
 	static SvPacketManager& Instance();
 
-	void sendPacket(SOCKET sock, std::shared_ptr<Packet_Base> spPk);// transmit packet via network.
-	std::shared_ptr<Packet_Base> recvPacket(SOCKET& sock);	// get packet from incoming packet queue.
+	void sendPacket(std::shared_ptr<Packet_Base> spPk);// transmit packet via network.
+	std::shared_ptr<Packet_Base> recvPacket();	// get packet from incoming packet queue.
 public:
 	/* Member field */
 protected:
@@ -221,8 +221,9 @@ protected:
 protected:
 	/* Member field */
 	static SvPacketManager _instance;
+	std::queue<std::shared_ptr<Packet_Base>> _msgQueue;	// incoming packet queue
 
-	std::queue<std::pair<SOCKET, std::shared_ptr<Packet_Base>>> _msgQueue;	// incoming packet queue
+	friend DWORD WINAPI recvThreadMain(LPVOID);
 };
 
 

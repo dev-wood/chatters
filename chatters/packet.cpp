@@ -240,14 +240,15 @@ ClntPacketManager & ClntPacketManager::Instance()
 
 	return _instance;
 }
-void ClntPacketManager::sendPacket(SOCKET sock, std::shared_ptr<Packet_Base> spPk)
+void ClntPacketManager::sendPacket(std::shared_ptr<Packet_Base> spPk)
 {
-	send(sock, spPk->get_bufAddr, spPk->get_packetSize, 0);
+	send(spPk->sock, spPk->get_bufAddr, spPk->get_packetSize, 0);
 }
-std::shared_ptr<Packet_Base> ClntPacketManager::recvPacket(SOCKET& sock)
+std::shared_ptr<Packet_Base> ClntPacketManager::recvPacket()
 {
 	// Packet을 TCP 전송.
 	size_t pkSize, recvBytes, headerSize;
+	SOCKET sock = ConnectInfo::Instance().get_sock();
 	
 	headerSize = sizeof(size_t);
 	recvBytes = 0;
@@ -275,14 +276,14 @@ SvPacketManager & SvPacketManager::Instance()
 
 	return _instance;
 }
-void SvPacketManager::sendPacket(SOCKET sock, std::shared_ptr<Packet_Base> spPk)
+void SvPacketManager::sendPacket(std::shared_ptr<Packet_Base> spPk)
 {
 	SOCKET hClntSock;
 	size_t pkSz;
 	DWORD flags = 0;
 	LPPER_IO_DATA ioInfo;
 	
-	hClntSock = sock;
+	hClntSock = spPk->sock;
 	pkSz = spPk->get_packetSize();
 		
 	ioInfo = new PerIoData(pkSz);
@@ -292,20 +293,18 @@ void SvPacketManager::sendPacket(SOCKET sock, std::shared_ptr<Packet_Base> spPk)
 
 	WSASend(hClntSock, &(ioInfo->wsaBuf), 1, NULL, 0, &(ioInfo->overlapped), NULL);
 }
-std::shared_ptr<Packet_Base> SvPacketManager::recvPacket(SOCKET & sock)
+std::shared_ptr<Packet_Base> SvPacketManager::recvPacket()
 {
-	auto svMach = dynamic_cast<SvMach&>(SvPacketManager::Instance().getAgent());
-	
 	auto pm = SvPacketManager::Instance();
 
 	while (pm._msgQueue.empty())	// queue에 packet이 없으면 대기
 		;
 
 	//rev lock..? pop 한줄에만 걸어도 될 것 같은데?
-	auto pair = pm._msgQueue.front();
+	auto shPk = pm._msgQueue.front();
 	pm._msgQueue.pop();
-	sock = pair.first;	
-	return pair.second;
+	
+	return shPk;
 }
 
 
