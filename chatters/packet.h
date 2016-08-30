@@ -127,6 +127,7 @@ public:
 public:
 	/* Member field */
 	const PTYPE _id;
+	SOCKET sock;
 protected:
 	/* Member method */
 	Packet_Base(PTYPE);

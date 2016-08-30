@@ -115,7 +115,7 @@ void PacketInfo::set_msg(std::string && str)
 /*********************************************************************
  * Packet_Base class implementation 
  *********************************************************************/
-Packet_Base::Packet_Base(PTYPE pType, char * buf) : _id(pType)
+Packet_Base::Packet_Base(PTYPE pType, char * buf) : Packet_Base(pType)
 {
 	_buf << buf;
 }
@@ -166,11 +166,11 @@ Packet_Base & Packet_Base::operator<<(const char * buf)
 {
 	_buf << buf;
 }
-Packet_Base::Packet_Base(PTYPE pt) : _id(pt), _pkInfo()
+Packet_Base::Packet_Base(PTYPE pt) : _id(pt), _pkInfo(), sock(INVALID_SOCKET)
 {
 	// left blank intentionally
 }
-Packet_Base::Packet_Base() : _id(PTYPE::PT_BASE), _pkInfo()
+Packet_Base::Packet_Base() : _id(PTYPE::PT_BASE), _pkInfo(), sock(INVALID_SOCKET)
 {
 	// left blank intentionally
 }
