@@ -3,6 +3,8 @@
 #ifndef _PTYPE_H_
 #define _PTYPE_H_
 
+#include "packet.h"
+
 enum struct PTYPE : int
 {
 	// Packet_Base default packet
