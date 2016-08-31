@@ -26,12 +26,12 @@ class InfoToken
 {
 public:
 	/* Member method */
+	virtual ~InfoToken();
 public:
 	/* Member field */
 protected:
 	/* Member method */
 	InfoToken();
-	virtual ~InfoToken();
 protected:
 	/* Member field */
 	Key _key;
@@ -45,6 +45,8 @@ public:
 	UserInfoToken(const std::string& id);
 	UserInfoToken(const UserInfoToken&);
 	UserInfoToken(UserInfoToken&&);
+	virtual ~UserInfoToken();
+	
 	UserInfoToken& operator=(UserInfoToken&&);
 	UserInfoToken& operator=(const UserInfoToken& utk);
 
@@ -72,10 +74,11 @@ public:
 	RoomInfoToken(const std::string& _title);
 	RoomInfoToken(const RoomInfoToken&);
 	RoomInfoToken(RoomInfoToken&&);
+	~RoomInfoToken();
+	
 	RoomInfoToken& operator=(RoomInfoToken&&);
 	RoomInfoToken& operator=(const RoomInfoToken& rtk);
-	~RoomInfoToken();
-
+	
 	// accessor
 	RoomKey get_key() const;
 	std::string get_title() const;
@@ -96,6 +99,7 @@ std::ostream& operator<< (std::ostream&, const RoomInfoToken&);
 class MachObject
 {
 public:
+	virtual ~MachObject();
 
 protected:
 	/* Member method */

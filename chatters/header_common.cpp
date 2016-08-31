@@ -26,6 +26,10 @@ UserInfoToken::UserInfoToken(UserInfoToken&& tk)
 {
 	*this = std::move(tk);
 }
+UserInfoToken::~UserInfoToken()
+{
+	// left blank intentionally
+}
 UserInfoToken & UserInfoToken::operator=(UserInfoToken&& tk)
 {
 	if (this == &tk) 
@@ -148,6 +152,10 @@ std::ostream & operator<<(std::ostream & os, const RoomInfoToken & rtk)
 
 
 /* MachObject class definition */
+MachObject::~MachObject()
+{
+	// left blank intentionally
+}
 MachObject::MachObject()
 {
 	// left blank intentionally
