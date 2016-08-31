@@ -115,9 +115,10 @@ public:
 	bool removeUser(UserKey uKey);				// remove user from user info list
 	bool joinRoom(RoomKey rKey, UserKey uKey);	// user join in the chatting room
 	bool leaveRoom(RoomKey rKey, UserKey uKey);	// user leaves the chatting room
-	bool openRoom(const std::string& title);		// add new chatting room in chatting room list
-	bool closeRoom(RoomKey rKey);		// remove the chatting room from the chatting room list
-	bool updateUserInfo(UserKey uKey, RoomKey rmKey);	// update user infomation
+	bool openRoom(UserKey uKey, const std::string& title);		// add new chatting room in chatting room list
+	//std::vector<UserKey> closeRoom(RoomKey rKey);		// remove the chatting room from the chatting room list
+	bool removeRoom(RoomKey rKey);	// remove the chatting room from the chatting room list
+	bool updateUserInfo(UserKey uKey, RoomKey newRmKey);	// update user infomation
 	
 	std::unordered_map<UserKey, SvUserInfo>::const_iterator findUser(UserKey uKey) const;
 	std::unordered_map<RoomKey, SvRoomInfo>::const_iterator findRoom(RoomKey rKey) const;
@@ -146,6 +147,6 @@ private:
 	- 기타 함수 선언
 
 *********************************************************************/
-DWORD WINAPI recvThreadMain(LPVOID pComPort);	//rev
+DWORD WINAPI recvThreadMain(LPVOID pComPort);
 DWORD WINAPI packetProcessWorkerThreadMain(LPVOID pComPort);
 void ErrorHandling(char * mesaage);

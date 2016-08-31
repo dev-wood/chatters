@@ -80,6 +80,158 @@ SvRoomInfo::SvRoomInfo()
 	std::cout << "SvRoomInfo() called." << std::endl;
 }
 
+
+
+/* SvMach class definitions */
+bool SvMach::addUser(const std::string& id, std::shared_ptr<HandleData> hData)
+{
+	SvUserInfo user(id, hData);
+
+	return (_uList.insert(std::make_pair(user.utk.get_key(), std::move(user)))).second;
+}
+bool SvMach::removeUser(UserKey uKey)
+{
+	size_t result = _uList.erase(uKey);
+
+	if (result == 0)
+		return false;
+
+	return true;
+}
+bool SvMach::joinRoom(RoomKey rKey, UserKey uKey)
+{
+	auto rmIter = findRoom(rKey);
+
+	if (rmIter == _rList.end()) {
+		std::cout << "Cannot find Room(#" << rKey << ")" << endl;
+		return false;
+	}
+
+	bool joinRoomResult = rmIter->second.addUser(uKey);
+	bool updateUserInfoResult;
+	
+	if (!joinRoomResult)// fail to join room
+		return false;
+	else				// succeed to join room
+		updateUserInfoResult = updateUserInfo(uKey, rKey);	// update user informaion(room#)
+		
+	if (!updateUserInfoResult)	// fail to update user information(room#)
+	{
+		rmIter->second.removeUser(uKey);// rewind changes
+		return false;
+	}
+	else
+		return true;
+}
+bool SvMach::leaveRoom(RoomKey rKey, UserKey uKey)
+{
+	auto rmIter = findRoom(rKey);
+
+	if (rmIter == _rList.end()) {
+		std::cout << "Cannot find Room(#" << rKey << ")" << endl;
+		return false;
+	}
+	
+	bool leaveRoomResult = rmIter->second.removeUser(uKey);
+	bool updateUserInfoResult;
+
+	if (!leaveRoomResult)	// fail to leave room
+		return false;
+	else					// succeed to leave room
+		updateUserInfoResult = updateUserInfo(uKey, CHATTERS::NO_ROOM);	// update user informaion(room#)
+		
+	if (!updateUserInfoResult)	// fail to update user information(room#)
+	{
+		rmIter->second.addUser(uKey);// rewind changes
+		return false;
+	}
+	else
+		return true;
+}
+bool SvMach::openRoom(UserKey uKey, const std::string & title)
+{
+	SvRoomInfo rm(title);
+
+	auto rmIter = _rList.insert(std::make_pair(rm.rtk.get_key(), std::move(rm)));
+	bool opResult = rmIter.second;
+
+	if (!opResult)	// fail to add room to room list
+	{
+		std::cout << "Create room failed." << std::endl;
+		return false;
+	}
+
+	auto rmKey = rmIter.first->second.rtk.get_key();
+	bool joinResult = joinRoom(rmKey, uKey);
+
+	if (!joinResult)	// fail to enter the room
+	{
+		_rList.erase(rmKey);	// rewind changes
+		return false;
+	}
+	
+	return true;
+}
+//std::vector<UserKey> SvMach::closeRoom(RoomKey rKey)
+//{
+//	auto it = _rList.find(rKey);
+//	auto target = _rList.erase(it);
+//
+//	//target	// check
+//	std::vector<UserKey> rtnVec;
+//	std::swap(it->second.userList, rtnVec);
+//
+//	return rtnVec;
+//}
+bool SvMach::removeRoom(RoomKey rKey)
+{
+	auto removed = _rList.erase(rKey);
+	if (removed == 0) {
+		return false;
+	}
+
+	return true;
+}
+bool SvMach::updateUserInfo(UserKey uKey, RoomKey rmKey)
+{
+	auto uiIter = findUser(uKey);
+
+	if (uiIter == _uList.end())	// fail to update user information operation
+	{
+		std::cout << "Cannot find user(user#" << uKey << ")" << std::endl;
+		return false;
+	}
+
+	uiIter->second.curRmNum = rmKey;
+	return true;
+}
+std::unordered_map<UserKey, SvUserInfo>::const_iterator SvMach::findUser(UserKey uKey) const
+{
+	return _uList.find(uKey);
+}
+std::unordered_map<RoomKey, SvRoomInfo>::const_iterator SvMach::findRoom(RoomKey rKey) const
+{
+	return _rList.find(rKey);
+}
+std::unordered_map<UserKey, SvUserInfo>::iterator SvMach::findUser(UserKey uKey)
+{
+	return _uList.find(uKey);
+}
+std::unordered_map<RoomKey, SvRoomInfo>::iterator SvMach::findRoom(RoomKey rKey)
+{
+	return _rList.find(rKey);
+}
+const std::unordered_map<UserKey, SvUserInfo>& SvMach::get_userList() const
+{
+	return _uList;
+}
+const std::unordered_map<RoomKey, SvRoomInfo>& SvMach::get_roomList() const
+{
+	return _rList;
+}
+
+
+
 /* etc. functions definitions */
 DWORD WINAPI recvThreadMain(LPVOID pComPort)
 {
