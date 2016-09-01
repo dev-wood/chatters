@@ -313,22 +313,37 @@ DWORD WINAPI recvThreadMain(LPVOID pComPort)
 	return 0;
 }
 
+//DWORD WINAPI packetProcessWorkerThreadMain(LPVOID pComPort)
+//{
+//	while (1) {
+//		auto pm = SvPacketManager::Instance();
+//
+//		auto shRecvPk = pm.recvPacket();
+//
+//		shRecvPk->deserialize();
+//		auto shSendPk = shRecvPk->processPacket(pm.getAgent());
+//
+//		if (shSendPk != nullptr)
+//		{
+//			// packet sending process
+//			shSendPk->serialize();
+//			pm.sendPacket(shSendPk);
+//		}
+//	}
+//
+//	return 0;
+//}
+
 DWORD WINAPI packetProcessWorkerThreadMain(LPVOID pComPort)
 {
-	auto pm = SvPacketManager::Instance();
-	
-	auto shRecvPk = pm.recvPacket();
+	while (1) {
+		auto pm = SvPacketManager::Instance();
 
-	shRecvPk->deserialize();
-	auto shSendPk = shRecvPk->processPacket(pm.getAgent());
+		auto shRecvPk = pm.recvPacket();
 
-	if (shSendPk != nullptr)
-	{
-		// packet sending process
-		shSendPk->serialize();
-		pm.sendPacket(shSendPk);
+		std::cout << "Packet::_buf: " << shRecvPk->get_bufAddr() << std::endl;
 	}
-	
+
 	return 0;
 }
 
