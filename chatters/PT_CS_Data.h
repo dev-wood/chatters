@@ -8,11 +8,11 @@
 
 
 //rev
-struct PK_CS_LOGIN_REQUEST : Packet_Base
+struct PK_CS_LOGIN_REQUEST : public Packet_Base
 {
 public:
 	/* Member method */
-	virtual void processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
+	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
 	std::string userId;
@@ -25,11 +25,11 @@ protected:
 	/* Member field */
 
 };
-struct PK_CS_LOBBY_JOINROOM : Packet_Base
+struct PK_CS_LOBBY_JOINROOM : public Packet_Base
 {
 public:
 	/* Member method */
-	virtual void processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
+	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
 	UserKey userKey;
@@ -41,11 +41,11 @@ protected:
 protected:
 	/* Member field */
 };
-struct PK_CS_LOBBY_LOAD_ROOMLIST : Packet_Base
+struct PK_CS_LOBBY_LOAD_ROOMLIST : public Packet_Base
 {
 public:
 	/* Member method */
-	virtual void processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
+	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
 	UserKey userKey;	//rev 필요없을 듯..?
@@ -56,11 +56,11 @@ protected:
 protected:
 	/* Member field */
 };
-struct PK_CS_CREATEROOM_CREATEROOM : Packet_Base
+struct PK_CS_CREATEROOM_CREATEROOM : public Packet_Base
 {
 public:
 	/* Member method */
-	virtual void processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
+	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
 	UserKey userKey;
@@ -72,11 +72,11 @@ protected:
 protected:
 	/* Member field */
 };
-struct PK_CS_CHAT_QUITROOM : Packet_Base
+struct PK_CS_CHAT_QUITROOM : public Packet_Base
 {
 public:
 	/* Member method */
-	virtual void processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
+	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
 	UserKey userKey;
@@ -88,11 +88,11 @@ protected:
 protected:
 	/* Member field */
 };
-struct PK_CS_CHAT_CHAT : Packet_Base
+struct PK_CS_CHAT_CHAT : public Packet_Base
 {
 public:
 	/* Member method */
-	virtual void processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
+	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
 	RoomKey roomKey;
@@ -104,5 +104,7 @@ protected:
 protected:
 	/* Member field */
 };
+
+
 
 #endif	// !_PT_CS_DATA_H_
