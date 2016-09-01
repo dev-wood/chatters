@@ -255,6 +255,30 @@ private:
 
 
 /************************************************************************
+* ClntPacketManager class
+- Singleton pattern.
+*
+************************************************************************/
+class ClntPacketManager : public PacketManager_Base
+{
+public:
+	/* Member method */
+	static ClntPacketManager& Instance();
+
+	void sendPacket(std::shared_ptr<Packet_Base> spPk);// send packet via network.
+	std::shared_ptr<Packet_Base> recvPacket();	// receive packet in outgoing queue via network.
+public:
+	/* Member field */
+protected:
+	/* Member method */
+protected:
+	/* Member field */
+	static ClntPacketManager _instance;
+};
+
+
+
+/************************************************************************
  * etc functions declarations
  * 
  ************************************************************************/

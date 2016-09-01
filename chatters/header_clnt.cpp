@@ -287,6 +287,42 @@ ChatState::ChatState()
 
 
 
+/*********************************************************************
+* ClntPacketManager class implementation
+
+*********************************************************************/
+ClntPacketManager & ClntPacketManager::Instance()
+{
+	static ClntPacketManager _instance;
+
+	return _instance;
+}
+void ClntPacketManager::sendPacket(std::shared_ptr<Packet_Base> spPk)
+{
+	send(spPk->sock, spPk->get_bufAddr, spPk->get_packetSize, 0);
+}
+std::shared_ptr<Packet_Base> ClntPacketManager::recvPacket()
+{
+	// PacketÀ» TCP Àü¼Û.
+	size_t pkSize, recvBytes, headerSize;
+	SOCKET sock = ConnectInfo::Instance().get_sock();
+
+	headerSize = sizeof(size_t);
+	recvBytes = 0;
+	while (recvBytes < headerSize)
+		recvBytes += recv(sock, (char *)(&pkSize) + recvBytes, headerSize - recvBytes, 0);
+
+	recvBytes = 0;
+	char * buf = new char[pkSize + 1];
+	while (recvBytes<headerSize)
+		recvBytes += recv(sock, buf + recvBytes, pkSize - recvBytes, 0);
+	buf[pkSize] = NULL;
+
+	return extractPacketFromBuffer(buf);
+}
+
+
+
 /***********************************************************
  * etc functions definitions
  *
