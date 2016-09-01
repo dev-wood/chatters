@@ -177,57 +177,6 @@ protected:
 
 
 
-/************************************************************************
- * ClntPacketManager class
-	- Singleton pattern.
- *
- ************************************************************************/
-class ClntPacketManager : public PacketManager_Base
-{
-public:
-	/* Member method */
-	static ClntPacketManager& Instance();
-	
-	void sendPacket(std::shared_ptr<Packet_Base> spPk);// send packet via network.
-	std::shared_ptr<Packet_Base> recvPacket();	// receive packet in outgoing queue via network.
-public:
-	/* Member field */
-protected:
-	/* Member method */
-protected:
-	/* Member field */
-	static ClntPacketManager _instance;
-};
-
-
-
-/************************************************************************
- * SvPacketManager class
-	- Singleton pattern.
- *
- ************************************************************************/
-class SvPacketManager : public PacketManager_Base
-{
-public:
-	/* Member method */
-	static SvPacketManager& Instance();
-
-	void sendPacket(std::shared_ptr<Packet_Base> spPk);// transmit packet via network.
-	std::shared_ptr<Packet_Base> recvPacket();	// get packet from incoming packet queue.
-public:
-	/* Member field */
-protected:
-	/* Member method */
-protected:
-	/* Member field */
-	static SvPacketManager _instance;
-	std::queue<std::shared_ptr<Packet_Base>> _msgQueue;	// incoming packet queue
-
-	friend DWORD WINAPI recvThreadMain(LPVOID);
-};
-
-
-
 /*********************************************************************
 * Etc. implementation
 
