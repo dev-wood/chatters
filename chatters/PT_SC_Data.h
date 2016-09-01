@@ -11,7 +11,7 @@ struct PK_SC_LOGIN_ACCEPT : public Packet_Base
 {
 public:
 	/* Member method */
-	virtual void processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
+	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
 	UserInfoToken userTk;
@@ -23,11 +23,11 @@ protected:
 	/* Member field */
 };
 
-struct PK_SC_LOGIN_FAIL : Packet_Base
+struct PK_SC_LOGIN_FAIL : public Packet_Base
 {
 public:
 	/* Member method */
-	virtual void processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
+	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
 protected:
@@ -37,26 +37,11 @@ protected:
 protected:
 	/* Member field */
 };
-struct PK_SC_LOBBY_JOINROOMOK : Packet_Base
+struct PK_SC_LOBBY_JOINROOMOK : public Packet_Base
 {
 public:
 	/* Member method */
-	virtual void processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
-public:
-	/* Member field */
-protected:
-	/* Member method */
-	virtual void doSerialProc();
-	virtual void doDeserialProc();
-protected:
-	/* Member field */
-
-};
-struct PK_SC_LOBBY_JOINROOMFAIL : Packet_Base
-{
-public:
-	/* Member method */
-	virtual void processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
+	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
 protected:
@@ -67,11 +52,26 @@ protected:
 	/* Member field */
 
 };
-struct PK_SC_LOBBY_LOAD_ROOMLIST : Packet_Base
+struct PK_SC_LOBBY_JOINROOMFAIL : public Packet_Base
 {
 public:
 	/* Member method */
-	virtual void processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
+	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
+public:
+	/* Member field */
+protected:
+	/* Member method */
+	virtual void doSerialProc();
+	virtual void doDeserialProc();
+protected:
+	/* Member field */
+
+};
+struct PK_SC_LOBBY_LOAD_ROOMLIST : public Packet_Base
+{
+public:
+	/* Member method */
+	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
 	UserKey userKey;	//rev	UserKey 필요 없을 듯..?
@@ -84,11 +84,11 @@ protected:
 	/* Member field */
 
 };
-struct PK_SC_CREATEROOM_OK : Packet_Base
+struct PK_SC_CREATEROOM_OK : public Packet_Base
 {
 public:
 	/* Member method */
-	virtual void processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
+	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
 	UserKey userKey;		//rev UserKey는 필요 없을 듯..?
@@ -100,11 +100,11 @@ protected:
 protected:
 	/* Member field */
 };
-struct PK_SC_CREATEROOM_FAIL : Packet_Base
+struct PK_SC_CREATEROOM_FAIL : public Packet_Base
 {
 public:
 	/* Member method */
-	virtual void processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
+	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
 	UserKey userKey;	//rev UserKey는 필요 없을 듯..?
@@ -115,11 +115,11 @@ protected:
 protected:
 	/* Member field */
 };
-struct PK_SC_CHAT_QUITUSER : Packet_Base
+struct PK_SC_CHAT_QUITUSER : public Packet_Base
 {
 public:
 	/* Member method */
-	virtual void processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
+	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
 	UserKey userKey;	//rev UserKey는 필요 없을 듯..?
@@ -130,11 +130,11 @@ protected:
 protected:
 	/* Member field */
 };
-struct PK_SC_CHAT_CHAT : Packet_Base
+struct PK_SC_CHAT_CHAT : public Packet_Base
 {
 public:
 	/* Member method */
-	virtual void processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
+	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
 	std::string chat;
@@ -145,11 +145,11 @@ protected:
 protected:
 	/* Member field */
 };
-struct PK_SC_CHAT_LOAD_USERLIST : Packet_Base
+struct PK_SC_CHAT_LOAD_USERLIST : public Packet_Base
 {
 public:
 	/* Member method */
-	virtual void processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
+	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& const targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
 	std::vector<UserInfoToken > userTkList;
