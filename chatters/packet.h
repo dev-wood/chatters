@@ -3,57 +3,12 @@
 #ifndef _PACKET_H_
 #define _PACKET_H_
 
-#include "header_common.h"
-#include "header_server.h"
-#include "header_clnt.h"
-#include "PT_SC_Data.h"
-#include "PT_CS_Data.h"
-
 #include "PTYPE.h"
-
-
-
-typedef struct
-{
-	SOCKET hClntSock;
-	SOCKADDR_IN clntAdr;
-} PER_HANDLE_DATA, *LPPER_HANDLE_DATA;
-
-// do not allocate object of PerIoData type using malloc(). Use only new op.
-typedef struct PerIoData
-{
-public:
-	enum : int {
-		READ_HEADER = 0,
-		READ_PACKET,
-		WRITE
-	};
-public:
-	PerIoData();
-	PerIoData(size_t bufSz);
-	~PerIoData();
-
-	int get_refCount() const;
-	void inc_refCount();
-	void allocBuffer(size_t bufSz);
-	void set_Buffer(char * bufPtr, int bufSz);
-	char * get_buffer() const;
-	size_t get_bufferLen() const;
-
-	void operator delete(void * p);
-public:
-	OVERLAPPED overlapped;
-	WSABUF wsaBuf;
-	int rwMode;		// read mode / write mode distinguisher
-private:
-	void set_refCount(int newVal);
-	void dec_refCount();
-	void _releaseBuffer();
-private:
-	char * _buffer;
-	size_t _bufferLen;
-	int _refCount;
-} PER_IO_DATA, *LPPER_IO_DATA;
+#include "header_common.h"
+//#include "header_server.h"
+//#include "header_clnt.h"
+//#include "PT_SC_Data.h"
+//#include "PT_CS_Data.h"
 
 
 
@@ -108,14 +63,14 @@ public:
 	static const size_t HEADER_SIZE = sizeof(size_t);
 public:	
 	/* Member method */
-	Packet_Base(PTYPE pType, char * buf);
+	Packet_Base(PTYPE pType, const char * buf);
 	virtual ~Packet_Base();
 
 	static int ptoi(PTYPE);
 	
 	void serialize();	// Template method for serialize process
 	void deserialize();	// Template method for serialize process
-	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& const targetMObject) = 0;	// Process received packet using strategy pattern
+	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& targetMObject) = 0;	// Process received packet using strategy pattern
 
 	// Accessor
 	size_t get_packetSize();	// The size of whole packet include header space.

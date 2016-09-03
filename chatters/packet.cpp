@@ -3,89 +3,6 @@
 
 
 /*********************************************************************
-* PerIoData class implementation
-*********************************************************************/
-PerIoData::PerIoData() : _buffer(nullptr), _bufferLen(0), _refCount(0)
-{
-	wsaBuf.len = _bufferLen;
-	wsaBuf.buf = _buffer;
-}
-PerIoData::PerIoData(size_t bufSz) : PerIoData()
-{
-	allocBuffer(bufSz);
-}
-PerIoData::~PerIoData()
-{
-	_releaseBuffer();
-	//std::cout << "~PER_IO_DATA()" << endl;
-}
-int PerIoData::get_refCount() const
-{
-	return _refCount;
-}
-void PerIoData::inc_refCount()
-{
-	_refCount++;
-}
-void PerIoData::allocBuffer(size_t bufSz)
-{
-	_releaseBuffer();
-	_buffer = new char[bufSz];
-	_bufferLen = bufSz;
-	wsaBuf.len = bufSz;
-	wsaBuf.buf = _buffer;
-}
-void PerIoData::set_Buffer(char * bufPtr, int bufSz)
-{
-	if (_buffer != nullptr)
-		delete[] _buffer;
-
-	_buffer = bufPtr;
-	_bufferLen = bufSz;
-	wsaBuf.len = bufSz;
-	wsaBuf.buf = _buffer;
-}
-char * PerIoData::get_buffer() const
-{
-	return _buffer;
-}
-size_t PerIoData::get_bufferLen() const
-{
-	return _bufferLen;
-}
-void PerIoData::operator delete(void * p)
-{
-	auto targetPtr = static_cast<LPPER_IO_DATA>(p);
-	if (targetPtr->_refCount <= 1)
-	{
-		//std::cout << "delete PER_IO_DATA(addr: " << p << ") called. Object deleted." << endl;
-		free(p);
-		return;
-	}
-	targetPtr->_refCount--;
-	//std::cout << "delete PER_IO_DATA(addr: " << p << ") called. refCount: " << targetPtr->_refCount << endl;
-}
-void PerIoData::set_refCount(int newVal)
-{
-	_refCount = newVal;
-}
-void PerIoData::dec_refCount()
-{
-	_refCount--;
-}
-void PerIoData::_releaseBuffer()
-{
-	if (_buffer != nullptr)
-		delete[] _buffer;
-
-	_bufferLen = 0;
-	wsaBuf.len = 0;
-	wsaBuf.buf = nullptr;
-}
-
-
-
-/*********************************************************************
 * PacketInfo class implementation
 *********************************************************************/
 PacketInfo::PacketInfo() : _code(EMPTY), _msg("")
@@ -115,7 +32,7 @@ void PacketInfo::set_msg(std::string && str)
 /*********************************************************************
  * Packet_Base class implementation 
  *********************************************************************/
-Packet_Base::Packet_Base(PTYPE pType, char * buf) : Packet_Base(pType)
+Packet_Base::Packet_Base(PTYPE pType, const char * buf) : Packet_Base(pType)
 {
 	_buf << buf;
 }
@@ -165,6 +82,7 @@ const PkInfo & Packet_Base::get_pkInfo() const
 Packet_Base & Packet_Base::operator<<(const char * buf)
 {
 	_buf << buf;
+	return *this;
 }
 Packet_Base::Packet_Base(PTYPE pt) : _id(pt), _pkInfo(), sock(INVALID_SOCKET)
 {

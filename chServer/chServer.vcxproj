@@ -147,7 +147,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\chatters\header_common.cpp" />
     <ClCompile Include="..\chatters\header_server.cpp" />
+    <ClCompile Include="..\chatters\packet.cpp" />
+    <ClCompile Include="..\chatters\PT_CS_Data.cpp" />
+    <ClCompile Include="..\chatters\PT_SC_Data.cpp" />
     <ClCompile Include="..\chatters\svmain.cpp" />
   </ItemGroup>
   <ItemGroup>
