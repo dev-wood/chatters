@@ -85,6 +85,7 @@
     <ClCompile Include="header_server.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="packet.cpp" />
+    <ClCompile Include="PTYPE.cpp" />
     <ClCompile Include="PT_CS_Data.cpp" />
     <ClCompile Include="PT_SC_Data.cpp" />
     <ClCompile Include="svmain.cpp" />

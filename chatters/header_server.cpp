@@ -1,6 +1,93 @@
 #include "header_server.h"
+#include "header_common.h"
 
-/* SvConInfo class definition */
+
+/*********************************************************************
+ * PerIoData class implementation
+*********************************************************************/
+PerIoData::PerIoData() : _buffer(nullptr), _bufferLen(0), _refCount(0)
+{
+	wsaBuf.len = _bufferLen;
+	wsaBuf.buf = _buffer;
+}
+PerIoData::PerIoData(size_t bufSz) : PerIoData()
+{
+	allocBuffer(bufSz);
+}
+PerIoData::~PerIoData()
+{
+	_releaseBuffer();
+	//std::cout << "~PER_IO_DATA()" << endl;
+}
+int PerIoData::get_refCount() const
+{
+	return _refCount;
+}
+void PerIoData::inc_refCount()
+{
+	_refCount++;
+}
+void PerIoData::allocBuffer(size_t bufSz)
+{
+	_releaseBuffer();
+	_buffer = new char[bufSz];
+	_bufferLen = bufSz;
+	wsaBuf.len = bufSz;
+	wsaBuf.buf = _buffer;
+}
+void PerIoData::set_Buffer(char * bufPtr, int bufSz)
+{
+	if (_buffer != nullptr)
+		delete[] _buffer;
+
+	_buffer = bufPtr;
+	_bufferLen = bufSz;
+	wsaBuf.len = bufSz;
+	wsaBuf.buf = _buffer;
+}
+char * PerIoData::get_buffer() const
+{
+	return _buffer;
+}
+size_t PerIoData::get_bufferLen() const
+{
+	return _bufferLen;
+}
+void PerIoData::operator delete(void * p)
+{
+	auto targetPtr = static_cast<LPPER_IO_DATA>(p);
+	if (targetPtr->_refCount <= 1)
+	{
+		//std::cout << "delete PER_IO_DATA(addr: " << p << ") called. Object deleted." << endl;
+		free(p);
+		return;
+	}
+	targetPtr->_refCount--;
+	//std::cout << "delete PER_IO_DATA(addr: " << p << ") called. refCount: " << targetPtr->_refCount << endl;
+}
+void PerIoData::set_refCount(int newVal)
+{
+	_refCount = newVal;
+}
+void PerIoData::dec_refCount()
+{
+	_refCount--;
+}
+void PerIoData::_releaseBuffer()
+{
+	if (_buffer != nullptr)
+		delete[] _buffer;
+
+	_bufferLen = 0;
+	wsaBuf.len = 0;
+	wsaBuf.buf = nullptr;
+}
+
+
+
+/*********************************************************************
+ * SvConInfo class definition
+*********************************************************************/
 SvConInfo::SvConInfo()
 {
 }
@@ -11,7 +98,11 @@ SvConInfo::SvConInfo(WSADATA newWsaData, SOCKET newSock, sockaddr newServAddr)
 	servAddr = newServAddr;
 }
 
-/* SvUserInfo class definition */
+
+
+/*********************************************************************
+ * SvUserInfo class definition
+*********************************************************************/
 SvUserInfo::SvUserInfo(const std::string & id, std::shared_ptr<HandleData> hData) 
 	: utk(id), 
 	curRmNum(CHATTERS::NO_ROOM),
@@ -50,7 +141,11 @@ SvUserInfo & SvUserInfo::operator=(const SvUserInfo & ui)
 	return *this;
 }
 
-/* SvRoomInfo definition */
+
+
+/*********************************************************************
+ * SvRoomInfo definition
+*********************************************************************/
 SvRoomInfo::SvRoomInfo(const std::string & title) : rtk(title)
 {
 	userList.reserve(CHATTERS::MAX_PARTICIPANT);
@@ -82,7 +177,9 @@ SvRoomInfo::SvRoomInfo()
 
 
 
-/* SvMach class definitions */
+/*********************************************************************
+ * SvMach class definitions
+*********************************************************************/
 bool SvMach::addUser(const std::string& id, std::shared_ptr<HandleData> hData)
 {
 	SvUserInfo user(id, hData);
@@ -233,7 +330,7 @@ const std::unordered_map<RoomKey, SvRoomInfo>& SvMach::get_roomList() const
 
 
 /*********************************************************************
-* SvPacketManager class implementation
+ * SvPacketManager class implementation
 
 *********************************************************************/
 SvPacketManager & SvPacketManager::Instance()
@@ -275,7 +372,9 @@ std::shared_ptr<Packet_Base> SvPacketManager::recvPacket()
 
 
 
-/* etc. functions definitions */
+/*********************************************************************
+ * etc. functions definitions
+*********************************************************************/
 DWORD WINAPI recvThreadMain(LPVOID pComPort)
 {
 	HANDLE hComPort = (HANDLE)pComPort;
@@ -341,7 +440,7 @@ DWORD WINAPI recvThreadMain(LPVOID pComPort)
 				WSARecv(sock, &(ioInfo->wsaBuf), 1, NULL, &flags, &(ioInfo->overlapped), NULL);
 			}
 			else {	// complete receive
-				auto shPk = extractPacketFromBuffer(ioInfo->get_buffer);
+				auto shPk = extractPacketFromBuffer(ioInfo->get_buffer());
 				shPk->sock = sock;
 				
 				SvPacketManager::Instance()._msgQueue.push(std::move(shPk));	//rev lock 걸어야할까..?

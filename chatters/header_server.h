@@ -4,18 +4,31 @@
 #include <WinSock2.h>
 #include <process.h>
 
-#include "header_common.h"
-#include "packet.h"
+//#include "packet.h"
+//#include "header_common.h"
+#include "PT_CS_Data.h"
+#include "PT_SC_Data.h"
 
 using std::cin;
 using std::cout;
 using std::endl;
 
+
+
+/*********************************************************************
+* HandleData class
+- listen socket을 통해 새로 연결되는 클라이언트 정보를 저장하는
+클래스
+*********************************************************************/
+class UserInfoToken;
+
+
+
 /*********************************************************************
  * HandleData class
 	- listen socket을 통해 새로 연결되는 클라이언트 정보를 저장하는
-	 클래스
- *********************************************************************/
+	클래스
+*********************************************************************/
 typedef struct HandleData
 {
 public:
@@ -28,7 +41,51 @@ private:
 	/* Member method */
 private:
 	/* Member field */
-} PER_HANDLE_DATA, * LPPER_HANDLE_DATA;
+} PER_HANDLE_DATA, *LPPER_HANDLE_DATA;
+
+
+
+/*********************************************************************
+ * PerIoData class
+	- TCP IOCP 전송에서 I/O 버퍼와 관련된 클래스
+ *********************************************************************/
+// do not allocate object of PerIoData type using malloc(). Use only new op.
+typedef struct PerIoData
+{
+public:
+	enum : int {
+		READ_HEADER = 0,
+		READ_PACKET,
+		WRITE
+	};
+public:
+	PerIoData();
+	PerIoData(size_t bufSz);
+	~PerIoData();
+
+	int get_refCount() const;
+	void inc_refCount();
+	void allocBuffer(size_t bufSz);
+	void set_Buffer(char * bufPtr, int bufSz);
+	char * get_buffer() const;
+	size_t get_bufferLen() const;
+
+	void operator delete(void * p);
+public:
+	OVERLAPPED overlapped;
+	WSABUF wsaBuf;
+	int rwMode;		// read mode / write mode distinguisher
+private:
+	void set_refCount(int newVal);
+	void dec_refCount();
+	void _releaseBuffer();
+private:
+	char * _buffer;
+	size_t _bufferLen;
+	int _refCount;
+} PER_IO_DATA, *LPPER_IO_DATA;
+
+
 
 /*********************************************************************
  * SvConInfo class
