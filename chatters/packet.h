@@ -63,7 +63,7 @@ public:
 	static const size_t HEADER_SIZE = sizeof(size_t);
 public:	
 	/* Member method */
-	Packet_Base(PTYPE pType, const char * buf);
+	Packet_Base(PTYPE pType, const char * buf, size_t bufLen);
 	virtual ~Packet_Base();
 
 	static int ptoi(PTYPE);
@@ -76,6 +76,7 @@ public:
 	size_t get_packetSize();	// The size of whole packet include header space.
 	size_t get_bufSize();		// The size of buffer(serialized information).
 	const char * get_bufAddr() const;
+	const std::stringstream& get_buf() const;
 	const PkInfo& get_pkInfo() const;
 
 	Packet_Base& operator<<(const char * buf);

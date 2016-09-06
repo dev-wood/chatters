@@ -7,7 +7,8 @@ PK_CS_LOGIN_REQUEST::PK_CS_LOGIN_REQUEST() : Packet_Base(PTYPE::PT_CS_LOGIN_REQU
 	// left blank intentionally
 }
 
-PK_CS_LOGIN_REQUEST::PK_CS_LOGIN_REQUEST(PTYPE ptype, const char * buf) : Packet_Base(PTYPE::PT_CS_LOGIN_REQUEST, buf)
+PK_CS_LOGIN_REQUEST::PK_CS_LOGIN_REQUEST(PTYPE ptype, const char * buf, size_t bufLen) 
+	: Packet_Base(PTYPE::PT_CS_LOGIN_REQUEST, buf, bufLen)
 {
 	// left blank intentionally
 }
@@ -30,7 +31,8 @@ PK_CS_LOBBY_JOINROOM::PK_CS_LOBBY_JOINROOM() : Packet_Base(PTYPE::PT_CS_LOBBY_JO
 	// left blank intentionally
 }
 
-PK_CS_LOBBY_JOINROOM::PK_CS_LOBBY_JOINROOM(PTYPE ptype, const char * buf) : Packet_Base(PTYPE::PT_CS_LOBBY_JOINROOM, buf)
+PK_CS_LOBBY_JOINROOM::PK_CS_LOBBY_JOINROOM(PTYPE ptype, const char * buf, size_t bufLen)
+	: Packet_Base(PTYPE::PT_CS_LOBBY_JOINROOM, buf, bufLen)
 {
 	// left blank intentionally
 }
@@ -53,7 +55,8 @@ PK_CS_LOBBY_LOAD_ROOMLIST::PK_CS_LOBBY_LOAD_ROOMLIST() : Packet_Base(PTYPE::PT_C
 	// left blank intentionally
 }
 
-PK_CS_LOBBY_LOAD_ROOMLIST::PK_CS_LOBBY_LOAD_ROOMLIST(PTYPE ptype, const char * buf) : Packet_Base(PTYPE::PT_CS_LOBBY_LOAD_ROOMLIST, buf)
+PK_CS_LOBBY_LOAD_ROOMLIST::PK_CS_LOBBY_LOAD_ROOMLIST(PTYPE ptype, const char * buf, size_t bufLen)
+	: Packet_Base(PTYPE::PT_CS_LOBBY_LOAD_ROOMLIST, buf, bufLen)
 {
 	// left blank intentionally
 }
@@ -76,7 +79,8 @@ PK_CS_CREATEROOM_CREATEROOM::PK_CS_CREATEROOM_CREATEROOM() : Packet_Base(PTYPE::
 	// left blank intentionally
 }
 
-PK_CS_CREATEROOM_CREATEROOM::PK_CS_CREATEROOM_CREATEROOM(PTYPE ptype, const char * buf) : Packet_Base(PTYPE::PT_CS_CREATEROOM_CREATEROOM, buf)
+PK_CS_CREATEROOM_CREATEROOM::PK_CS_CREATEROOM_CREATEROOM(PTYPE ptype, const char * buf, size_t bufLen)
+	: Packet_Base(PTYPE::PT_CS_CREATEROOM_CREATEROOM, buf, bufLen)
 {
 	// left blank intentionally
 }
@@ -99,7 +103,8 @@ PK_CS_CHAT_QUITROOM::PK_CS_CHAT_QUITROOM() : Packet_Base(PTYPE::PT_CS_CHAT_QUITR
 	// left blank intentionally
 }
 
-PK_CS_CHAT_QUITROOM::PK_CS_CHAT_QUITROOM(PTYPE ptype, const char * buf) : Packet_Base(PTYPE::PT_CS_CHAT_QUITROOM, buf)
+PK_CS_CHAT_QUITROOM::PK_CS_CHAT_QUITROOM(PTYPE ptype, const char * buf, size_t bufLen)
+	: Packet_Base(PTYPE::PT_CS_CHAT_QUITROOM, buf, bufLen)
 {
 	// left blank intentionally
 }
@@ -122,7 +127,8 @@ PK_CS_CHAT_CHAT::PK_CS_CHAT_CHAT() : Packet_Base(PTYPE::PT_CS_CHAT_CHAT)
 	// left blank intentionally
 }
 
-PK_CS_CHAT_CHAT::PK_CS_CHAT_CHAT(PTYPE ptype, const char * buf) : Packet_Base(PTYPE::PT_CS_CHAT_CHAT, buf)
+PK_CS_CHAT_CHAT::PK_CS_CHAT_CHAT(PTYPE ptype, const char * buf, size_t bufLen)
+	: Packet_Base(PTYPE::PT_CS_CHAT_CHAT, buf, bufLen)
 {
 	// left blank intentionally
 }
@@ -142,25 +148,31 @@ void PK_CS_CHAT_CHAT::doDeserialProc()
 
 
 
-std::shared_ptr<Packet_Base> extractPacketFromBuffer(char * buf)
-{
-	int pType;
-	memcpy_s(&pType, sizeof(int), buf, sizeof(int));
+std::shared_ptr<Packet_Base> extractPacketFromBuffer(char * buf, size_t bufLen)
+{	
+	std::string temp;
+	const char * idx = buf;
+	while (*idx != '|') {
+		temp += *idx;
+		idx++;
+	}
+
+	int pType = stoi(temp);
 
 	switch ((PTYPE)pType)
 	{
 	case PTYPE::PT_CS_LOGIN_REQUEST:
-		return std::make_shared<PK_CS_LOGIN_REQUEST>((PTYPE)pType, buf);
+		return std::make_shared<PK_CS_LOGIN_REQUEST>((PTYPE)pType, buf, bufLen);
 	case PTYPE::PT_CS_LOBBY_JOINROOM:
-		return std::make_shared<PK_CS_LOBBY_JOINROOM>((PTYPE)pType, buf);
+		return std::make_shared<PK_CS_LOBBY_JOINROOM>((PTYPE)pType, buf, bufLen);
 	case PTYPE::PT_CS_LOBBY_LOAD_ROOMLIST:
-		return std::make_shared<PK_CS_LOBBY_LOAD_ROOMLIST>((PTYPE)pType, buf);
+		return std::make_shared<PK_CS_LOBBY_LOAD_ROOMLIST>((PTYPE)pType, buf, bufLen);
 	case PTYPE::PT_CS_CREATEROOM_CREATEROOM:
-		return std::make_shared<PK_CS_CREATEROOM_CREATEROOM>((PTYPE)pType, buf);
+		return std::make_shared<PK_CS_CREATEROOM_CREATEROOM>((PTYPE)pType, buf, bufLen);
 	case PTYPE::PT_CS_CHAT_QUITROOM:
-		return std::make_shared<PK_CS_CHAT_QUITROOM>((PTYPE)pType, buf);
+		return std::make_shared<PK_CS_CHAT_QUITROOM>((PTYPE)pType, buf, bufLen);
 	case PTYPE::PT_CS_CHAT_CHAT:
-		return std::make_shared<PK_CS_CHAT_CHAT>((PTYPE)pType, buf);
+		return std::make_shared<PK_CS_CHAT_CHAT>((PTYPE)pType, buf, bufLen);
 	default:
 		return nullptr;
 	}
