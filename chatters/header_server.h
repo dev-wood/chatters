@@ -222,6 +222,7 @@ protected:
 	std::queue<std::shared_ptr<Packet_Base>> _msgQueue;	// incoming packet queue
 
 	friend DWORD WINAPI recvThreadMain(LPVOID);
+	friend DWORD WINAPI packetProcessWorkerThreadMain(LPVOID);
 };
 
 

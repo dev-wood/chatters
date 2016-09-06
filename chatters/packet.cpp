@@ -32,9 +32,10 @@ void PacketInfo::set_msg(std::string && str)
 /*********************************************************************
  * Packet_Base class implementation 
  *********************************************************************/
-Packet_Base::Packet_Base(PTYPE pType, const char * buf) : Packet_Base(pType)
+Packet_Base::Packet_Base(PTYPE pType, const char * buf, size_t bufLen) : Packet_Base(pType)
 {
-	_buf << buf;
+	//_buf << buf;
+	_buf.write(buf, bufLen);
 }
 Packet_Base::~Packet_Base()
 {
@@ -74,6 +75,10 @@ size_t Packet_Base::get_bufSize()
 const char * Packet_Base::get_bufAddr() const
 {
 	return _buf.str().c_str();
+}
+const std::stringstream & Packet_Base::get_buf() const
+{
+	return _buf;
 }
 const PkInfo & Packet_Base::get_pkInfo() const
 {

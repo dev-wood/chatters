@@ -23,8 +23,11 @@ int main(int argc, char* argv[])
 
 	hComPort = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
 	GetSystemInfo(&sysInfo);
-	for (i = 0; i < (int)(sysInfo.dwNumberOfProcessors); i++)
+	
+	// system thread 중에서 여분 1개와 packet 처리용 worker thread 1개를 제외한 나머지를 IOCP thread로 할당
+	for (i = 0; i < (int)(sysInfo.dwNumberOfProcessors - 2); i++)
 		_beginthreadex(NULL, 0, (unsigned int(__stdcall *)(void *))recvThreadMain, (LPVOID)hComPort, 0, NULL);
+	_beginthreadex(NULL, 0, (unsigned int(__stdcall *)(void *))packetProcessWorkerThreadMain, (LPVOID)hComPort, 0, NULL);
 
 	hServSock = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 	memset(&servAdr, 0, sizeof(servAdr));
@@ -48,7 +51,7 @@ int main(int argc, char* argv[])
 		handleInfo->hClntSock = hClntSock;
 		memcpy(&(handleInfo->clntAdr), &clntAdr, addrLen);
 
-		CreateIoCompletionPort((HANDLE)hClntSock, hComPort, (DWORD)handleInfo, 0);
+		CreateIoCompletionPort((HANDLE)hClntSock, hComPort, (DWORD)hClntSock, 0);
 
 		ioInfo = new PER_IO_DATA(Packet_Base::HEADER_SIZE);
 		memset(&(ioInfo->overlapped), 0, sizeof(OVERLAPPED));
@@ -57,4 +60,3 @@ int main(int argc, char* argv[])
 	}
 	return 0;
 }
-

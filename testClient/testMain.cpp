@@ -132,7 +132,7 @@ void sendRoutine(SOCKET sock, char * buf)
 
 		int pkLen = buildPacket(strbuf, PTYPE::PT_CS_CHAT_CHAT, msg);
 
-		cout << "Processed message: " << strbuf.str() << endl;
+		cout << "\tSend message>>" << pkLen << ">>" << strbuf.str() << endl;	//rev	//? 왜 >>에서 > 하나가 출력 안돼?
 		send(sock, strbuf.str().c_str(), pkLen, 0);
 	}
 	cout << "closing socket.." << endl;
@@ -186,7 +186,7 @@ int buildPacket(std::stringstream & strbuf, PTYPE ptype, const std::string & con
 
 	strbuf.write((const char *)(&msgLen), headerLen);
 	strbuf << tempbuf.str();
-	cout << "Processed message: " << strbuf.str() << endl;
+	cout << "\tProcessed message>>" << pkLen << ">>" << strbuf.str() << endl;
 
 	return pkLen;
 }

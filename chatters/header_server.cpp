@@ -358,7 +358,7 @@ void SvPacketManager::sendPacket(std::shared_ptr<Packet_Base> spPk)
 }
 std::shared_ptr<Packet_Base> SvPacketManager::recvPacket()
 {
-	auto pm = SvPacketManager::Instance();
+	auto& pm = SvPacketManager::Instance();
 
 	while (pm._msgQueue.empty())	// queue에 packet이 없으면 대기
 		;
@@ -367,7 +367,7 @@ std::shared_ptr<Packet_Base> SvPacketManager::recvPacket()
 	auto shPk = pm._msgQueue.front();
 	pm._msgQueue.pop();
 
-	return shPk;
+	return std::move(shPk);	
 }
 
 
@@ -440,10 +440,22 @@ DWORD WINAPI recvThreadMain(LPVOID pComPort)
 				WSARecv(sock, &(ioInfo->wsaBuf), 1, NULL, &flags, &(ioInfo->overlapped), NULL);
 			}
 			else {	// complete receive
-				auto shPk = extractPacketFromBuffer(ioInfo->get_buffer());
-				shPk->sock = sock;
-				
-				SvPacketManager::Instance()._msgQueue.push(std::move(shPk));	//rev lock 걸어야할까..?
+				cout << "|READ_PACKET| received. >>" << ioInfo->get_buffer() << endl;
+				auto shPk = extractPacketFromBuffer(ioInfo->get_buffer(), ioInfo->get_bufferLen());
+				if (shPk == nullptr)
+					cout << "|READ_PACKET| Packet extraction failed." << endl;
+				else {
+					shPk->sock = sock;
+					SvPacketManager::Instance()._msgQueue.push(std::move(shPk));	//rev lock 걸어야할까..?
+
+					// ioInfo reset to wait for header
+					memset(&(ioInfo->overlapped), 0, sizeof(OVERLAPPED));
+					ioInfo->allocBuffer(Packet_Base::HEADER_SIZE);
+					ioInfo->rwMode = PerIoData::READ_HEADER;
+
+					// wsarecv call
+					WSARecv(sock, &(ioInfo->wsaBuf), 1, NULL, &flags, &(ioInfo->overlapped), NULL);
+				}
 			}
 		}
 		else
@@ -455,39 +467,45 @@ DWORD WINAPI recvThreadMain(LPVOID pComPort)
 	return 0;
 }
 
-//DWORD WINAPI packetProcessWorkerThreadMain(LPVOID pComPort)
-//{
-//	while (1) {
-//		auto pm = SvPacketManager::Instance();
-//
-//		auto shRecvPk = pm.recvPacket();
-//
-//		shRecvPk->deserialize();
-//		auto shSendPk = shRecvPk->processPacket(pm.getAgent());
-//
-//		if (shSendPk != nullptr)
-//		{
-//			// packet sending process
-//			shSendPk->serialize();
-//			pm.sendPacket(shSendPk);
-//		}
-//	}
-//
-//	return 0;
-//}
-
 DWORD WINAPI packetProcessWorkerThreadMain(LPVOID pComPort)
 {
-	while (1) {
-		auto pm = SvPacketManager::Instance();
+	auto& pm = SvPacketManager::Instance();
 
+	while (1) {
 		auto shRecvPk = pm.recvPacket();
 
-		std::cout << "Packet::_buf: " << shRecvPk->get_bufAddr() << std::endl;
+		shRecvPk->deserialize();
+		auto shSendPk = shRecvPk->processPacket(pm.getAgent());
+
+		if (shSendPk != nullptr)
+		{
+			// packet sending process
+			shSendPk->serialize();
+			pm.sendPacket(shSendPk);
+		}
 	}
 
 	return 0;
 }
+
+//// test code	//rev
+//DWORD WINAPI packetProcessWorkerThreadMain2(LPVOID pComPort)
+//{
+//	auto& pm = SvPacketManager::Instance();
+//
+//	while (1) {
+//		auto shRecvPk = pm.recvPacket();
+//
+//		if (shRecvPk != nullptr) {
+//			//std::cout << "shPtr::use_count(): " << shRecvPk.use_count() << std::endl;
+//			std::cout << "Packet(_id: " << static_cast<int>(shRecvPk->_id) << ")::_buf: " << shRecvPk->get_buf().str() << std::endl;
+//		}
+//		else
+//			std::cout << "Packet::nullptr" << endl;
+//	}
+//
+//	return 0;
+//}
 
 void ErrorHandling(char * message)
 {
@@ -495,3 +513,22 @@ void ErrorHandling(char * message)
 	fputc('\n', stderr);
 	exit(1);
 }
+
+
+
+//rev
+// 변경 사항
+// 9. singleton 보다 확실하게 지켜지도록 생성자 제한
+
+//rev
+// completed
+// 1. completion key in svmain create~ 를 hClntSock으로 바꿈
+// 2. complete recv/incomplete recv 주석 달기
+// 3. |READ_PACKET| complete recv 시 메시지 출력
+// 4. extractPacket..(..) 시 nullptr 출력될 시 처리
+// 5. extractPacket..(..) 내용 수정
+// 6. packetProcessWorkerThreadMain(..)을 SvPacketManager에 friend 추가
+// 7. shPk 넣는 과정에서std::move 사용으로 의미 명확히 하기 2군데
+// 8. auto pm -> auto& pm으로 바꾸기.
+// 10. extractPacket..(..) arg로 버퍼 길이를 같이 받도록 수정
+// 11. Packet_Base(..) ctor 가 buf를 arg로 받을 때 bufLen도 같이 받도록 수정
