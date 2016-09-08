@@ -45,6 +45,7 @@ int main(int argc, char* argv[])
 
 	cout << "server start successfully.." << endl;
 
+	// Allocate I/O handle to connected client
 	while (1)
 	{
 		SOCKET hClntSock;
@@ -65,10 +66,3 @@ int main(int argc, char* argv[])
 	}
 	return 0;
 }
-
-
-
-//rev
-// server 측에서 생성해야하는 object 순서: SvPacketManager(static), SvMach
-//	1. SvMach
-//	2. SvPacketManager
