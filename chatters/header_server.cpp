@@ -1,5 +1,6 @@
 #include "header_server.h"
 #include "header_common.h"
+#include "DBConnector.h"
 
 
 /*********************************************************************
@@ -180,6 +181,20 @@ SvRoomInfo::SvRoomInfo()
 /*********************************************************************
  * SvMach class definitions
 *********************************************************************/
+SvMach::SvMach() : _dbc()
+{
+	if (_dbc.connect() != SQL_SUCCESS)
+	{
+		cout << "Database object creation failed." << endl;
+		exit(1);
+	}
+}
+SvMach::~SvMach()
+{
+	_dbc.close();
+	_uList.clear();
+	_rList.clear();
+}
 bool SvMach::addUser(const std::string& id, std::shared_ptr<HandleData> hData)
 {
 	SvUserInfo user(id, hData);

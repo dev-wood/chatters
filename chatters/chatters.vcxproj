@@ -80,6 +80,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="clmain.cpp" />
+    <ClCompile Include="DBConnector.cpp" />
     <ClCompile Include="header_clnt.cpp" />
     <ClCompile Include="header_common.cpp" />
     <ClCompile Include="header_server.cpp" />
@@ -91,6 +92,7 @@
     <ClCompile Include="svmain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DBConnector.h" />
     <ClInclude Include="header_clnt.h" />
     <ClInclude Include="header_common.h" />
     <ClInclude Include="header_server.h" />

@@ -168,6 +168,9 @@ class SvMach : public MachObject
 {
 public:
 	/* Member method */
+	SvMach();
+	~SvMach();
+
 	bool addUser(const std::string& id, std::shared_ptr<HandleData> hData);	// add new user to user info list
 	bool removeUser(UserKey uKey);				// remove user from user info list
 	bool joinRoom(RoomKey rKey, UserKey uKey);	// user join in the chatting room
@@ -193,6 +196,7 @@ private:
 	/* Member method */
 private:
 	/* Member field */
+	DBConnector _dbc;
 	std::unordered_map<UserKey, SvUserInfo> _uList;
 	std::unordered_map<RoomKey, SvRoomInfo> _rList;
 };
@@ -200,9 +204,9 @@ private:
 
 
 /************************************************************************
-* SvPacketManager class
-- Singleton pattern.
-*
+ * SvPacketManager class
+	- Singleton pattern.
+ *
 ************************************************************************/
 class SvPacketManager : public PacketManager_Base
 {
