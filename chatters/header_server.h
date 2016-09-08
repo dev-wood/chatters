@@ -171,6 +171,8 @@ public:
 	SvMach();
 	~SvMach();
 
+	bool db_signin(const std::string& id, const std::string& pw);
+	bool db_signup(const std::string& id, const std::string& pw);
 	bool addUser(const std::string& id, std::shared_ptr<HandleData> hData);	// add new user to user info list
 	bool removeUser(UserKey uKey);				// remove user from user info list
 	bool joinRoom(RoomKey rKey, UserKey uKey);	// user join in the chatting room

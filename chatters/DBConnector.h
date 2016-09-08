@@ -43,7 +43,7 @@ public:
 	void close();
 	RETCODE excute(const std::string & stmt);
 	//void getResultSet();	//rev 
-	RETCODE getResultNum(SQLSMALLINT & number);
+	RETCODE getResultNum(int & number);
 
 	// accessor
 	SQLHENV hEnv() const;

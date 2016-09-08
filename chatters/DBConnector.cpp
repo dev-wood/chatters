@@ -147,12 +147,21 @@ RETCODE DBConnector::excute(const std::string & stmt)
 
 	SQLAllocHandle(SQL_HANDLE_STMT, _hDbc, &_hStmt);
 
+	SQLCloseCursor(_hStmt);
 	RETCODE RetCode = SQLExecDirect(_hStmt, const_cast<wchar_t *>(wstr.c_str()), SQL_NTS);	// 성공 시 SQL_SUCCESS 반환
 	return RetCode;
 }
-RETCODE DBConnector::getResultNum(SQLSMALLINT & number)
+RETCODE DBConnector::getResultNum(int & number)
 {
-	return SQLNumResultCols(_hStmt, &number);
+	RETCODE rtnCode;
+
+	if ((rtnCode = SQLFetch(_hStmt)) == SQL_SUCCESS)
+	{
+		number = 1;
+		while (SQLFetch(_hStmt) == SQL_SUCCESS)
+			number++;
+	}
+	return rtnCode;
 }
 SQLHENV DBConnector::hEnv() const
 {

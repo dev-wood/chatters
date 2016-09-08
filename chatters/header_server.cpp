@@ -195,6 +195,68 @@ SvMach::~SvMach()
 	_uList.clear();
 	_rList.clear();
 }
+bool SvMach::db_signin(const std::string & id, const std::string & pw)
+{
+	// SELECT * FROM tb1 WHERE id='str_id' AND pw='str_pw'
+	std::string stmt = "SELECT * FROM tb1 ";
+	stmt += "WHERE id='" + id + "' AND pw='" + pw + "'";
+	
+	RETCODE errmsg;
+
+	if ((errmsg = _dbc.excute(stmt)) != SQL_SUCCESS)
+	{	// excute() failed
+		std::cout << "DBConnector::excute() got SQL error." << std::endl;
+		exit(1);
+	}
+
+	int foundNumOfRow = 0;
+	if ((errmsg = _dbc.getResultNum(foundNumOfRow)) != SQL_SUCCESS)
+	{	// getResultNum(..) failed
+		std::cout << "DBConnector::getResultNum() got SQL error." << std::endl;
+		exit(1);
+	}
+
+	if (foundNumOfRow == 1)
+		return true;
+	else 
+		return false;
+}
+bool SvMach::db_signup(const std::string & id, const std::string & pw)
+{
+	RETCODE errmsg;
+	int foundRow;
+
+	// check the primary key(id) available
+	std::string stmt = "SELECT * FROM tb1 WHERE id='" + id + "'";
+	if (errmsg = _dbc.excute(stmt) != SQL_SUCCESS)
+	{
+		std::cout << "DBConnector::excute(..) got SQL error." << std::endl;
+		exit(1);
+	}
+
+	foundRow = 0;
+	if (_dbc.getResultNum(foundRow) != SQL_SUCCESS) 
+	{
+		std::cout << "DBConnector::getResultNum(..) get SQL error" << std::endl;
+		exit(1);
+	}
+
+	if (foundRow > 0)	// primary key duplicated.
+	{
+		std::cout << "SvMach::db_signup(..) error: duplicated key" << std::endl;
+		return false;
+	}
+	
+	// INSERT INTO tb1 VALUES ('str_id', 'str_pw')
+	std::string stmt = "INSERT INTO tb1 VALUES ('" + id + "', '" + pw + "')";
+
+	if (errmsg = _dbc.excute(stmt) != SQL_SUCCESS)
+	{
+		std::cout << "DBConnector::excute(..) get SQL error" << std::endl;
+		exit(1);
+	}
+	return true;
+}
 bool SvMach::addUser(const std::string& id, std::shared_ptr<HandleData> hData)
 {
 	SvUserInfo user(id, hData);
