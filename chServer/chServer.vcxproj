@@ -147,6 +147,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\chatters\DBConnector.cpp" />
     <ClCompile Include="..\chatters\header_common.cpp" />
     <ClCompile Include="..\chatters\header_server.cpp" />
     <ClCompile Include="..\chatters\packet.cpp" />
@@ -155,6 +156,7 @@
     <ClCompile Include="..\chatters\svmain.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\chatters\DBConnector.h" />
     <ClInclude Include="..\chatters\header_common.h" />
     <ClInclude Include="..\chatters\header_server.h" />
     <ClInclude Include="..\chatters\packet.h" />
