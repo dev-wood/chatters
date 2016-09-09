@@ -61,6 +61,9 @@ void Packet_Base::serialize()
 }
 void Packet_Base::deserialize()
 {
+	// Ignore(skip) packet id
+	_buf.ignore(std::numeric_limits<std::streamsize>::max(), '|');
+
 	// Do deserailize process depend on each Packet class.
 	doDeserialProc();
 }

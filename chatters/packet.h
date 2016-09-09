@@ -3,6 +3,8 @@
 #ifndef _PACKET_H_
 #define _PACKET_H_
 
+#define NOMINMAX
+
 #include "PTYPE.h"
 #include "header_common.h"
 //#include "header_server.h"
