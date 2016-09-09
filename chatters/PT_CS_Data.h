@@ -6,6 +6,7 @@
 #include "packet.h"
 
 
+class SvMach;
 
 //rev member method 정의하기
 struct PK_CS_LOGIN_REQUEST : public Packet_Base

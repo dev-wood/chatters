@@ -1,4 +1,5 @@
 #include "PT_CS_Data.h"
+#include "header_server.h"
 
 
 
@@ -6,24 +7,33 @@ PK_CS_LOGIN_REQUEST::PK_CS_LOGIN_REQUEST() : Packet_Base(PTYPE::PT_CS_LOGIN_REQU
 {
 	// left blank intentionally
 }
-
 PK_CS_LOGIN_REQUEST::PK_CS_LOGIN_REQUEST(PTYPE ptype, const char * buf, size_t bufLen) 
 	: Packet_Base(PTYPE::PT_CS_LOGIN_REQUEST, buf, bufLen)
 {
 	// left blank intentionally
 }
-
 std::shared_ptr<Packet_Base> PK_CS_LOGIN_REQUEST::processPacket(MachObject & targetMObject)
 {
-	return std::shared_ptr<Packet_Base>();
-}
+	auto & agent = dynamic_cast<SvMach&>(targetMObject);
 
+	if (agent.db_signin(userId, userPassword))
+	{	// sign in success
+		return make_shared(PK_SC_LOGIN_ACCEPT());
+	}
+	else
+	{	//sign in failed
+		return make_shared(PK_SC_LOGIN_FAIL());
+	}
+}
 void PK_CS_LOGIN_REQUEST::doSerialProc()
 {
+	_buf << userId << '|' << userPassword << '|';
 }
 
 void PK_CS_LOGIN_REQUEST::doDeserialProc()
 {
+	std::getline(_buf, userId, '|');
+	std::getline(_buf, userPassword, '|');
 }
 
 PK_CS_LOBBY_JOINROOM::PK_CS_LOBBY_JOINROOM() : Packet_Base(PTYPE::PT_CS_LOBBY_JOINROOM)
