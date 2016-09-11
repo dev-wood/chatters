@@ -158,7 +158,7 @@ void PK_CS_CHAT_CHAT::doDeserialProc()
 
 
 
-std::shared_ptr<Packet_Base> extractPacketFromBuffer(char * buf, size_t bufLen)
+std::shared_ptr<Packet_Base> extractCSPacket(char * buf, size_t bufLen)
 {	
 	std::string temp;
 	const char * idx = buf;

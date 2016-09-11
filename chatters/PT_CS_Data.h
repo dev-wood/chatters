@@ -130,7 +130,7 @@ protected:
 * etc. functions
 -
 *********************************************************************/
-std::shared_ptr<Packet_Base> extractPacketFromBuffer(char * buf, size_t bufLen);
+std::shared_ptr<Packet_Base> extractCSPacket(char * buf, size_t bufLen);
 
 
 
