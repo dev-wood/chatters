@@ -53,6 +53,8 @@ public:
 	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
+	RoomInfoToken roomTk;
+	std::vector<UserInfoToken> userList;
 protected:
 	/* Member method */
 	virtual void doSerialProc();
@@ -89,8 +91,7 @@ public:
 	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
-	UserKey userKey;	//rev	UserKey 필요 없을 듯..?
-	std::vector<RoomInfoToken> roomTkList;
+	std::vector<RoomInfoToken> roomList;
 protected:
 	/* Member method */
 	virtual void doSerialProc();
@@ -109,7 +110,6 @@ public:
 	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
-	UserKey userKey;		//rev UserKey는 필요 없을 듯..?
 	RoomInfoToken roomTk;
 protected:
 	/* Member method */
@@ -128,7 +128,6 @@ public:
 	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
-	UserKey userKey;	//rev UserKey는 필요 없을 듯..?
 protected:
 	/* Member method */
 	virtual void doSerialProc();
@@ -146,7 +145,7 @@ public:
 	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
-	UserKey userKey;	//rev UserKey는 필요 없을 듯..?
+	UserKey userKey;
 protected:
 	/* Member method */
 	virtual void doSerialProc();
@@ -164,6 +163,7 @@ public:
 	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
+	UserKey uKey;
 	std::string chat;
 protected:
 	/* Member method */
@@ -182,7 +182,7 @@ public:
 	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
-	std::vector<UserInfoToken > userTkList;
+	std::vector<UserInfoToken > userList;
 protected:
 	/* Member method */
 	virtual void doSerialProc();
