@@ -18,11 +18,23 @@ std::shared_ptr<Packet_Base> PK_CS_LOGIN_REQUEST::processPacket(MachObject & tar
 
 	if (agent.db_signin(userId, userPassword))
 	{	// sign in success
-		return make_shared(PK_SC_LOGIN_ACCEPT());
+		// build return packet
+		auto shPk = std::make_shared<PK_SC_LOGIN_ACCEPT>();
+
+		// set processing result
+		shPk->setProcessInfo(PkInfo::ProcCode::SUCCESS);
+
+		return shPk;
 	}
 	else
 	{	//sign in failed
-		return make_shared(PK_SC_LOGIN_FAIL());
+		// build return packet
+		auto shPk = std::make_shared<PK_SC_LOGIN_FAIL>();
+
+		// set processing result
+		shPk->setProcessInfo(PkInfo::ProcCode::SUCCESS);
+
+		return shPk;
 	}
 }
 void PK_CS_LOGIN_REQUEST::doSerialProc()
