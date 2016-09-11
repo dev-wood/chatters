@@ -27,7 +27,7 @@ public:
 		SUCCESS,	// Packet processing successfully.
 		FAIL,		// Packet processing failed.
 		ABORT,		// Packet processing aborted by user.
-		SOCKET_CLOSED	// Socket closed. Disconnected.
+		SOCKET_CLOSED	// Socket closed. Disconnected.		//rev
 	};
 public:	
 	/* Member method */
@@ -73,6 +73,7 @@ public:
 	void serialize();	// Template method for serialize process
 	void deserialize();	// Template method for serialize process
 	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& targetMObject) = 0;	// Process received packet using strategy pattern
+	void setProcessInfo(PkInfo::ProcCode resCode, std::string&& msg = "");
 
 	// Accessor
 	size_t get_packetSize();	// The size of whole packet include header space.

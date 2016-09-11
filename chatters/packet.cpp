@@ -67,6 +67,11 @@ void Packet_Base::deserialize()
 	// Do deserailize process depend on each Packet class.
 	doDeserialProc();
 }
+void Packet_Base::setProcessInfo(PkInfo::ProcCode resCode, std::string&& msg)
+{
+	_pkInfo.set_code(resCode);
+	_pkInfo.set_msg(std::move(msg));	//rev //? 작동 확인
+}
 size_t Packet_Base::get_packetSize()
 {
 	return _bufSize() + sizeof(size_t);
