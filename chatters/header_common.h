@@ -3,6 +3,8 @@
 #ifndef __HEADER_COMMON_H__
 #define __HEADER_COMMON_H__
 
+#define NOMINMAX
+
 #include <iostream>
 #include <memory>
 #include <string>
@@ -32,6 +34,7 @@ public:
 protected:
 	/* Member method */
 	InfoToken();
+	InfoToken(Key key);
 protected:
 	/* Member field */
 	Key _key;
@@ -53,6 +56,8 @@ public:
 	// accessor	
 	UserKey get_key() const;
 	std::string get_id() const;
+
+	void operator<<(std::stringstream& sstream);	//rev
 public:
 	/* Member field */
 private:
@@ -62,9 +67,13 @@ private:
 	/* Member field */
 	static UserKey _UniqueKey;
 	std::string _id;
+
+	//friend std::stringstream& operator<<(std::stringstream& sstream, UserInfoToken& utk);
 };
 __declspec(selectany) UserKey UserInfoToken::_UniqueKey = 0;
 std::ostream& operator << (std::ostream&, const UserInfoToken&);
+
+std::stringstream& operator<<(std::stringstream& sstream, UserInfoToken& utk);
 
 class RoomInfoToken : public InfoToken
 {

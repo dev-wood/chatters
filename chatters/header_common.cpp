@@ -1,9 +1,15 @@
 #include "header_common.h"
 
+
+
 /* InfoToken class definition */
 InfoToken::InfoToken() : _key(-1)
 {
 	//std::cout << "InfoToken() called" << std::endl;
+}
+InfoToken::InfoToken(Key key) : _key(key)
+{
+	// left intentionally blank
 }
 InfoToken::~InfoToken()
 {
@@ -56,21 +62,35 @@ std::string UserInfoToken::get_id() const
 {
 	return _id;
 }
+void UserInfoToken::operator<<(std::stringstream & sstream)
+{
+	sstream >> _key;
+	sstream.ignore(std::numeric_limits<std::streamsize>::max(), '|');
+	sstream >> _id;
+	sstream.ignore(std::numeric_limits<std::streamsize>::max(), '|');
+}
 UserInfoToken::UserInfoToken(const std::string& id)
 {
 	_id = id;
 	_key = _getUniqueKey();
 }
-UserInfoToken::UserInfoToken(const UserInfoToken & tk) : _id(tk._id)
+UserInfoToken::UserInfoToken(const UserInfoToken & tk) 
+	: InfoToken(tk._key),
+	_id(tk._id)
 {
-	_key = tk._key;
-	//_id = tk._id;
+	// left intentionally blank
 }
 std::ostream & operator<<(std::ostream & os, const UserInfoToken &utk)
 {
 	return os << "UserInfoToken object(key: " << utk.get_key()
 		<< ", id: " << utk.get_id()
 		<< ")" << std::endl;
+}
+
+std::stringstream & operator<<(std::stringstream & sstream, UserInfoToken & utk)
+{
+	sstream << utk.get_key() << '|' 
+		<< utk.get_id() << '|';
 }
 
 
