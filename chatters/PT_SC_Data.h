@@ -167,6 +167,7 @@ protected:
  * etc. functions
 	- 
 *********************************************************************/
+std::shared_ptr<Packet_Base> extractSCPacket(char * buf, size_t bufLen);
 
 
 
