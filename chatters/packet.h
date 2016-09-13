@@ -85,7 +85,7 @@ public:
 	Packet_Base& operator<<(const char * buf);
 public:
 	/* Member field */
-	const PTYPE _id;
+	const PTYPE id;
 	SOCKET sock;
 protected:
 	/* Member method */

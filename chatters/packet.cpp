@@ -51,7 +51,7 @@ void Packet_Base::serialize()
 	_setHeaderSpace();
 
 	// Write packet ID on buf.
-	_buf << ptoi(_id) << '|';
+	_buf << ptoi(id) << '|';
 
 	// Do serialize process depend on each Packet class.
 	doSerialProc();
@@ -97,11 +97,11 @@ Packet_Base & Packet_Base::operator<<(const char * buf)
 	_buf << buf;
 	return *this;
 }
-Packet_Base::Packet_Base(PTYPE pt) : _id(pt), _pkInfo(), sock(INVALID_SOCKET)
+Packet_Base::Packet_Base(PTYPE pt) : id(pt), _pkInfo(), sock(INVALID_SOCKET)
 {
 	// left blank intentionally
 }
-Packet_Base::Packet_Base() : _id(PTYPE::PT_BASE), _pkInfo(), sock(INVALID_SOCKET)
+Packet_Base::Packet_Base() : id(PTYPE::PT_BASE), _pkInfo(), sock(INVALID_SOCKET)
 {
 	// left blank intentionally
 }
