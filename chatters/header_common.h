@@ -91,11 +91,14 @@ public:
 	// accessor
 	RoomKey get_key() const;
 	std::string get_title() const;
+	int get_numOfPeer() const;
+
+	// mutator
+	void set_numOfPeer(int num);
 
 	void operator<<(std::stringstream& sstream);
 public:
 	/* Member field */
-	int _numOfPeer;
 private:
 	/* Member method */
 	UserKey _getUniqueKey();
@@ -103,6 +106,7 @@ private:
 	/* Member field */
 	static RoomKey _UniqueKey;
 	std::string _title;
+	int _numOfPeer;
 };
 __declspec(selectany) RoomKey RoomInfoToken::_UniqueKey = 0;
 std::ostream& operator<< (std::ostream&, const RoomInfoToken&);

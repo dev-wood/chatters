@@ -161,6 +161,16 @@ std::string RoomInfoToken::get_title() const
 	return _title;
 }
 
+int RoomInfoToken::get_numOfPeer() const
+{
+	return _numOfPeer;
+}
+
+void RoomInfoToken::set_numOfPeer(int num)
+{
+	_numOfPeer = num;
+}
+
 void RoomInfoToken::operator<<(std::stringstream & sstream)
 {
 	std::string token;
@@ -182,7 +192,7 @@ std::ostream & operator<<(std::ostream & os, const RoomInfoToken & rtk)
 {
 	return os << "RoomInfoToken object(key: " << rtk.get_key()
 		<< ", title: " << rtk.get_title()
-		<< ", numOfPeer: " << rtk._numOfPeer
+		<< ", numOfPeer: " << rtk.get_numOfPeer()
 		<< ")" << std::endl;
 }
 
@@ -190,7 +200,7 @@ std::stringstream & operator<<(std::stringstream & sstream, RoomInfoToken & rtk)
 {
 	sstream << rtk.get_key() << '|'
 		<< rtk.get_title() << '|'
-		<< rtk._numOfPeer << '|';
+		<< rtk.get_numOfPeer() << '|';
 
 	return sstream;
 }
