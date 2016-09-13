@@ -518,7 +518,7 @@ DWORD WINAPI recvThreadMain(LPVOID pComPort)
 			}
 			else {	// complete receive
 				cout << "|READ_PACKET| received. >>" << ioInfo->get_buffer() << endl;
-				auto shPk = extractPacketFromBuffer(ioInfo->get_buffer(), ioInfo->get_bufferLen());
+				auto shPk = extractCSPacket(ioInfo->get_buffer(), ioInfo->get_bufferLen());
 				if (shPk == nullptr)
 					cout << "|READ_PACKET| Packet extraction failed." << endl;
 				else {
