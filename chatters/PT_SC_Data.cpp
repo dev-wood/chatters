@@ -4,6 +4,7 @@
  * Packet from server to client
 
 *********************************************/
+/* PK_SC_LOGIN_ACCEPT class */
 PK_SC_LOGIN_ACCEPT::PK_SC_LOGIN_ACCEPT() : Packet_Base(PTYPE::PT_SC_LOGIN_ACCEPT)
 {
 	// left blank intentionally
@@ -15,16 +16,83 @@ PK_SC_LOGIN_ACCEPT::PK_SC_LOGIN_ACCEPT(PTYPE pType, char * buf, size_t bufLen)
 }
 std::shared_ptr<Packet_Base> PK_SC_LOGIN_ACCEPT::processPacket(MachObject & targetMObject)
 {
-	// left blank intentionally
 	return std::shared_ptr<Packet_Base>(nullptr);
 }
 void PK_SC_LOGIN_ACCEPT::_doSerialProc()
 {
+	//rev
 	// left blank intentionally
 }
 void PK_SC_LOGIN_ACCEPT::_doDeserialProc()
 {
 	userTk << _buf;
+}
+
+/* PK_SC_LOGIN_FAIL class */
+PK_SC_LOGIN_FAIL::PK_SC_LOGIN_FAIL() : Packet_Base(PTYPE::PT_SC_LOGIN_FAIL)
+{
+	// left blank intentionally
+}
+PK_SC_LOGIN_FAIL::PK_SC_LOGIN_FAIL(PTYPE pType, char * buf, size_t bufLen)
+	: Packet_Base(PTYPE::PT_SC_LOGIN_FAIL, buf, bufLen)
+{
+	// left blank intentionally
+}
+std::shared_ptr<Packet_Base> PK_SC_LOGIN_FAIL::processPacket(MachObject & targetMObject)
+{
+	return std::shared_ptr<Packet_Base>(nullptr);
+}
+void PK_SC_LOGIN_FAIL::_doSerialProc()
+{
+	// left blank intentionally
+}
+void PK_SC_LOGIN_FAIL::_doDeserialProc()
+{
+	// left blank intentionally
+}
+
+/* PK_SC_LOBBY_JOINROOMOK class */
+PK_SC_LOBBY_JOINROOMOK::PK_SC_LOBBY_JOINROOMOK() : Packet_Base(PTYPE::PT_SC_LOBBY_JOINROOMOK)
+{
+	// left blank intentionally
+}
+PK_SC_LOBBY_JOINROOMOK::PK_SC_LOBBY_JOINROOMOK(PTYPE pType, char * buf, size_t bufLen)
+	: Packet_Base(PTYPE::PT_SC_LOBBY_JOINROOMOK, buf, bufLen)
+{
+	// left blank intentionally
+}
+std::shared_ptr<Packet_Base> PK_SC_LOBBY_JOINROOMOK::processPacket(MachObject & targetMObject)
+{
+	return std::shared_ptr<Packet_Base>(nullptr);
+}
+void PK_SC_LOBBY_JOINROOMOK::_doSerialProc()
+{
+	// room information serialize
+	_buf << roomTk;
+
+	// user list serialize
+	int numOfPeer = userList.size();
+	_buf << numOfPeer << '|';
+	for (const auto& el : userList)
+		_buf << el;
+}
+void PK_SC_LOBBY_JOINROOMOK::_doDeserialProc()
+{
+	std::string token;
+	
+	// deserialize room information
+	roomTk << _buf;
+
+	// deserialize participants list of the room
+	std::getline(_buf, token, '|');
+	int numOfPeer = stoi(token);
+	userList.reserve(numOfPeer);
+	for (int i = 0; i < numOfPeer; i++)
+	{
+		UserInfoToken utk;
+		utk << _buf;
+		userList.push_back(std::move(utk));
+	}
 }
 
 
