@@ -54,7 +54,7 @@ void Packet_Base::serialize()
 	_buf << ptoi(id) << '|';
 
 	// Do serialize process depend on each Packet class.
-	doSerialProc();
+	_doSerialProc();
 
 	// Write header at the last of serialize process.
 	_writeHeader();
@@ -65,7 +65,7 @@ void Packet_Base::deserialize()
 	_buf.ignore(std::numeric_limits<std::streamsize>::max(), '|');
 
 	// Do deserailize process depend on each Packet class.
-	doDeserialProc();
+	_doDeserialProc();
 }
 void Packet_Base::setProcessInfo(PkInfo::ProcCode resCode, std::string&& msg)
 {

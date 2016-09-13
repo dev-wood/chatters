@@ -91,8 +91,8 @@ protected:
 	/* Member method */
 	Packet_Base(PTYPE);
 
-	virtual void doSerialProc() = 0;
-	virtual void doDeserialProc() = 0;
+	virtual void _doSerialProc() = 0;
+	virtual void _doDeserialProc() = 0;
 protected:
 	/* Member field */
 	std::stringstream _buf;
