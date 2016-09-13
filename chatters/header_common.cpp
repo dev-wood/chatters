@@ -161,12 +161,38 @@ std::string RoomInfoToken::get_title() const
 	return _title;
 }
 
+void RoomInfoToken::operator<<(std::stringstream & sstream)
+{
+	std::string token;
+
+	// extract room key
+	std::getline(sstream, token, '|');
+	_key = static_cast<Key>(stoi(token));
+	
+	// extract room title
+	std::getline(sstream, token, '|');
+	_title = std::move(token);
+
+	// extract the number of participants in the room
+	std::getline(sstream, token, '|');
+	_numOfPeer = stoi(token);
+}
+
 std::ostream & operator<<(std::ostream & os, const RoomInfoToken & rtk)
 {
 	return os << "RoomInfoToken object(key: " << rtk.get_key()
 		<< ", title: " << rtk.get_title()
 		<< ", numOfPeer: " << rtk._numOfPeer
 		<< ")" << std::endl;
+}
+
+std::stringstream & operator<<(std::stringstream & sstream, RoomInfoToken & rtk)
+{
+	sstream << rtk.get_key() << '|'
+		<< rtk.get_title() << '|'
+		<< rtk._numOfPeer << '|';
+
+	return sstream;
 }
 
 

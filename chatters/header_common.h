@@ -57,7 +57,7 @@ public:
 	UserKey get_key() const;
 	std::string get_id() const;
 
-	void operator<<(std::stringstream& sstream);	//rev
+	void operator<<(std::stringstream& sstream);
 public:
 	/* Member field */
 private:
@@ -91,6 +91,8 @@ public:
 	// accessor
 	RoomKey get_key() const;
 	std::string get_title() const;
+
+	void operator<<(std::stringstream& sstream);
 public:
 	/* Member field */
 	int _numOfPeer;
@@ -104,6 +106,8 @@ private:
 };
 __declspec(selectany) RoomKey RoomInfoToken::_UniqueKey = 0;
 std::ostream& operator<< (std::ostream&, const RoomInfoToken&);
+
+std::stringstream& operator<<(std::stringstream& sstream, RoomInfoToken& rtk);
 
 class MachObject
 {
