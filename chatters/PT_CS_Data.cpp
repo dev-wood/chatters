@@ -37,12 +37,12 @@ std::shared_ptr<Packet_Base> PK_CS_LOGIN_REQUEST::processPacket(MachObject & tar
 		return shPk;
 	}
 }
-void PK_CS_LOGIN_REQUEST::doSerialProc()
+void PK_CS_LOGIN_REQUEST::_doSerialProc()
 {
 	_buf << userId << '|' << userPassword << '|';
 }
 
-void PK_CS_LOGIN_REQUEST::doDeserialProc()
+void PK_CS_LOGIN_REQUEST::_doDeserialProc()
 {
 	std::getline(_buf, userId, '|');
 	std::getline(_buf, userPassword, '|');
@@ -64,11 +64,11 @@ std::shared_ptr<Packet_Base> PK_CS_LOBBY_JOINROOM::processPacket(MachObject & ta
 	return std::shared_ptr<Packet_Base>();
 }
 
-void PK_CS_LOBBY_JOINROOM::doSerialProc()
+void PK_CS_LOBBY_JOINROOM::_doSerialProc()
 {
 }
 
-void PK_CS_LOBBY_JOINROOM::doDeserialProc()
+void PK_CS_LOBBY_JOINROOM::_doDeserialProc()
 {
 }
 
@@ -88,11 +88,11 @@ std::shared_ptr<Packet_Base> PK_CS_LOBBY_LOAD_ROOMLIST::processPacket(MachObject
 	return std::shared_ptr<Packet_Base>();
 }
 
-void PK_CS_LOBBY_LOAD_ROOMLIST::doSerialProc()
+void PK_CS_LOBBY_LOAD_ROOMLIST::_doSerialProc()
 {
 }
 
-void PK_CS_LOBBY_LOAD_ROOMLIST::doDeserialProc()
+void PK_CS_LOBBY_LOAD_ROOMLIST::_doDeserialProc()
 {
 }
 
@@ -112,11 +112,11 @@ std::shared_ptr<Packet_Base> PK_CS_CREATEROOM_CREATEROOM::processPacket(MachObje
 	return std::shared_ptr<Packet_Base>();
 }
 
-void PK_CS_CREATEROOM_CREATEROOM::doSerialProc()
+void PK_CS_CREATEROOM_CREATEROOM::_doSerialProc()
 {
 }
 
-void PK_CS_CREATEROOM_CREATEROOM::doDeserialProc()
+void PK_CS_CREATEROOM_CREATEROOM::_doDeserialProc()
 {
 }
 
@@ -136,11 +136,11 @@ std::shared_ptr<Packet_Base> PK_CS_CHAT_QUITROOM::processPacket(MachObject & tar
 	return std::shared_ptr<Packet_Base>();
 }
 
-void PK_CS_CHAT_QUITROOM::doSerialProc()
+void PK_CS_CHAT_QUITROOM::_doSerialProc()
 {
 }
 
-void PK_CS_CHAT_QUITROOM::doDeserialProc()
+void PK_CS_CHAT_QUITROOM::_doDeserialProc()
 {
 }
 
@@ -160,11 +160,11 @@ std::shared_ptr<Packet_Base> PK_CS_CHAT_CHAT::processPacket(MachObject & targetM
 	return std::shared_ptr<Packet_Base>();
 }
 
-void PK_CS_CHAT_CHAT::doSerialProc()
+void PK_CS_CHAT_CHAT::_doSerialProc()
 {
 }
 
-void PK_CS_CHAT_CHAT::doDeserialProc()
+void PK_CS_CHAT_CHAT::_doDeserialProc()
 {
 }
 

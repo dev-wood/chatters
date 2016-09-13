@@ -18,11 +18,11 @@ std::shared_ptr<Packet_Base> PK_SC_LOGIN_ACCEPT::processPacket(MachObject & targ
 	// left blank intentionally
 	return std::shared_ptr<Packet_Base>(nullptr);
 }
-void PK_SC_LOGIN_ACCEPT::doSerialProc()
+void PK_SC_LOGIN_ACCEPT::_doSerialProc()
 {
 	// left blank intentionally
 }
-void PK_SC_LOGIN_ACCEPT::doDeserialProc()
+void PK_SC_LOGIN_ACCEPT::_doDeserialProc()
 {
 	userTk << _buf;
 }

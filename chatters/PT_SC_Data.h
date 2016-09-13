@@ -20,8 +20,8 @@ public:
 	UserInfoToken userTk;
 protected:
 	/* Member method */
-	virtual void doSerialProc();
-	virtual void doDeserialProc();
+	virtual void _doSerialProc();
+	virtual void _doDeserialProc();
 protected:
 	/* Member field */
 };
@@ -38,8 +38,8 @@ public:
 	/* Member field */
 protected:
 	/* Member method */
-	virtual void doSerialProc();
-	virtual void doDeserialProc();
+	virtual void _doSerialProc();
+	virtual void _doDeserialProc();
 protected:
 	/* Member field */
 };
@@ -57,8 +57,8 @@ public:
 	std::vector<UserInfoToken> userList;
 protected:
 	/* Member method */
-	virtual void doSerialProc();
-	virtual void doDeserialProc();
+	virtual void _doSerialProc();
+	virtual void _doDeserialProc();
 protected:
 	/* Member field */
 
@@ -75,8 +75,8 @@ public:
 	/* Member field */
 protected:
 	/* Member method */
-	virtual void doSerialProc();
-	virtual void doDeserialProc();
+	virtual void _doSerialProc();
+	virtual void _doDeserialProc();
 protected:
 	/* Member field */
 
@@ -94,8 +94,8 @@ public:
 	std::vector<RoomInfoToken> roomList;
 protected:
 	/* Member method */
-	virtual void doSerialProc();
-	virtual void doDeserialProc();
+	virtual void _doSerialProc();
+	virtual void _doDeserialProc();
 protected:
 	/* Member field */
 
@@ -113,8 +113,8 @@ public:
 	RoomInfoToken roomTk;
 protected:
 	/* Member method */
-	virtual void doSerialProc();
-	virtual void doDeserialProc();
+	virtual void _doSerialProc();
+	virtual void _doDeserialProc();
 protected:
 	/* Member field */
 };
@@ -130,8 +130,8 @@ public:
 	/* Member field */
 protected:
 	/* Member method */
-	virtual void doSerialProc();
-	virtual void doDeserialProc();
+	virtual void _doSerialProc();
+	virtual void _doDeserialProc();
 protected:
 	/* Member field */
 };
@@ -148,8 +148,8 @@ public:
 	UserKey userKey;
 protected:
 	/* Member method */
-	virtual void doSerialProc();
-	virtual void doDeserialProc();
+	virtual void _doSerialProc();
+	virtual void _doDeserialProc();
 protected:
 	/* Member field */
 };
@@ -167,8 +167,8 @@ public:
 	std::string chat;
 protected:
 	/* Member method */
-	virtual void doSerialProc();
-	virtual void doDeserialProc();
+	virtual void _doSerialProc();
+	virtual void _doDeserialProc();
 protected:
 	/* Member field */
 };
@@ -185,8 +185,8 @@ public:
 	std::vector<UserInfoToken > userList;
 protected:
 	/* Member method */
-	virtual void doSerialProc();
-	virtual void doDeserialProc();
+	virtual void _doSerialProc();
+	virtual void _doDeserialProc();
 protected:
 	/* Member field */
 };

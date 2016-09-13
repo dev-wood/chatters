@@ -23,8 +23,8 @@ public:
 	std::string userPassword;
 protected:
 	/* Member method */
-	virtual void doSerialProc();
-	virtual void doDeserialProc();
+	virtual void _doSerialProc();
+	virtual void _doDeserialProc();
 protected:
 	/* Member field */
 
@@ -43,8 +43,8 @@ public:
 	RoomKey roomKey;
 protected:
 	/* Member method */
-	virtual void doSerialProc();
-	virtual void doDeserialProc();
+	virtual void _doSerialProc();
+	virtual void _doDeserialProc();
 protected:
 	/* Member field */
 };
@@ -61,8 +61,8 @@ public:
 	UserKey userKey;	//rev 필요없을 듯..?
 protected:
 	/* Member method */
-	virtual void doSerialProc();
-	virtual void doDeserialProc();
+	virtual void _doSerialProc();
+	virtual void _doDeserialProc();
 protected:
 	/* Member field */
 };
@@ -80,8 +80,8 @@ public:
 	std::string roomTitle;
 protected:
 	/* Member method */
-	virtual void doSerialProc();
-	virtual void doDeserialProc();
+	virtual void _doSerialProc();
+	virtual void _doDeserialProc();
 protected:
 	/* Member field */
 };
@@ -99,8 +99,8 @@ public:
 	RoomKey roomKey;
 protected:
 	/* Member method */
-	virtual void doSerialProc();
-	virtual void doDeserialProc();
+	virtual void _doSerialProc();
+	virtual void _doDeserialProc();
 protected:
 	/* Member field */
 };
@@ -118,8 +118,8 @@ public:
 	std::string chat;
 protected:
 	/* Member method */
-	virtual void doSerialProc();
-	virtual void doDeserialProc();
+	virtual void _doSerialProc();
+	virtual void _doDeserialProc();
 protected:
 	/* Member field */
 };
