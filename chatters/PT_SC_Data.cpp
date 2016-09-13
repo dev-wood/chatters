@@ -4,8 +4,35 @@
  * Packet from server to client
 
 *********************************************/
+PK_SC_LOGIN_ACCEPT::PK_SC_LOGIN_ACCEPT() : Packet_Base(PTYPE::PT_SC_LOGIN_ACCEPT)
+{
+	// left blank intentionally
+}
+PK_SC_LOGIN_ACCEPT::PK_SC_LOGIN_ACCEPT(PTYPE pType, char * buf, size_t bufLen)
+	:Packet_Base(PTYPE::PT_SC_LOGIN_ACCEPT, buf, bufLen)
+{
+	// left blank intentionally
+}
+std::shared_ptr<Packet_Base> PK_SC_LOGIN_ACCEPT::processPacket(MachObject & targetMObject)
+{
+	// left blank intentionally
+	return std::shared_ptr<Packet_Base>(nullptr);
+}
+void PK_SC_LOGIN_ACCEPT::doSerialProc()
+{
+	// left blank intentionally
+}
+void PK_SC_LOGIN_ACCEPT::doDeserialProc()
+{
+	userTk << _buf;
+}
 
 
+
+/*********************************************
+* etc. function
+
+*********************************************/
 std::shared_ptr<Packet_Base> extractSCPacket(char * buf, size_t bufLen)
 {
 	std::string temp;
