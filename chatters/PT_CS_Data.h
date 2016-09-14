@@ -6,6 +6,11 @@
 #include "packet.h"
 
 
+
+/*********************************************************************
+ * Packet from client to server
+	-
+*********************************************************************/
 class SvMach;
 
 //rev member method 정의하기
@@ -127,8 +132,8 @@ protected:
 
 
 /*********************************************************************
-* etc. functions
--
+ * etc. functions
+	-
 *********************************************************************/
 std::shared_ptr<Packet_Base> extractCSPacket(char * buf, size_t bufLen);
 
