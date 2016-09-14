@@ -9,39 +9,14 @@
 #include "PT_CS_Data.h"
 #include "PT_SC_Data.h"
 
+
 using std::cin;
 using std::cout;
 using std::endl;
 
 
 
-/*********************************************************************
-* HandleData class
-- listen socket을 통해 새로 연결되는 클라이언트 정보를 저장하는
-클래스
-*********************************************************************/
 class UserInfoToken;
-
-
-
-/*********************************************************************
- * HandleData class
-	- listen socket을 통해 새로 연결되는 클라이언트 정보를 저장하는
-	클래스
-*********************************************************************/
-typedef struct HandleData
-{
-public:
-	/* Member method */
-public:
-	/* Member field */
-	SOCKET hClntSock;
-	SOCKADDR_IN clntAdr;
-private:
-	/* Member method */
-private:
-	/* Member field */
-} PER_HANDLE_DATA, *LPPER_HANDLE_DATA;
 
 
 
@@ -116,22 +91,28 @@ class SvUserInfo
 {
 public:
 	/* Member method */
-	SvUserInfo(const std::string& id, std::shared_ptr<HandleData> hData);
+	SvUserInfo(const std::string& id, SOCKET socket);
 
 	SvUserInfo(const SvUserInfo& ui);
 	SvUserInfo(SvUserInfo&& ui);
 	SvUserInfo& operator= (SvUserInfo&& ui);
 	SvUserInfo& operator= (const SvUserInfo& ui);
+
+	// accessor
+	SOCKET get_socket() const;
+	
+	// mutator
+	void set_socket(SOCKET socket);
 public:
 	/* Member field */
 	UserInfoToken utk;	// user 정보를 담고 있는 token
 	int curRmNum;		// 현재 참여 중인 채팅방. 없을 시 -1
-	std::shared_ptr<HandleData> spHData;
 private:
 	/* Member method */
 	SvUserInfo();
 private:
 	/* Member field */
+	SOCKET _socket;
 };
 
 /*********************************************************************
@@ -173,7 +154,7 @@ public:
 
 	bool db_signin(const std::string& id, const std::string& pw);
 	bool db_signup(const std::string& id, const std::string& pw);
-	bool addUser(const std::string& id, std::shared_ptr<HandleData> hData);	// add new user to user info list
+	bool addUser(const std::string& id, SOCKET socket);	// add new user to user info list
 	bool removeUser(UserKey uKey);				// remove user from user info list
 	bool joinRoom(RoomKey rKey, UserKey uKey);	// user join in the chatting room
 	bool leaveRoom(RoomKey rKey, UserKey uKey);	// user leaves the chatting room

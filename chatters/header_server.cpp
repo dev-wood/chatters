@@ -104,10 +104,10 @@ SvConInfo::SvConInfo(WSADATA newWsaData, SOCKET newSock, sockaddr newServAddr)
 /*********************************************************************
  * SvUserInfo class definition
 *********************************************************************/
-SvUserInfo::SvUserInfo(const std::string & id, std::shared_ptr<HandleData> hData) 
+SvUserInfo::SvUserInfo(const std::string & id, SOCKET sock) 
 	: utk(id), 
 	curRmNum(CHATTERS::NO_ROOM),
-	spHData(hData)
+	_socket(sock)
 {
 	// left blank intentionally
 }
@@ -125,7 +125,7 @@ SvUserInfo & SvUserInfo::operator=(SvUserInfo && ui)
 	{
 		utk = std::move(ui.utk);
 		curRmNum = ui.curRmNum;
-		spHData = ui.spHData;
+		_socket = ui._socket;
 	}
 
 	return *this;
@@ -136,7 +136,7 @@ SvUserInfo & SvUserInfo::operator=(const SvUserInfo & ui)
 	{
 		utk = ui.utk;
 		curRmNum = ui.curRmNum;
-		spHData = ui.spHData;
+		_socket = ui._socket;
 	}
 
 	return *this;
@@ -257,11 +257,11 @@ bool SvMach::db_signup(const std::string & id, const std::string & pw)
 	}
 	return true;
 }
-bool SvMach::addUser(const std::string& id, std::shared_ptr<HandleData> hData)
+bool SvMach::addUser(const std::string& id, SOCKET sock)
 {
-	SvUserInfo user(id, hData);
+	SvUserInfo user(id, sock);
 
-	return (_uList.insert(std::make_pair(user.utk.get_key(), std::move(user)))).second;
+	return (_uList.insert(std::make_pair(user.utk.get_key(), std::move(user)))).second;		//rev	//? move() 사용하나?
 }
 bool SvMach::removeUser(UserKey uKey)
 {

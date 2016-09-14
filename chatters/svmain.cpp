@@ -12,7 +12,6 @@ int main(int argc, char* argv[])
 	HANDLE hComPort;
 	SYSTEM_INFO sysInfo;
 	LPPER_IO_DATA ioInfo;
-	LPPER_HANDLE_DATA handleInfo;
 
 	SOCKET hServSock;
 	SOCKADDR_IN servAdr;
@@ -53,16 +52,13 @@ int main(int argc, char* argv[])
 		int addrLen = sizeof(clntAdr);
 
 		hClntSock = accept(hServSock, (SOCKADDR *)&clntAdr, &addrLen);
-		handleInfo = new(PER_HANDLE_DATA);
-		handleInfo->hClntSock = hClntSock;
-		memcpy(&(handleInfo->clntAdr), &clntAdr, addrLen);
-
+		
 		CreateIoCompletionPort((HANDLE)hClntSock, hComPort, (DWORD)hClntSock, 0);
 
 		ioInfo = new PER_IO_DATA(Packet_Base::HEADER_SIZE);
 		memset(&(ioInfo->overlapped), 0, sizeof(OVERLAPPED));
 		ioInfo->rwMode = PerIoData::READ_HEADER;
-		WSARecv(handleInfo->hClntSock, &(ioInfo->wsaBuf), 1, (LPDWORD)&recvBytes, (LPDWORD)&flags, &(ioInfo->overlapped), NULL);
+		WSARecv(hClntSock, &(ioInfo->wsaBuf), 1, (LPDWORD)&recvBytes, (LPDWORD)&flags, &(ioInfo->overlapped), NULL);
 	}
 	return 0;
 }
