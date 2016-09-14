@@ -22,23 +22,46 @@ std::shared_ptr<Packet_Base> PK_CS_LOGIN_REQUEST::processPacket(MachObject & tar
 
 	if (agent.db_signin(userId, userPassword))
 	{	// sign in success
-		// build return packet
-		auto shPk = std::make_shared<PK_SC_LOGIN_ACCEPT>();
+		// add user on user list	//rev
+		if (agent.addUser(userId, sockList[0]))
+		{
+			// build return packet
+			auto rtnShPk = std::make_shared<PK_SC_LOGIN_ACCEPT>();
 
-		// set processing result
-		shPk->setProcessInfo(PkInfo::ProcCode::SUCCESS);
+			// set processing result
+			rtnShPk->setProcessInfo(PkInfo::ProcCode::SUCCESS);
 
-		return shPk;
+			// register packet receiver
+			rtnShPk->sockList.push_back(sockList[0]);
+			
+			return rtnShPk;
+		}
+		else
+		{
+			// build return packet
+			auto rtnShPk = std::make_shared<PK_SC_LOGIN_FAIL>();
+
+			// set processing result
+			rtnShPk->setProcessInfo(PkInfo::ProcCode::FAIL, "SvMach::addUser(..) failed.");
+
+			// register packet receiver
+			rtnShPk->sockList.push_back(sockList[0]);
+
+			return rtnShPk;
+		}
 	}
 	else
 	{	//sign in failed
 		// build return packet
-		auto shPk = std::make_shared<PK_SC_LOGIN_FAIL>();
+		auto rtnShPk = std::make_shared<PK_SC_LOGIN_FAIL>();
 
 		// set processing result
-		shPk->setProcessInfo(PkInfo::ProcCode::SUCCESS);
+		rtnShPk->setProcessInfo(PkInfo::ProcCode::SUCCESS);
 
-		return shPk;
+		// register packet receiver
+		rtnShPk->sockList.push_back(sockList[0]);
+
+		return rtnShPk;
 	}
 }
 void PK_CS_LOGIN_REQUEST::_doSerialProc()
@@ -63,6 +86,7 @@ PK_CS_LOBBY_JOINROOM::PK_CS_LOBBY_JOINROOM(PTYPE ptype, const char * buf, size_t
 }
 std::shared_ptr<Packet_Base> PK_CS_LOBBY_JOINROOM::processPacket(MachObject & targetMObject)
 {
+	//rev
 	return std::shared_ptr<Packet_Base>();
 }
 void PK_CS_LOBBY_JOINROOM::_doSerialProc()
