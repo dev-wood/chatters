@@ -86,7 +86,7 @@ public:
 public:
 	/* Member field */
 	const PTYPE id;
-	SOCKET sock;
+	std::vector<SOCKET> sockList;
 protected:
 	/* Member method */
 	Packet_Base(PTYPE);
