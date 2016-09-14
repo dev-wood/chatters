@@ -141,6 +141,14 @@ SvUserInfo & SvUserInfo::operator=(const SvUserInfo & ui)
 
 	return *this;
 }
+SOCKET SvUserInfo::get_socket() const
+{
+	return _socket;
+}
+void SvUserInfo::set_socket(SOCKET socket)
+{
+	_socket = socket;
+}
 
 
 
