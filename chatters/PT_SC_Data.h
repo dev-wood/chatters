@@ -43,12 +43,12 @@ protected:
 protected:
 	/* Member field */
 };
-struct PK_SC_LOBBY_JOINROOMOK : public Packet_Base
+struct PK_SC_LOBBY_JOINROOM_ACCEPT : public Packet_Base
 {
 public:
 	/* Member method */
-	PK_SC_LOBBY_JOINROOMOK();
-	PK_SC_LOBBY_JOINROOMOK(PTYPE pType, char* buf, size_t bufLen);
+	PK_SC_LOBBY_JOINROOM_ACCEPT();
+	PK_SC_LOBBY_JOINROOM_ACCEPT(PTYPE pType, char* buf, size_t bufLen);
 	
 	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& targetMObject);	// Received packet process procedure using strategy pattern
 public:
@@ -63,12 +63,12 @@ protected:
 	/* Member field */
 
 };
-struct PK_SC_LOBBY_JOINROOMFAIL : public Packet_Base
+struct PK_SC_LOBBY_JOINROOM_FAIL : public Packet_Base
 {
 public:
 	/* Member method */
-	PK_SC_LOBBY_JOINROOMFAIL();
-	PK_SC_LOBBY_JOINROOMFAIL(PTYPE pType, char* buf, size_t bufLen);
+	PK_SC_LOBBY_JOINROOM_FAIL();
+	PK_SC_LOBBY_JOINROOM_FAIL(PTYPE pType, char* buf, size_t bufLen);
 	
 	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& targetMObject);	// Received packet process procedure using strategy pattern
 public:
