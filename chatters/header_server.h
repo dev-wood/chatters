@@ -6,6 +6,7 @@
 
 //#include "packet.h"
 //#include "header_common.h"
+#include "DBConnector.h"
 #include "PT_CS_Data.h"
 #include "PT_SC_Data.h"
 
