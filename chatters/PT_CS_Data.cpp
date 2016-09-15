@@ -86,14 +86,56 @@ PK_CS_LOBBY_JOINROOM::PK_CS_LOBBY_JOINROOM(PTYPE ptype, const char * buf, size_t
 }
 std::shared_ptr<Packet_Base> PK_CS_LOBBY_JOINROOM::processPacket(MachObject & targetMObject)
 {
-	//rev
-	return std::shared_ptr<Packet_Base>();
+	// casting agent
+	auto& agent = dynamic_cast<SvMach &>(targetMObject);
+
+	// packet processing procedure
+	if (agent.joinRoom(roomKey, userKey))
+	{	// join room success
+		// build return packet
+		auto rtnShPk = std::make_shared<PK_SC_LOBBY_JOINROOM_ACCEPT>();
+
+		// set processing result
+		rtnShPk->setProcessInfo(PkInfo::ProcCode::SUCCESS);
+
+		// register packet receiver
+		rtnShPk->sockList.push_back(sockList[0]);
+
+		return rtnShPk;
+	}
+	else {	// join room failed
+		// build return packet
+		auto rtnShPk = std::make_shared<PK_SC_LOBBY_JOINROOM_FAIL>();
+
+		// set processing result
+		rtnShPk->setProcessInfo(PkInfo::ProcCode::FAIL, "Join room failed.");
+
+		// register packet receiver
+		rtnShPk->sockList.push_back(sockList[0]);
+
+		return rtnShPk;
+	}
 }
 void PK_CS_LOBBY_JOINROOM::_doSerialProc()
 {
+	// serialize member field depending on the packet type
+	
+	_buf << userKey << '|';
+	_buf << roomKey << '|';
 }
 void PK_CS_LOBBY_JOINROOM::_doDeserialProc()
 {
+	// deserialize member field depending on the packet type
+	
+	std::string token;
+
+	// extract user key
+	std::getline(_buf, token, '|');
+	userKey = std::stoi(token);
+
+	// extract room key
+	std::getline(_buf, token, '|');
+	roomKey = std::stoi(token);
 }
 
 /* PK_CS_LOBBY_LOAD_ROOMLIST class */
@@ -215,3 +257,23 @@ std::shared_ptr<Packet_Base> extractCSPacket(char * buf, size_t bufLen)
 		return nullptr;
 	}
 }
+
+/*
+{
+	// casting agent
+	auto& agent = dynamic_cast<SvMach &>(targetMObject);
+
+	// packet processing procedure
+
+	// build return packet
+	auto rtnShPk = std::make_shared<..>(..);
+
+	// set processing result
+	rtnShPk->setProcessInfo(..);
+
+	// register packet receiver
+	rtnShPk->sockList.push_back(..);
+
+	return rtnShPk;
+}
+*/
