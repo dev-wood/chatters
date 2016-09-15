@@ -285,20 +285,23 @@ bool SvMach::joinRoom(RoomKey rKey, UserKey uKey)
 	auto rmIter = findRoom(rKey);
 
 	if (rmIter == _rList.end()) {
-		std::cout << "Cannot find Room(#" << rKey << ")" << endl;
+		std::cout << "Cannot find Room #" << rKey << "(Request from user #" << uKey << ")" << endl;
 		return false;
 	}
 
 	bool joinRoomResult = rmIter->second.addUser(uKey);
 	bool updateUserInfoResult;
 	
-	if (!joinRoomResult)// fail to join room
+	if (!joinRoomResult) {// fail to join room
+		std::cout << "Fail to join room #" << rKey << "(Request from user #" << uKey << ")" << endl;
 		return false;
+	}
 	else				// succeed to join room
 		updateUserInfoResult = updateUserInfo(uKey, rKey);	// update user informaion(room#)
 		
 	if (!updateUserInfoResult)	// fail to update user information(room#)
 	{
+		std::cout << "Fail to update user information of user #" << uKey << ")" << endl;
 		rmIter->second.removeUser(uKey);// rewind changes
 		return false;
 	}
