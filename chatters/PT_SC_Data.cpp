@@ -66,6 +66,8 @@ std::shared_ptr<Packet_Base> PK_SC_LOBBY_JOINROOM_ACCEPT::processPacket(MachObje
 }
 void PK_SC_LOBBY_JOINROOM_ACCEPT::_doSerialProc()
 {
+	// serialize member field depending on the packet type
+
 	// room information serialize
 	_buf << roomTk;
 
@@ -77,6 +79,8 @@ void PK_SC_LOBBY_JOINROOM_ACCEPT::_doSerialProc()
 }
 void PK_SC_LOBBY_JOINROOM_ACCEPT::_doDeserialProc()
 {
+	// serialize member field depending on the packet type
+
 	std::string token;
 	
 	// deserialize room information

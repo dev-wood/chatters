@@ -154,9 +154,13 @@ std::shared_ptr<Packet_Base> PK_CS_LOBBY_LOAD_ROOMLIST::processPacket(MachObject
 }
 void PK_CS_LOBBY_LOAD_ROOMLIST::_doSerialProc()
 {
+	// serialize member field depending on the packet type
+
 }
 void PK_CS_LOBBY_LOAD_ROOMLIST::_doDeserialProc()
 {
+	// deserialize member field depending on the packet type
+
 }
 
 /* PK_CS_CREATEROOM_CREATEROOM class */
@@ -175,9 +179,13 @@ std::shared_ptr<Packet_Base> PK_CS_CREATEROOM_CREATEROOM::processPacket(MachObje
 }
 void PK_CS_CREATEROOM_CREATEROOM::_doSerialProc()
 {
+	// serialize member field depending on the packet type
+
 }
 void PK_CS_CREATEROOM_CREATEROOM::_doDeserialProc()
 {
+	// deserialize member field depending on the packet type
+
 }
 
 /* PK_CS_CHAT_QUITROOM class */
@@ -196,9 +204,13 @@ std::shared_ptr<Packet_Base> PK_CS_CHAT_QUITROOM::processPacket(MachObject & tar
 }
 void PK_CS_CHAT_QUITROOM::_doSerialProc()
 {
+	// serialize member field depending on the packet type
+
 }
 void PK_CS_CHAT_QUITROOM::_doDeserialProc()
 {
+	// deserialize member field depending on the packet type
+
 }
 
 /* PK_CS_CHAT_CHAT class */
@@ -217,9 +229,13 @@ std::shared_ptr<Packet_Base> PK_CS_CHAT_CHAT::processPacket(MachObject & targetM
 }
 void PK_CS_CHAT_CHAT::_doSerialProc()
 {
+	// serialize member field depending on the packet type
+
 }
 void PK_CS_CHAT_CHAT::_doDeserialProc()
 {
+	// deserialize member field depending on the packet type
+
 }
 
 
