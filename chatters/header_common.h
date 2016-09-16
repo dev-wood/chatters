@@ -27,6 +27,10 @@ namespace CHATTERS
 class InfoToken
 {
 public:
+	enum :int {
+		INVALID_KEY = -1
+	};
+public:
 	/* Member method */
 	virtual ~InfoToken();
 public:
