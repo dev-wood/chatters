@@ -163,7 +163,6 @@ void PK_CS_LOBBY_LOAD_ROOMLIST::_doDeserialProc()
 
 }
 
-//rev
 /* PK_CS_CREATEROOM_CREATEROOM class */
 PK_CS_CREATEROOM_CREATEROOM::PK_CS_CREATEROOM_CREATEROOM() : Packet_Base(PTYPE::PT_CS_CREATEROOM_CREATEROOM)
 {
@@ -175,19 +174,64 @@ PK_CS_CREATEROOM_CREATEROOM::PK_CS_CREATEROOM_CREATEROOM(PTYPE ptype, const char
 	// left blank intentionally
 }
 std::shared_ptr<Packet_Base> PK_CS_CREATEROOM_CREATEROOM::processPacket(MachObject & targetMObject)
-{	
+{
+	// casting agent
+	auto& agent = dynamic_cast<SvMach &>(targetMObject);
+
+	// packet processing procedure
+	RoomKey rKey = agent.openRoom(userKey, roomTitle);
+
+	if (rKey != InfoToken::INVALID_KEY)
+	{	// create room success
+		// build return packet
+		auto rtnShPk = std::make_shared<PK_SC_CREATEROOM_OK>(nullptr);
+		const auto& rmIter = agent.findRoom(rKey);	//rev const 가 문제 일으킬 수 있음
+
+		rtnShPk->roomTk = rmIter->second.rtk;
+
+		// set processing result
+		rtnShPk->setProcessInfo(PkInfo::SUCCESS);
+
+		// register packet receiver
+		rtnShPk->sockList.push_back(sockList[0]);
+
+		return rtnShPk;
+	}
+	else
+	{	// create room failed
+		// build return packet
+		auto rtnShPk = std::make_shared<PK_SC_CREATEROOM_FAIL>(nullptr);
+
+		// set processing result
+		rtnShPk->setProcessInfo(PkInfo::FAIL, "Create Room failed.");
+
+		// register packet receiver
+		rtnShPk->sockList.push_back(sockList[0]);
+
+		return rtnShPk;
+	}
 }
 void PK_CS_CREATEROOM_CREATEROOM::_doSerialProc()
 {
 	// serialize member field depending on the packet type
-
+	_buf << userKey << '|';
+	_buf << roomTitle << '|';
 }
 void PK_CS_CREATEROOM_CREATEROOM::_doDeserialProc()
 {
 	// deserialize member field depending on the packet type
 
+	std::string token;
+
+	// extract user key
+	std::getline(_buf, token, '|');
+	userKey = stoi(token);
+
+	// extract room title
+	std::getline(_buf, roomTitle, '|');
 }
 
+//rev
 /* PK_CS_CHAT_QUITROOM class */
 PK_CS_CHAT_QUITROOM::PK_CS_CHAT_QUITROOM() : Packet_Base(PTYPE::PT_CS_CHAT_QUITROOM)
 {
