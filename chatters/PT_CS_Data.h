@@ -63,7 +63,7 @@ public:
 	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
-	UserKey userKey;	//rev 필요없을 듯..?
+
 protected:
 	/* Member method */
 	virtual void _doSerialProc();

@@ -150,7 +150,7 @@ PK_CS_LOBBY_LOAD_ROOMLIST::PK_CS_LOBBY_LOAD_ROOMLIST(PTYPE ptype, const char * b
 }
 std::shared_ptr<Packet_Base> PK_CS_LOBBY_LOAD_ROOMLIST::processPacket(MachObject & targetMObject)
 {
-	return std::shared_ptr<Packet_Base>();
+	return std::shared_ptr<Packet_Base>(nullptr);
 }
 void PK_CS_LOBBY_LOAD_ROOMLIST::_doSerialProc()
 {
