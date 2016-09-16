@@ -36,7 +36,6 @@ Packet_Base::Packet_Base(PTYPE pType, const char * buf, size_t bufLen) : Packet_
 {
 	//_buf << buf;
 	_buf.write(buf, bufLen);
-	sockList.reserve(1);
 }
 Packet_Base::~Packet_Base()
 {
@@ -100,11 +99,11 @@ Packet_Base & Packet_Base::operator<<(const char * buf)
 }
 Packet_Base::Packet_Base(PTYPE pt) : id(pt), _pkInfo()
 {
-	sockList.push_back(INVALID_SOCKET);
+	sockList.reserve(1);
 }
 Packet_Base::Packet_Base() : id(PTYPE::PT_BASE), _pkInfo()
 {
-	sockList.push_back(INVALID_SOCKET);
+	sockList.reserve(1);
 }
 void Packet_Base::_setHeaderSpace()
 {

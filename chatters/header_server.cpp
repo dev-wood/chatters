@@ -441,20 +441,24 @@ SvPacketManager & SvPacketManager::Instance()
 }
 void SvPacketManager::sendPacket(std::shared_ptr<Packet_Base> spPk)
 {
-	SOCKET hClntSock;
 	size_t pkSz;
 	DWORD flags = 0;
 	LPPER_IO_DATA ioInfo;
 
-	hClntSock = spPk->sock;
+	
 	pkSz = spPk->get_packetSize();
 
 	ioInfo = new PerIoData(pkSz);
 	memset(&(ioInfo->overlapped), 0, sizeof(OVERLAPPED));
 	memcpy_s(ioInfo->get_buffer(), ioInfo->get_bufferLen(), spPk->get_bufAddr(), pkSz);
 	ioInfo->rwMode = PerIoData::WRITE;
-
-	WSASend(hClntSock, &(ioInfo->wsaBuf), 1, NULL, 0, &(ioInfo->overlapped), NULL);
+	
+	ioInfo->set_refCount(spPk->sockList.size());
+	for (const auto& el : spPk->sockList)
+	{
+		WSASend(el, &(ioInfo->wsaBuf), 1, NULL, 0, &(ioInfo->overlapped), NULL);
+	}
+	
 }
 std::shared_ptr<Packet_Base> SvPacketManager::recvPacket()
 {
@@ -545,7 +549,7 @@ DWORD WINAPI recvThreadMain(LPVOID pComPort)
 				if (shPk == nullptr)
 					cout << "|READ_PACKET| Packet extraction failed." << endl;
 				else {
-					shPk->sock = sock;
+					shPk->sockList.push_back(sock);
 					SvPacketManager::Instance()._msgQueue.push(std::move(shPk));	//rev lock 걸어야할까..?
 
 					// ioInfo reset to wait for header
