@@ -155,11 +155,11 @@ public:
 
 	bool db_signin(const std::string& id, const std::string& pw);
 	bool db_signup(const std::string& id, const std::string& pw);
-	bool addUser(const std::string& id, SOCKET socket);	// add new user to user info list
+	UserKey addUser(const std::string& id, SOCKET socket);	// add new user to user info list
 	bool removeUser(UserKey uKey);				// remove user from user info list
 	bool joinRoom(RoomKey rKey, UserKey uKey);	// user join in the chatting room
 	bool leaveRoom(RoomKey rKey, UserKey uKey);	// user leaves the chatting room
-	bool openRoom(UserKey uKey, const std::string& title);		// add new chatting room in chatting room list
+	RoomKey openRoom(UserKey uKey, const std::string& title);		// add new chatting room in chatting room list
 	//std::vector<UserKey> closeRoom(RoomKey rKey);		// remove the chatting room from the chatting room list
 	bool removeRoom(RoomKey rKey);	// remove the chatting room from the chatting room list
 	bool updateUserInfo(UserKey uKey, RoomKey newRmKey);	// update user infomation

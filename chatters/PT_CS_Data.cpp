@@ -23,7 +23,7 @@ std::shared_ptr<Packet_Base> PK_CS_LOGIN_REQUEST::processPacket(MachObject & tar
 	if (agent.db_signin(userId, userPassword))
 	{	// sign in success
 		// add user on user list	//rev
-		if (agent.addUser(userId, sockList[0]))
+		if (agent.addUser(userId, sockList[0]) != InfoToken::INVALID_KEY)
 		{
 			// build return packet
 			auto rtnShPk = std::make_shared<PK_SC_LOGIN_ACCEPT>();
@@ -163,6 +163,7 @@ void PK_CS_LOBBY_LOAD_ROOMLIST::_doDeserialProc()
 
 }
 
+//rev
 /* PK_CS_CREATEROOM_CREATEROOM class */
 PK_CS_CREATEROOM_CREATEROOM::PK_CS_CREATEROOM_CREATEROOM() : Packet_Base(PTYPE::PT_CS_CREATEROOM_CREATEROOM)
 {
@@ -174,8 +175,7 @@ PK_CS_CREATEROOM_CREATEROOM::PK_CS_CREATEROOM_CREATEROOM(PTYPE ptype, const char
 	// left blank intentionally
 }
 std::shared_ptr<Packet_Base> PK_CS_CREATEROOM_CREATEROOM::processPacket(MachObject & targetMObject)
-{
-	return std::shared_ptr<Packet_Base>();
+{	
 }
 void PK_CS_CREATEROOM_CREATEROOM::_doSerialProc()
 {
@@ -201,6 +201,23 @@ PK_CS_CHAT_QUITROOM::PK_CS_CHAT_QUITROOM(PTYPE ptype, const char * buf, size_t b
 std::shared_ptr<Packet_Base> PK_CS_CHAT_QUITROOM::processPacket(MachObject & targetMObject)
 {
 	return std::shared_ptr<Packet_Base>();
+	/*
+	// casting agent
+	auto& agent = dynamic_cast<SvMach &>(targetMObject);
+
+	// packet processing procedure
+
+	// build return packet
+	auto rtnShPk = std::make_shared<..>(..);
+
+	// set processing result
+	rtnShPk->setProcessInfo(..);
+
+	// register packet receiver
+	rtnShPk->sockList.push_back(..);
+
+	return rtnShPk;
+	*/
 }
 void PK_CS_CHAT_QUITROOM::_doSerialProc()
 {
@@ -226,6 +243,23 @@ PK_CS_CHAT_CHAT::PK_CS_CHAT_CHAT(PTYPE ptype, const char * buf, size_t bufLen)
 std::shared_ptr<Packet_Base> PK_CS_CHAT_CHAT::processPacket(MachObject & targetMObject)
 {
 	return std::shared_ptr<Packet_Base>();
+	/*
+	// casting agent
+	auto& agent = dynamic_cast<SvMach &>(targetMObject);
+
+	// packet processing procedure
+
+	// build return packet
+	auto rtnShPk = std::make_shared<..>(..);
+
+	// set processing result
+	rtnShPk->setProcessInfo(..);
+
+	// register packet receiver
+	rtnShPk->sockList.push_back(..);
+
+	return rtnShPk;
+	*/
 }
 void PK_CS_CHAT_CHAT::_doSerialProc()
 {

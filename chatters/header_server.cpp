@@ -171,10 +171,10 @@ bool SvRoomInfo::removeUser(UserKey uKey)
 {
 	for (auto & it = userList.begin(); it != userList.cend(); ++it)
 	{
-		if (*it == uKey) {
-			userList.erase(it);
-			return true;
-		}
+	if (*it == uKey) {
+		userList.erase(it);
+		return true;
+	}
 	}
 
 	return false;
@@ -208,7 +208,7 @@ bool SvMach::db_signin(const std::string & id, const std::string & pw)
 	// SELECT * FROM tb1 WHERE id='str_id' AND pw='str_pw'
 	std::string stmt = "SELECT * FROM tb1 ";
 	stmt += "WHERE id='" + id + "' AND pw='" + pw + "'";
-	
+
 	RETCODE errmsg;
 
 	if ((errmsg = _dbc.excute(stmt)) != SQL_SUCCESS)
@@ -226,7 +226,7 @@ bool SvMach::db_signin(const std::string & id, const std::string & pw)
 
 	if (foundNumOfRow == 1)
 		return true;
-	else 
+	else
 		return false;
 }
 bool SvMach::db_signup(const std::string & id, const std::string & pw)
@@ -243,7 +243,7 @@ bool SvMach::db_signup(const std::string & id, const std::string & pw)
 	}
 
 	foundRow = 0;
-	if (_dbc.getResultNum(foundRow) != SQL_SUCCESS) 
+	if (_dbc.getResultNum(foundRow) != SQL_SUCCESS)
 	{
 		std::cout << "DBConnector::getResultNum(..) get SQL error" << std::endl;
 		exit(1);
@@ -254,7 +254,7 @@ bool SvMach::db_signup(const std::string & id, const std::string & pw)
 		std::cout << "SvMach::db_signup(..) error: duplicated key" << std::endl;
 		return false;
 	}
-	
+
 	// INSERT INTO tb1 VALUES ('str_id', 'str_pw')
 	std::string stmt = "INSERT INTO tb1 VALUES ('" + id + "', '" + pw + "')";
 
@@ -265,11 +265,22 @@ bool SvMach::db_signup(const std::string & id, const std::string & pw)
 	}
 	return true;
 }
-bool SvMach::addUser(const std::string& id, SOCKET sock)
+UserKey SvMach::addUser(const std::string& id, SOCKET sock)
 {
 	SvUserInfo user(id, sock);
+	
+	auto resPair = _uList.insert(std::make_pair(user.utk.get_key(), std::move(user))); //rev	//? move() 사용하나? // auto? auto&?
+	bool opResult = resPair.second;
+	UserKey uKey = resPair.first->first;
 
-	return (_uList.insert(std::make_pair(user.utk.get_key(), std::move(user)))).second;		//rev	//? move() 사용하나?
+	if (opResult)	
+	{	// add new user succesfully
+		return uKey;
+	}
+	else
+	{	// add new user failed
+		return InfoToken::INVALID_KEY;
+	}
 }
 bool SvMach::removeUser(UserKey uKey)
 {
@@ -333,29 +344,30 @@ bool SvMach::leaveRoom(RoomKey rKey, UserKey uKey)
 	else
 		return true;
 }
-bool SvMach::openRoom(UserKey uKey, const std::string & title)
+RoomKey SvMach::openRoom(UserKey uKey, const std::string & title)
 {
 	SvRoomInfo rm(title);
+	RoomKey rmKey = rm.rtk.get_key();
 
-	auto rmIter = _rList.insert(std::make_pair(rm.rtk.get_key(), std::move(rm)));
-	bool opResult = rmIter.second;
+	auto resPair = _rList.insert(std::make_pair(rm.rtk.get_key(), std::move(rm)));
+	bool opResult = resPair.second;
+	RoomKey rmKey = resPair.first->first;
 
 	if (!opResult)	// fail to add room to room list
 	{
 		std::cout << "Create room failed." << std::endl;
-		return false;
+		return InfoToken::INVALID_KEY;
 	}
 
-	auto rmKey = rmIter.first->second.rtk.get_key();
 	bool joinResult = joinRoom(rmKey, uKey);
 
 	if (!joinResult)	// fail to enter the room
 	{
 		_rList.erase(rmKey);	// rewind changes
-		return false;
+		return InfoToken::INVALID_KEY;
 	}
 	
-	return true;
+	return rmKey;
 }
 //std::vector<UserKey> SvMach::closeRoom(RoomKey rKey)
 //{
