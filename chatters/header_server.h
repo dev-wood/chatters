@@ -92,9 +92,10 @@ class SvUserInfo
 public:
 	/* Member method */
 	SvUserInfo(const std::string& id, SOCKET socket);
-
 	SvUserInfo(const SvUserInfo& ui);
 	SvUserInfo(SvUserInfo&& ui);
+	~SvUserInfo();
+
 	SvUserInfo& operator= (SvUserInfo&& ui);
 	SvUserInfo& operator= (const SvUserInfo& ui);
 

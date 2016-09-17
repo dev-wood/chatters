@@ -111,6 +111,11 @@ SvUserInfo::SvUserInfo(SvUserInfo && ui)
 {
 	*this = std::move(ui);
 }
+SvUserInfo::~SvUserInfo()
+{
+	if (_socket != INVALID_SOCKET)
+		closesocket(_socket);
+}
 SvUserInfo & SvUserInfo::operator=(SvUserInfo && ui)
 {
 	if (this != &ui)
@@ -163,10 +168,10 @@ bool SvRoomInfo::removeUser(UserKey uKey)
 {
 	for (auto & it = userList.begin(); it != userList.cend(); ++it)
 	{
-	if (*it == uKey) {
-		userList.erase(it);
-		return true;
-	}
+		if (*it == uKey) {
+			userList.erase(it);
+			return true;
+		}
 	}
 
 	return false;
