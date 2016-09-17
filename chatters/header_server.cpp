@@ -442,20 +442,21 @@ void SvPacketManager::sendPacket(std::shared_ptr<Packet_Base> spPk)
 	DWORD flags = 0;
 	LPPER_IO_DATA ioInfo;
 
-	
-	pkSz = spPk->get_packetSize();
-
-	ioInfo = new PerIoData(pkSz);
-	memset(&(ioInfo->overlapped), 0, sizeof(OVERLAPPED));
-	memcpy_s(ioInfo->get_buffer(), ioInfo->get_bufferLen(), spPk->get_bufAddr(), pkSz);
-	ioInfo->rwMode = PerIoData::WRITE;
-	
-	ioInfo->set_refCount(spPk->sockList.size());
-	for (const auto& el : spPk->sockList)
+	if (spPk != nullptr)
 	{
-		WSASend(el, &(ioInfo->wsaBuf), 1, NULL, 0, &(ioInfo->overlapped), NULL);
-	}
-	
+		pkSz = spPk->get_packetSize();
+
+		ioInfo = new PerIoData(pkSz);
+		memset(&(ioInfo->overlapped), 0, sizeof(OVERLAPPED));
+		memcpy_s(ioInfo->get_buffer(), ioInfo->get_bufferLen(), spPk->get_bufAddr(), pkSz);
+		ioInfo->rwMode = PerIoData::WRITE;
+
+		ioInfo->set_refCount(spPk->sockList.size());
+		for (const auto& el : spPk->sockList)
+		{
+			WSASend(el, &(ioInfo->wsaBuf), 1, NULL, 0, &(ioInfo->overlapped), NULL);
+		}
+	}	
 }
 std::shared_ptr<Packet_Base> SvPacketManager::recvPacket()
 {
