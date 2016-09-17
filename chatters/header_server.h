@@ -3,6 +3,7 @@
 #include <memory>
 #include <WinSock2.h>
 #include <process.h>
+#include <atomic>
 
 //#include "packet.h"
 //#include "header_common.h"
@@ -39,8 +40,8 @@ public:
 	PerIoData(size_t bufSz);
 	~PerIoData();
 
+	void set_refCount(int newVal);
 	int get_refCount() const;
-	void inc_refCount();
 	void allocBuffer(size_t bufSz);
 	void set_Buffer(char * bufPtr, int bufSz);
 	char * get_buffer() const;
@@ -52,13 +53,11 @@ public:
 	WSABUF wsaBuf;
 	int rwMode;		// read mode / write mode distinguisher
 private:
-	void set_refCount(int newVal);
-	void dec_refCount();
 	void _releaseBuffer();
 private:
 	char * _buffer;
 	size_t _bufferLen;
-	int _refCount;
+	std::atomic<int> _refCount;
 } PER_IO_DATA, *LPPER_IO_DATA;
 
 

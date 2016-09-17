@@ -20,13 +20,13 @@ PerIoData::~PerIoData()
 	_releaseBuffer();
 	//std::cout << "~PER_IO_DATA()" << endl;
 }
+void PerIoData::set_refCount(int newVal)
+{
+	_refCount = newVal;
+}
 int PerIoData::get_refCount() const
 {
 	return _refCount;
-}
-void PerIoData::inc_refCount()
-{
-	_refCount++;
 }
 void PerIoData::allocBuffer(size_t bufSz)
 {
@@ -65,14 +65,6 @@ void PerIoData::operator delete(void * p)
 	}
 	targetPtr->_refCount--;
 	//std::cout << "delete PER_IO_DATA(addr: " << p << ") called. refCount: " << targetPtr->_refCount << endl;
-}
-void PerIoData::set_refCount(int newVal)
-{
-	_refCount = newVal;
-}
-void PerIoData::dec_refCount()
-{
-	_refCount--;
 }
 void PerIoData::_releaseBuffer()
 {
