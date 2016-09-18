@@ -15,11 +15,11 @@
 
 
 /*****************************************************************
- * PacketInfo class
+ * ProcessInfo class
 	- packet processing(de/serialize) 의 결과 및 관련 정보를 저장
  *
  *****************************************************************/
-typedef class PacketInfo
+typedef class ProcessInfo
 {
 public:
 	enum ProcCode :int {
@@ -31,7 +31,7 @@ public:
 	};
 public:	
 	/* Member method */
-	PacketInfo();
+	ProcessInfo();
 
 	// Accessor
 	ProcCode get_code() const;
@@ -49,7 +49,7 @@ private:
 	/* Member field */
 	ProcCode _code;
 	std::string _msg;
-} PkInfo;
+} ProcInfo;
 
 
 
@@ -73,14 +73,14 @@ public:
 	void serialize();	// Template method for serialize process
 	void deserialize();	// Template method for serialize process
 	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& targetMObject) = 0;	// Process received packet using strategy pattern
-	void setProcessInfo(PkInfo::ProcCode resCode, std::string&& msg = "");
+	void setProcessInfo(ProcInfo::ProcCode resCode, std::string&& msg = "");
 
 	// Accessor
 	size_t get_packetSize();	// The size of whole packet include header space.
 	size_t get_bufSize();		// The size of buffer(serialized information).
 	const char * get_bufAddr() const;
 	const std::stringstream& get_buf() const;
-	const PkInfo& get_pkInfo() const;
+	const ProcInfo& get_ProcInfo() const;
 
 	Packet_Base& operator<<(const char * buf);
 public:
@@ -96,7 +96,7 @@ protected:
 protected:
 	/* Member field */
 	std::stringstream _buf;
-	PacketInfo _pkInfo;
+	ProcessInfo _ProcInfo;
 private:
 	/* Member method */
 	Packet_Base();

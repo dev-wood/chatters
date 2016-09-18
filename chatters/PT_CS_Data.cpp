@@ -29,7 +29,7 @@ std::shared_ptr<Packet_Base> PK_CS_LOGIN_REQUEST::processPacket(MachObject & tar
 			auto rtnShPk = std::make_shared<PK_SC_LOGIN_ACCEPT>();
 
 			// set processing result
-			rtnShPk->setProcessInfo(PkInfo::ProcCode::SUCCESS);
+			rtnShPk->setProcessInfo(ProcInfo::ProcCode::SUCCESS);
 
 			// register packet receiver
 			rtnShPk->sockList.push_back(sockList[0]);
@@ -42,7 +42,7 @@ std::shared_ptr<Packet_Base> PK_CS_LOGIN_REQUEST::processPacket(MachObject & tar
 			auto rtnShPk = std::make_shared<PK_SC_LOGIN_FAIL>();
 
 			// set processing result
-			rtnShPk->setProcessInfo(PkInfo::ProcCode::FAIL, "SvMach::addUser(..) failed.");
+			rtnShPk->setProcessInfo(ProcInfo::ProcCode::FAIL, "SvMach::addUser(..) failed.");
 
 			// register packet receiver
 			rtnShPk->sockList.push_back(sockList[0]);
@@ -56,7 +56,7 @@ std::shared_ptr<Packet_Base> PK_CS_LOGIN_REQUEST::processPacket(MachObject & tar
 		auto rtnShPk = std::make_shared<PK_SC_LOGIN_FAIL>();
 
 		// set processing result
-		rtnShPk->setProcessInfo(PkInfo::ProcCode::SUCCESS);
+		rtnShPk->setProcessInfo(ProcInfo::ProcCode::SUCCESS);
 
 		// register packet receiver
 		rtnShPk->sockList.push_back(sockList[0]);
@@ -96,7 +96,7 @@ std::shared_ptr<Packet_Base> PK_CS_LOBBY_JOINROOM::processPacket(MachObject & ta
 		auto rtnShPk = std::make_shared<PK_SC_LOBBY_JOINROOM_ACCEPT>();
 
 		// set processing result
-		rtnShPk->setProcessInfo(PkInfo::ProcCode::SUCCESS);
+		rtnShPk->setProcessInfo(ProcInfo::ProcCode::SUCCESS);
 
 		// register packet receiver
 		rtnShPk->sockList.push_back(sockList[0]);
@@ -108,7 +108,7 @@ std::shared_ptr<Packet_Base> PK_CS_LOBBY_JOINROOM::processPacket(MachObject & ta
 		auto rtnShPk = std::make_shared<PK_SC_LOBBY_JOINROOM_FAIL>();
 
 		// set processing result
-		rtnShPk->setProcessInfo(PkInfo::ProcCode::FAIL, "Join room failed.");
+		rtnShPk->setProcessInfo(ProcInfo::ProcCode::FAIL, "Join room failed.");
 
 		// register packet receiver
 		rtnShPk->sockList.push_back(sockList[0]);
@@ -190,7 +190,7 @@ std::shared_ptr<Packet_Base> PK_CS_CREATEROOM_CREATEROOM::processPacket(MachObje
 		rtnShPk->roomTk = rmIter->second.rtk;
 
 		// set processing result
-		rtnShPk->setProcessInfo(PkInfo::SUCCESS);
+		rtnShPk->setProcessInfo(ProcInfo::SUCCESS);
 
 		// register packet receiver
 		rtnShPk->sockList.push_back(sockList[0]);
@@ -203,7 +203,7 @@ std::shared_ptr<Packet_Base> PK_CS_CREATEROOM_CREATEROOM::processPacket(MachObje
 		auto rtnShPk = std::make_shared<PK_SC_CREATEROOM_FAIL>(nullptr);
 
 		// set processing result
-		rtnShPk->setProcessInfo(PkInfo::FAIL, "Create Room failed.");
+		rtnShPk->setProcessInfo(ProcInfo::FAIL, "Create Room failed.");
 
 		// register packet receiver
 		rtnShPk->sockList.push_back(sockList[0]);
@@ -256,7 +256,7 @@ std::shared_ptr<Packet_Base> PK_CS_CHAT_QUITROOM::processPacket(MachObject & tar
 		auto rtnShPk = std::make_shared<PK_SC_CHAT_QUITUSER>(nullptr);
 
 		// set processing result
-		rtnShPk->setProcessInfo(PkInfo::ProcCode::SUCCESS);
+		rtnShPk->setProcessInfo(ProcInfo::ProcCode::SUCCESS);
 
 		// register packet receiver
 		rtnShPk->sockList.reserve(rm.userList.size());
@@ -275,7 +275,7 @@ std::shared_ptr<Packet_Base> PK_CS_CHAT_QUITROOM::processPacket(MachObject & tar
 		auto rtnShPk = std::make_shared<PK_SC_CHAT_QUITUSER>(nullptr);
 
 		// set processing result
-		rtnShPk->setProcessInfo(PkInfo::ProcCode::SUCCESS);
+		rtnShPk->setProcessInfo(ProcInfo::ProcCode::SUCCESS);
 
 		// register packet receiver
 		rtnShPk->sockList.reserve(rm.userList.size());

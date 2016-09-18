@@ -3,25 +3,25 @@
 
 
 /*********************************************************************
-* PacketInfo class implementation
+* ProcessInfo class implementation
 *********************************************************************/
-PacketInfo::PacketInfo() : _code(EMPTY), _msg("")
+ProcessInfo::ProcessInfo() : _code(EMPTY), _msg("")
 {
 	// left blank intentionally
 }
-PkInfo::ProcCode PacketInfo::get_code() const
+ProcInfo::ProcCode ProcessInfo::get_code() const
 {
 	return _code;
 }
-std::string PacketInfo::get_msg() const
+std::string ProcessInfo::get_msg() const
 {
 	return _msg;
 }
-void PacketInfo::set_code(ProcCode code)
+void ProcessInfo::set_code(ProcCode code)
 {
 	_code = code;
 }
-void PacketInfo::set_msg(std::string && str)
+void ProcessInfo::set_msg(std::string && str)
 {
 	_msg = str;
 }
@@ -67,10 +67,10 @@ void Packet_Base::deserialize()
 	// Do deserailize process depend on each Packet class.
 	_doDeserialProc();
 }
-void Packet_Base::setProcessInfo(PkInfo::ProcCode resCode, std::string&& msg)
+void Packet_Base::setProcessInfo(ProcInfo::ProcCode resCode, std::string&& msg)
 {
-	_pkInfo.set_code(resCode);
-	_pkInfo.set_msg(std::move(msg));	//rev //? 작동 확인
+	_ProcInfo.set_code(resCode);
+	_ProcInfo.set_msg(std::move(msg));	//rev //? 작동 확인
 }
 size_t Packet_Base::get_packetSize()
 {
@@ -88,20 +88,20 @@ const std::stringstream & Packet_Base::get_buf() const
 {
 	return _buf;
 }
-const PkInfo & Packet_Base::get_pkInfo() const
+const ProcInfo & Packet_Base::get_ProcInfo() const
 {
-	return _pkInfo;
+	return _ProcInfo;
 }
 Packet_Base & Packet_Base::operator<<(const char * buf)
 {
 	_buf << buf;
 	return *this;
 }
-Packet_Base::Packet_Base(PTYPE pt) : id(pt), _pkInfo()
+Packet_Base::Packet_Base(PTYPE pt) : id(pt), _ProcInfo()
 {
 	sockList.reserve(1);
 }
-Packet_Base::Packet_Base() : id(PTYPE::PT_BASE), _pkInfo()
+Packet_Base::Packet_Base() : id(PTYPE::PT_BASE), _ProcInfo()
 {
 	sockList.reserve(1);
 }
