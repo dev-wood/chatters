@@ -171,8 +171,8 @@ public:
 	std::unordered_map<RoomKey, SvRoomInfo>::iterator findRoom(RoomKey rKey);
 
 	// accessor
-	const std::unordered_map<UserKey, SvUserInfo>& get_userList() const;
-	const std::unordered_map<RoomKey, SvRoomInfo>& get_roomList() const;
+	const std::unordered_map<UserKey, SvUserInfo>* get_userList() const;
+	const std::unordered_map<RoomKey, SvRoomInfo>* get_roomList() const;
 public:
 	/* Member field */
 

@@ -415,13 +415,13 @@ std::unordered_map<RoomKey, SvRoomInfo>::iterator SvMach::findRoom(RoomKey rKey)
 {
 	return _rList.find(rKey);
 }
-const std::unordered_map<UserKey, SvUserInfo>& SvMach::get_userList() const
+const std::unordered_map<UserKey, SvUserInfo>* SvMach::get_userList() const
 {
-	return _uList;
+	return &_uList;
 }
-const std::unordered_map<RoomKey, SvRoomInfo>& SvMach::get_roomList() const
+const std::unordered_map<RoomKey, SvRoomInfo>* SvMach::get_roomList() const
 {
-	return _rList;
+	return &_rList;
 }
 
 
