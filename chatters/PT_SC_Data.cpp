@@ -4,6 +4,7 @@
  * Packet from server to client
 
 *********************************************/
+
 /* PK_SC_LOGIN_ACCEPT class */
 PK_SC_LOGIN_ACCEPT::PK_SC_LOGIN_ACCEPT() : Packet_Base(PTYPE::PT_SC_LOGIN_ACCEPT)
 {
@@ -162,6 +163,7 @@ std::shared_ptr<Packet_Base> extractSCPacket(char * buf, size_t bufLen)
 	case PTYPE::PT_SC_CHAT_LOAD_USERLIST:
 		return std::make_shared<PK_SC_CHAT_LOAD_USERLIST>(pType, buf, bufLen);
 	default:
-		return nullptr;
+		return std::make_shared<PK_ERROR>(PTYPE::PT_ERROR_TYPE);
 	}
 }
+

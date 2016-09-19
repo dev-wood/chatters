@@ -384,7 +384,7 @@ std::shared_ptr<Packet_Base> extractCSPacket(char * buf, size_t bufLen)
 	case PTYPE::PT_CS_CHAT_CHAT:
 		return std::make_shared<PK_CS_CHAT_CHAT>((PTYPE)pType, buf, bufLen);
 	default:
-		return nullptr;
+		return std::make_shared<PK_ERROR>(PTYPE::PT_ERROR_TYPE);
 	}
 }
 
