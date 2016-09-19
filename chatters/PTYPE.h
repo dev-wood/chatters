@@ -18,6 +18,8 @@
 *********************************************************************/
 enum struct PTYPE : int
 {
+	PT_ERROR_TYPE = -2,
+	PT_ERROR_PROCESS = -1,		//rev
 	// Packet_Base default packet
 	PT_BASE = 0,
 

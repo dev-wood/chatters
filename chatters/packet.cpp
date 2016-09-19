@@ -139,6 +139,25 @@ size_t Packet_Base::_bufSize()
 	return bufSz;
 }
 
+/* PK_ERROR */
+PK_ERROR::PK_ERROR(PTYPE pType)
+	: Packet_Base(pType)
+{
+	// left blank intentionally
+}
+std::shared_ptr<Packet_Base> PK_ERROR::processPacket(MachObject & targetMObject)
+{
+	return std::shared_ptr<PK_ERROR>();
+}
+void PK_ERROR::_doSerialProc()
+{
+	// left blank intentionally
+}
+void PK_ERROR::_doDeserialProc()
+{
+	// left blank intentionally
+}
+
 
 
 /*********************************************************************
@@ -167,4 +186,4 @@ PacketManager_Base::PacketManager_Base() : _pMachObject(nullptr)
 * Etc. implementation
 
 *********************************************************************/
- 
+

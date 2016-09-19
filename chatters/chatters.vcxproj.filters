@@ -42,9 +42,6 @@
     <ClCompile Include="PT_SC_Data.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="PTYPE.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="DBConnector.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>

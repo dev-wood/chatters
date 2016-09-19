@@ -108,6 +108,31 @@ private:
 
 
 /********************************************************************
+ * PK_ERROR class
+	- Packet 생성 과정에서 어떤 이유로든 error가 발생한 경우 이에 대한
+	정보가 저장된 packet class
+ *
+********************************************************************/
+class PK_ERROR : public Packet_Base
+{
+public:
+	/* Member method */;
+	PK_ERROR(PTYPE pType);
+
+	virtual std::shared_ptr<Packet_Base> processPacket(MachObject & targetMObject) override;
+public:
+	/* Member field */
+
+protected:
+	/* Member method */
+	virtual void _doSerialProc() override;
+	virtual void _doDeserialProc() override;
+protected:
+	/* Member field */
+};
+
+
+/********************************************************************
  * PacketManager_Base class 
 	- 
  * 
