@@ -139,21 +139,20 @@ size_t Packet_Base::_bufSize()
 	return bufSz;
 }
 
-/* PK_ERROR */
-PK_ERROR::PK_ERROR(PTYPE pType)
-	: Packet_Base(pType)
+/* PK_EMPTY */
+PK_EMPTY::PK_EMPTY() : Packet_Base(PTYPE::PT_EMPTY)
 {
 	// left blank intentionally
 }
-std::shared_ptr<Packet_Base> PK_ERROR::processPacket(MachObject & targetMObject)
+std::shared_ptr<Packet_Base> PK_EMPTY::processPacket(MachObject & targetMObject)
 {
-	return std::shared_ptr<PK_ERROR>();
+	return std::shared_ptr<PK_EMPTY>();
 }
-void PK_ERROR::_doSerialProc()
+void PK_EMPTY::_doSerialProc()
 {
 	// left blank intentionally
 }
-void PK_ERROR::_doDeserialProc()
+void PK_EMPTY::_doDeserialProc()
 {
 	// left blank intentionally
 }

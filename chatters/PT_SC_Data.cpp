@@ -163,7 +163,7 @@ std::shared_ptr<Packet_Base> extractSCPacket(char * buf, size_t bufLen)
 	case PTYPE::PT_SC_CHAT_LOAD_USERLIST:
 		return std::make_shared<PK_SC_CHAT_LOAD_USERLIST>(pType, buf, bufLen);
 	default:
-		return std::make_shared<PK_ERROR>(PTYPE::PT_ERROR_TYPE);
+		return std::make_shared<PK_EMPTY>(PTYPE::PT_EMPTY);
 	}
 }
 

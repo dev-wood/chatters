@@ -150,16 +150,33 @@ PK_CS_LOBBY_LOAD_ROOMLIST::PK_CS_LOBBY_LOAD_ROOMLIST(PTYPE ptype, const char * b
 }
 std::shared_ptr<Packet_Base> PK_CS_LOBBY_LOAD_ROOMLIST::processPacket(MachObject & targetMObject)
 {
-	return std::shared_ptr<Packet_Base>(nullptr);
+	//rev
+	// casting agent
+	auto& agent = dynamic_cast<SvMach &>(targetMObject);
+
+	// packet processing procedure
+	//auto begIter = agent.get_roomList();
+	
+	// build return packet
+	auto rtnShPk = std::make_shared<PK_SC_LOBBY_LOAD_ROOMLIST>();
+	rtnShPk->ptr = agent.get_roomList();
+
+	// set processing result
+	rtnShPk->setProcessInfo(..);
+
+	// register packet receiver
+	rtnShPk->sockList.push_back(..);
+
+	return rtnShPk;
 }
 void PK_CS_LOBBY_LOAD_ROOMLIST::_doSerialProc()
 {
-	// serialize member field depending on the packet type
+	// serialize member field depending on the packet type	//rev
 
 }
 void PK_CS_LOBBY_LOAD_ROOMLIST::_doDeserialProc()
 {
-	// deserialize member field depending on the packet type
+	// deserialize member field depending on the packet type	//rev
 
 }
 
@@ -384,7 +401,7 @@ std::shared_ptr<Packet_Base> extractCSPacket(char * buf, size_t bufLen)
 	case PTYPE::PT_CS_CHAT_CHAT:
 		return std::make_shared<PK_CS_CHAT_CHAT>((PTYPE)pType, buf, bufLen);
 	default:
-		return std::make_shared<PK_ERROR>(PTYPE::PT_ERROR_TYPE);
+		return std::make_shared<PK_EMPTY>(PTYPE::PT_EMPTY);
 	}
 }
 
