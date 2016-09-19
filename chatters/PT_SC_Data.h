@@ -91,7 +91,8 @@ public:
 	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
-	std::vector<RoomInfoToken> roomList;
+	const std::unordered_map<RoomKey, SvRoomInfo> * ptr;
+
 protected:
 	/* Member method */
 	virtual void _doSerialProc();
