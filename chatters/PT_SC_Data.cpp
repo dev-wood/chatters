@@ -6,7 +6,8 @@
 *********************************************/
 
 /* PK_SC_LOGIN_ACCEPT class */
-PK_SC_LOGIN_ACCEPT::PK_SC_LOGIN_ACCEPT() : Packet_Base(PTYPE::PT_SC_LOGIN_ACCEPT)
+PK_SC_LOGIN_ACCEPT::PK_SC_LOGIN_ACCEPT() 
+	: Packet_Base(PTYPE::PT_SC_LOGIN_ACCEPT)
 {
 	// left blank intentionally
 }
@@ -17,7 +18,7 @@ PK_SC_LOGIN_ACCEPT::PK_SC_LOGIN_ACCEPT(PTYPE pType, char * buf, size_t bufLen)
 }
 std::shared_ptr<Packet_Base> PK_SC_LOGIN_ACCEPT::processPacket(MachObject & targetMObject)
 {
-	return std::shared_ptr<Packet_Base>(nullptr);
+	return std::shared_ptr<PK_EMPTY>(nullptr);
 }
 void PK_SC_LOGIN_ACCEPT::_doSerialProc()
 {
@@ -29,7 +30,8 @@ void PK_SC_LOGIN_ACCEPT::_doDeserialProc()
 }
 
 /* PK_SC_LOGIN_FAIL class */
-PK_SC_LOGIN_FAIL::PK_SC_LOGIN_FAIL() : Packet_Base(PTYPE::PT_SC_LOGIN_FAIL)
+PK_SC_LOGIN_FAIL::PK_SC_LOGIN_FAIL()
+	: Packet_Base(PTYPE::PT_SC_LOGIN_FAIL)
 {
 	// left blank intentionally
 }
@@ -40,7 +42,7 @@ PK_SC_LOGIN_FAIL::PK_SC_LOGIN_FAIL(PTYPE pType, char * buf, size_t bufLen)
 }
 std::shared_ptr<Packet_Base> PK_SC_LOGIN_FAIL::processPacket(MachObject & targetMObject)
 {
-	return std::shared_ptr<Packet_Base>(nullptr);
+	return std::shared_ptr<PK_EMPTY>(nullptr);
 }
 void PK_SC_LOGIN_FAIL::_doSerialProc()
 {
@@ -52,7 +54,8 @@ void PK_SC_LOGIN_FAIL::_doDeserialProc()
 }
 
 /* PK_SC_LOBBY_JOINROOM_ACCEPT class */
-PK_SC_LOBBY_JOINROOM_ACCEPT::PK_SC_LOBBY_JOINROOM_ACCEPT() : Packet_Base(PTYPE::PT_SC_LOBBY_JOINROOM_ACCEPT)
+PK_SC_LOBBY_JOINROOM_ACCEPT::PK_SC_LOBBY_JOINROOM_ACCEPT()
+	: Packet_Base(PTYPE::PT_SC_LOBBY_JOINROOM_ACCEPT)
 {
 	// left blank intentionally
 }
@@ -63,7 +66,7 @@ PK_SC_LOBBY_JOINROOM_ACCEPT::PK_SC_LOBBY_JOINROOM_ACCEPT(PTYPE pType, char * buf
 }
 std::shared_ptr<Packet_Base> PK_SC_LOBBY_JOINROOM_ACCEPT::processPacket(MachObject & targetMObject)
 {
-	return std::shared_ptr<Packet_Base>(nullptr);
+	return std::shared_ptr<PK_EMPTY>(nullptr);
 }
 void PK_SC_LOBBY_JOINROOM_ACCEPT::_doSerialProc()
 {
@@ -100,7 +103,8 @@ void PK_SC_LOBBY_JOINROOM_ACCEPT::_doDeserialProc()
 }
 
 /* PK_SC_LOBBY_JOINROOM_FAIL class */
-PK_SC_LOBBY_JOINROOM_FAIL::PK_SC_LOBBY_JOINROOM_FAIL() : Packet_Base(PTYPE::PT_SC_LOBBY_JOINROOM_FAIL)
+PK_SC_LOBBY_JOINROOM_FAIL::PK_SC_LOBBY_JOINROOM_FAIL()
+	: Packet_Base(PTYPE::PT_SC_LOBBY_JOINROOM_FAIL)
 {
 	// left blank intentionally
 }
@@ -111,7 +115,7 @@ PK_SC_LOBBY_JOINROOM_FAIL::PK_SC_LOBBY_JOINROOM_FAIL(PTYPE pType, char * buf, si
 }
 std::shared_ptr<Packet_Base> PK_SC_LOBBY_JOINROOM_FAIL::processPacket(MachObject & targetMObject)
 {
-	return std::shared_ptr<Packet_Base>(nullptr);
+	return std::shared_ptr<PK_EMPTY>(nullptr);
 }
 void PK_SC_LOBBY_JOINROOM_FAIL::_doSerialProc()
 {
@@ -167,6 +171,7 @@ std::shared_ptr<Packet_Base> extractSCPacket(char * buf, size_t bufLen)
 	}
 }
 
+/* PK_SC_LOBBY_LOAD_ROOMLIST class */
 PK_SC_LOBBY_LOAD_ROOMLIST::PK_SC_LOBBY_LOAD_ROOMLIST()
 	: Packet_Base(PTYPE::PT_SC_LOBBY_LOAD_ROOMLIST)
 {
@@ -179,7 +184,7 @@ PK_SC_LOBBY_LOAD_ROOMLIST::PK_SC_LOBBY_LOAD_ROOMLIST(PTYPE pType, char * buf, si
 }
 std::shared_ptr<Packet_Base> PK_SC_LOBBY_LOAD_ROOMLIST::processPacket(MachObject & targetMObject)
 {
-	return std::shared_ptr<Packet_Base>(nullptr);
+	return std::shared_ptr<PK_EMPTY>(nullptr);
 }
 void PK_SC_LOBBY_LOAD_ROOMLIST::_doSerialProc()
 {
@@ -208,4 +213,28 @@ void PK_SC_LOBBY_LOAD_ROOMLIST::_doDeserialProc()
 
 		rtkList.push_back(rtk);
 	}
+}
+
+/* PK_SC_CREATEROOM_OK class */
+PK_SC_CREATEROOM_OK::PK_SC_CREATEROOM_OK() 
+	: Packet_Base(PTYPE::PT_SC_CREATEROOM_OK)
+{
+	// left blank intentionally
+}
+PK_SC_CREATEROOM_OK::PK_SC_CREATEROOM_OK(PTYPE pType, char * buf, size_t bufLen)
+	: Packet_Base(pType, buf, bufLen)
+{
+	// left blank intentionally
+}
+std::shared_ptr<Packet_Base> PK_SC_CREATEROOM_OK::processPacket(MachObject & targetMObject)
+{
+	return std::shared_ptr<PK_EMPTY>();
+}
+void PK_SC_CREATEROOM_OK::_doSerialProc()
+{
+	_buf << roomTk;
+}
+void PK_SC_CREATEROOM_OK::_doDeserialProc()
+{
+	roomTk << _buf;
 }
