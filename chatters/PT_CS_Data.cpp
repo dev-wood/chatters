@@ -199,7 +199,7 @@ std::shared_ptr<Packet_Base> PK_CS_CREATEROOM_CREATEROOM::processPacket(MachObje
 	if (rKey != InfoToken::INVALID_KEY)
 	{	// create room success
 		// build return packet
-		auto rtnShPk = std::make_shared<PK_SC_CREATEROOM_OK>(nullptr);
+		auto rtnShPk = std::make_shared<PK_SC_CREATEROOM_OK>();
 		const auto& rmIter = agent.findRoom(rKey);	//rev const 가 문제 일으킬 수 있음
 
 		rtnShPk->roomTk = rmIter->second.rtk;
@@ -215,7 +215,7 @@ std::shared_ptr<Packet_Base> PK_CS_CREATEROOM_CREATEROOM::processPacket(MachObje
 	else
 	{	// create room failed
 		// build return packet
-		auto rtnShPk = std::make_shared<PK_SC_CREATEROOM_FAIL>(nullptr);
+		auto rtnShPk = std::make_shared<PK_SC_CREATEROOM_FAIL>();
 
 		// set processing result
 		rtnShPk->setProcessInfo(ProcInfo::FAIL, "Create Room failed.");
@@ -268,7 +268,7 @@ std::shared_ptr<Packet_Base> PK_CS_CHAT_QUITROOM::processPacket(MachObject & tar
 	if (agent.leaveRoom(roomKey, userKey))
 	{	// quit room success
 		// build return packet
-		auto rtnShPk = std::make_shared<PK_SC_CHAT_QUITUSER>(nullptr);
+		auto rtnShPk = std::make_shared<PK_SC_CHAT_QUITUSER>();
 
 		// set processing result
 		rtnShPk->setProcessInfo(ProcInfo::ProcCode::SUCCESS);
@@ -287,7 +287,7 @@ std::shared_ptr<Packet_Base> PK_CS_CHAT_QUITROOM::processPacket(MachObject & tar
 		agent.removeUser(userKey);
 		
 		// build return packet
-		auto rtnShPk = std::make_shared<PK_SC_CHAT_QUITUSER>(nullptr);
+		auto rtnShPk = std::make_shared<PK_SC_CHAT_QUITUSER>();
 
 		// set processing result
 		rtnShPk->setProcessInfo(ProcInfo::ProcCode::SUCCESS);
@@ -301,7 +301,7 @@ std::shared_ptr<Packet_Base> PK_CS_CHAT_QUITROOM::processPacket(MachObject & tar
 
 		//rev critical error occured. 이런 경우 처리?
 		//		
-		return nullptr;
+		return std::make_shared<PK_EMPTY>();
 	}	
 }
 void PK_CS_CHAT_QUITROOM::_doSerialProc()
