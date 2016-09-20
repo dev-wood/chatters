@@ -281,12 +281,16 @@ UserKey SvMach::addUser(const std::string& id, SOCKET sock)
 }
 bool SvMach::removeUser(UserKey uKey)
 {
-	size_t result = _uList.erase(uKey);
-
-	if (result == 0)
+	auto& it = _uList.find(uKey);
+	
+	if (it == _uList.end())
 		return false;
+	else {
+		closesocket(it->second.get_socket());
 
-	return true;
+		_uList.erase(it);
+		return true;
+	}
 }
 bool SvMach::joinRoom(RoomKey rKey, UserKey uKey)
 {
