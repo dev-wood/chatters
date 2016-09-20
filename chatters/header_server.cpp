@@ -342,8 +342,12 @@ bool SvMach::leaveRoom(RoomKey rKey, UserKey uKey)
 		rmIter->second.addUser(uKey);// rewind changes
 		return false;
 	}
-	else
+	else {
+		if(rmIter->second.rtk.get_numOfPeer() == 0)
+			removeRoom(rKey);
+
 		return true;
+	}
 }
 RoomKey SvMach::openRoom(UserKey uKey, const std::string & title)
 {
