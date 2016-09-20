@@ -12,7 +12,6 @@ class SvMach;
 
 
 
-//rev member method 정의하기
 /*********************************************************************
  * PK_CS_LOGIN_REQUEST class
 	-

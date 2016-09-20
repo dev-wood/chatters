@@ -320,7 +320,6 @@ void PK_CS_CHAT_QUITROOM::_doDeserialProc()
 	roomKey = std::stoi(token);
 }
 
-//rev
 /* PK_CS_CHAT_CHAT class */
 PK_CS_CHAT_CHAT::PK_CS_CHAT_CHAT() : Packet_Base(PTYPE::PT_CS_CHAT_CHAT)
 {
