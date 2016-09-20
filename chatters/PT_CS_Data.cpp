@@ -333,34 +333,42 @@ PK_CS_CHAT_CHAT::PK_CS_CHAT_CHAT(PTYPE ptype, const char * buf, size_t bufLen)
 }
 std::shared_ptr<Packet_Base> PK_CS_CHAT_CHAT::processPacket(MachObject & targetMObject)
 {
-	return std::shared_ptr<Packet_Base>();
-	/*
+	
 	// casting agent
 	auto& agent = dynamic_cast<SvMach &>(targetMObject);
+	auto& rmInfo = agent.findRoom(roomKey)->second;
 
 	// packet processing procedure
-
 	// build return packet
-	auto rtnShPk = std::make_shared<..>(..);
+	auto rtnShPk = std::make_shared<PK_SC_CHAT_CHAT>();
+	rtnShPk->chat = chat;
 
 	// set processing result
-	rtnShPk->setProcessInfo(..);
+	rtnShPk->setProcessInfo(ProcInfo::ProcCode::SUCCESS);
 
 	// register packet receiver
-	rtnShPk->sockList.push_back(..);
+	rtnShPk->sockList.reserve(CHATTERS::MAX_PARTICIPANT);
+
+	for (const auto & uKey : rmInfo.userList)
+	{
+		const auto& uInfo = agent.findUser(uKey)->second;
+		rtnShPk->sockList.push_back(uInfo.get_socket());
+	}
 
 	return rtnShPk;
-	*/
 }
 void PK_CS_CHAT_CHAT::_doSerialProc()
 {
 	// serialize member field depending on the packet type
-
+	
+	_buf << chat;
 }
 void PK_CS_CHAT_CHAT::_doDeserialProc()
 {
 	// deserialize member field depending on the packet type
-
+	
+	// extract chat content
+	std::getline(_buf, chat, '|');
 }
 
 
