@@ -63,8 +63,7 @@ public:
 	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
-	std::unordered_map<RoomKey, SvRoomInfo>::const_iterator begIter;
-
+	
 protected:
 	/* Member method */
 	virtual void _doSerialProc();

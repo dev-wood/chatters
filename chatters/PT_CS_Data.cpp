@@ -24,7 +24,7 @@ std::shared_ptr<Packet_Base> PK_CS_LOGIN_REQUEST::processPacket(MachObject & tar
 	{	// sign in success
 		// add user on user list
 		if (agent.addUser(userId, sockList[0]) != InfoToken::INVALID_KEY)
-		{
+		{	// add user operation succeed
 			// build return packet
 			auto rtnShPk = std::make_shared<PK_SC_LOGIN_ACCEPT>();
 
@@ -37,9 +37,9 @@ std::shared_ptr<Packet_Base> PK_CS_LOGIN_REQUEST::processPacket(MachObject & tar
 			return rtnShPk;
 		}
 		else
-		{
+		{	// add user operation failed
 			// build return packet
-			auto rtnShPk = std::make_shared<PK_SC_LOGIN_FAIL>();
+			auto rtnShPk = std::make_shared<PK_EMPTY>();
 
 			// set processing result
 			rtnShPk->setProcessInfo(ProcInfo::ProcCode::FAIL, "SvMach::addUser(..) failed.");
@@ -51,7 +51,7 @@ std::shared_ptr<Packet_Base> PK_CS_LOGIN_REQUEST::processPacket(MachObject & tar
 		}
 	}
 	else
-	{	//sign in failed
+	{	// sign in failed due to no user information match be found
 		// build return packet
 		auto rtnShPk = std::make_shared<PK_SC_LOGIN_FAIL>();
 
@@ -150,34 +150,32 @@ PK_CS_LOBBY_LOAD_ROOMLIST::PK_CS_LOBBY_LOAD_ROOMLIST(PTYPE ptype, const char * b
 }
 std::shared_ptr<Packet_Base> PK_CS_LOBBY_LOAD_ROOMLIST::processPacket(MachObject & targetMObject)
 {
-	//rev
 	// casting agent
 	auto& agent = dynamic_cast<SvMach &>(targetMObject);
 
 	// packet processing procedure
-	//auto begIter = agent.get_roomList();
 	
 	// build return packet
 	auto rtnShPk = std::make_shared<PK_SC_LOBBY_LOAD_ROOMLIST>();
-	rtnShPk->ptr = agent.get_roomList();
+	rtnShPk->pRmList = agent.get_roomList();
 
 	// set processing result
-	rtnShPk->setProcessInfo(..);
+	rtnShPk->setProcessInfo(ProcInfo::ProcCode::SUCCESS);
 
 	// register packet receiver
-	rtnShPk->sockList.push_back(..);
+	rtnShPk->sockList.push_back(sockList[0]);
 
 	return rtnShPk;
 }
 void PK_CS_LOBBY_LOAD_ROOMLIST::_doSerialProc()
 {
-	// serialize member field depending on the packet type	//rev
-
+	// serialize member field depending on the packet type
+	// left blank intentionally
 }
 void PK_CS_LOBBY_LOAD_ROOMLIST::_doDeserialProc()
 {
-	// deserialize member field depending on the packet type	//rev
-
+	// deserialize member field depending on the packet type
+	// left blank intentionally
 }
 
 /* PK_CS_CREATEROOM_CREATEROOM class */
