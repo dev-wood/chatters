@@ -5,11 +5,20 @@
 
 #include "packet.h"
 
+
+
+// pre-declaration
 class SvUserInfo;
 class SvRoomInfo;
 class SvMach;
 class SvPacketManager;
 
+
+
+/*********************************************************************
+ * PK_SC_LOGIN_ACCEPT class
+	-
+*********************************************************************/
 struct PK_SC_LOGIN_ACCEPT : public Packet_Base
 {
 public:
@@ -29,6 +38,10 @@ protected:
 	/* Member field */
 };
 
+/*********************************************************************
+* PK_SC_LOGIN_FAIL class
+-
+*********************************************************************/
 struct PK_SC_LOGIN_FAIL : public Packet_Base
 {
 public:
@@ -46,6 +59,11 @@ protected:
 protected:
 	/* Member field */
 };
+
+/*********************************************************************
+ * PK_SC_LOBBY_JOINROOM_ACCEPT class
+	-
+*********************************************************************/
 struct PK_SC_LOBBY_JOINROOM_ACCEPT : public Packet_Base
 {
 public:
@@ -66,6 +84,11 @@ protected:
 	/* Member field */
 
 };
+
+/*********************************************************************
+ * PK_SC_LOBBY_JOINROOM_FAIL class
+	-
+*********************************************************************/
 struct PK_SC_LOBBY_JOINROOM_FAIL : public Packet_Base
 {
 public:
@@ -84,6 +107,11 @@ protected:
 	/* Member field */
 
 };
+
+/*********************************************************************
+ * PK_SC_LOBBY_LOAD_ROOMLIST class
+	-
+*********************************************************************/
 struct PK_SC_LOBBY_LOAD_ROOMLIST : public Packet_Base
 {
 public:
@@ -105,6 +133,11 @@ protected:
 	/* Member field */
 
 };
+
+/*********************************************************************
+ * PK_SC_CREATEROOM_OK class
+	-
+*********************************************************************/
 struct PK_SC_CREATEROOM_OK : public Packet_Base
 {
 public:
@@ -123,6 +156,11 @@ protected:
 protected:
 	/* Member field */
 };
+
+/*********************************************************************
+ * PK_SC_CREATEROOM_FAIL class
+	-
+*********************************************************************/
 struct PK_SC_CREATEROOM_FAIL : public Packet_Base
 {
 public:
@@ -140,6 +178,11 @@ protected:
 protected:
 	/* Member field */
 };
+
+/*********************************************************************
+ * PK_SC_CHAT_QUITUSER class
+	-
+*********************************************************************/
 struct PK_SC_CHAT_QUITUSER : public Packet_Base
 {
 public:
@@ -158,6 +201,11 @@ protected:
 protected:
 	/* Member field */
 };
+
+/*********************************************************************
+ * PK_SC_CHAT_CHAT class
+	-
+*********************************************************************/
 struct PK_SC_CHAT_CHAT : public Packet_Base
 {
 public:
@@ -177,6 +225,11 @@ protected:
 protected:
 	/* Member field */
 };
+
+/*********************************************************************
+ * PK_SC_CHAT_LOAD_USERLIST class
+	-
+*********************************************************************/
 struct PK_SC_CHAT_LOAD_USERLIST : public Packet_Base
 {
 public:

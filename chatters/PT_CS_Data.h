@@ -7,13 +7,16 @@
 
 
 
-/*********************************************************************
- * Packet from client to server
-	-
-*********************************************************************/
+// Pre-declation
 class SvMach;
 
+
+
 //rev member method 정의하기
+/*********************************************************************
+ * PK_CS_LOGIN_REQUEST class
+	-
+*********************************************************************/
 struct PK_CS_LOGIN_REQUEST : public Packet_Base
 {
 public:
@@ -34,6 +37,11 @@ protected:
 	/* Member field */
 
 };
+
+/*********************************************************************
+ * PK_CS_LOBBY_JOINROOM class
+	-
+*********************************************************************/
 struct PK_CS_LOBBY_JOINROOM : public Packet_Base
 {
 public:
@@ -53,6 +61,11 @@ protected:
 protected:
 	/* Member field */
 };
+
+/*********************************************************************
+ * PK_CS_LOBBY_LOAD_ROOMLIST class
+	-
+*********************************************************************/
 struct PK_CS_LOBBY_LOAD_ROOMLIST : public Packet_Base
 {
 public:
@@ -71,6 +84,11 @@ protected:
 protected:
 	/* Member field */
 };
+
+/*********************************************************************
+ * PK_CS_CREATEROOM_CREATEROOM class
+	-
+*********************************************************************/
 struct PK_CS_CREATEROOM_CREATEROOM : public Packet_Base
 {
 public:
@@ -90,6 +108,11 @@ protected:
 protected:
 	/* Member field */
 };
+
+/*********************************************************************
+ * PK_CS_CHAT_QUITROOM class
+	-
+*********************************************************************/
 struct PK_CS_CHAT_QUITROOM : public Packet_Base
 {
 public:
@@ -109,6 +132,11 @@ protected:
 protected:
 	/* Member field */
 };
+
+/*********************************************************************
+ * PK_CS_CHAT_CHAT class
+	-
+*********************************************************************/
 struct PK_CS_CHAT_CHAT : public Packet_Base
 {
 public:
