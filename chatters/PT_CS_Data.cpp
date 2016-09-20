@@ -246,7 +246,6 @@ void PK_CS_CREATEROOM_CREATEROOM::_doDeserialProc()
 	std::getline(_buf, roomTitle, '|');
 }
 
-//rev
 /* PK_CS_CHAT_QUITROOM class */
 PK_CS_CHAT_QUITROOM::PK_CS_CHAT_QUITROOM() : Packet_Base(PTYPE::PT_CS_CHAT_QUITROOM)
 {
@@ -281,27 +280,23 @@ std::shared_ptr<Packet_Base> PK_CS_CHAT_QUITROOM::processPacket(MachObject & tar
 	}
 	else
 	{	// quit room failed
-
-		/*
-		// critical error occured. Connection with user reset.
+		// critical error occured, connection with the user close
 		agent.removeUser(userKey);
 		
+		agent.leaveRoom(roomKey, userKey);
+
 		// build return packet
 		auto rtnShPk = std::make_shared<PK_SC_CHAT_QUITUSER>();
+		rtnShPk->userKey = userKey;
 
 		// set processing result
-		rtnShPk->setProcessInfo(ProcInfo::ProcCode::SUCCESS);
+		rtnShPk->setProcessInfo(ProcInfo::ProcCode::FAIL);
 
 		// register packet receiver
 		rtnShPk->sockList.reserve(rm.userList.size());
 		rtnShPk->sockList.insert(rtnShPk->sockList.begin(), rm.userList.begin(), rm.userList.end());
 
 		return rtnShPk;
-		*/
-
-		//rev critical error occured. 이런 경우 처리?
-		//		
-		return std::make_shared<PK_EMPTY>();
 	}	
 }
 void PK_CS_CHAT_QUITROOM::_doSerialProc()
@@ -325,6 +320,7 @@ void PK_CS_CHAT_QUITROOM::_doDeserialProc()
 	roomKey = std::stoi(token);
 }
 
+//rev
 /* PK_CS_CHAT_CHAT class */
 PK_CS_CHAT_CHAT::PK_CS_CHAT_CHAT() : Packet_Base(PTYPE::PT_CS_CHAT_CHAT)
 {
