@@ -167,3 +167,45 @@ std::shared_ptr<Packet_Base> extractSCPacket(char * buf, size_t bufLen)
 	}
 }
 
+PK_SC_LOBBY_LOAD_ROOMLIST::PK_SC_LOBBY_LOAD_ROOMLIST()
+	: Packet_Base(PTYPE::PT_SC_LOBBY_LOAD_ROOMLIST)
+{
+	// left bland intentionally
+}
+PK_SC_LOBBY_LOAD_ROOMLIST::PK_SC_LOBBY_LOAD_ROOMLIST(PTYPE pType, char * buf, size_t bufLen)
+	: Packet_Base(PTYPE::PT_SC_LOBBY_LOAD_ROOMLIST, buf, bufLen)
+{
+	// left bland intentionally
+}
+std::shared_ptr<Packet_Base> PK_SC_LOBBY_LOAD_ROOMLIST::processPacket(MachObject & targetMObject)
+{
+	return std::shared_ptr<Packet_Base>(nullptr);
+}
+void PK_SC_LOBBY_LOAD_ROOMLIST::_doSerialProc()
+{
+	_buf << pRmList->size() << '|';
+
+	for (const auto& el : *pRmList)
+	{
+		_buf << el.second.rtk;
+	}
+}
+void PK_SC_LOBBY_LOAD_ROOMLIST::_doDeserialProc()
+{
+	int numOfRoom;
+	std::string token;
+
+	// extract the number of room token
+	std::getline(_buf, token, '|');
+	numOfRoom = std::stoi(token);
+
+	rtkList.reserve(numOfRoom);
+	// extract room token
+	for (int i = 0; i < numOfRoom; ++i)
+	{
+		RoomInfoToken rtk;
+		rtk << _buf;
+
+		rtkList.push_back(rtk);
+	}
+}

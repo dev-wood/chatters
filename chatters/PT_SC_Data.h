@@ -5,7 +5,10 @@
 
 #include "packet.h"
 
-
+class SvUserInfo;
+class SvRoomInfo;
+class SvMach;
+class SvPacketManager;
 
 struct PK_SC_LOGIN_ACCEPT : public Packet_Base
 {
@@ -91,7 +94,8 @@ public:
 	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
-	const std::unordered_map<RoomKey, SvRoomInfo> * ptr;
+	const std::unordered_map<RoomKey, SvRoomInfo> * pRmList;
+	std::vector<RoomInfoToken> rtkList;
 
 protected:
 	/* Member method */
