@@ -238,3 +238,30 @@ void PK_SC_CREATEROOM_OK::_doDeserialProc()
 {
 	roomTk << _buf;
 }
+
+PK_SC_CREATEROOM_FAIL::PK_SC_CREATEROOM_FAIL()
+	: Packet_Base(PTYPE::PT_SC_CREATEROOM_FAIL)
+{
+	// left blank intentionally
+}
+
+PK_SC_CREATEROOM_FAIL::PK_SC_CREATEROOM_FAIL(PTYPE pType, char * buf, size_t bufLen)
+	: Packet_Base(pType, buf, bufLen)
+{
+	// left blank intentionally
+}
+
+std::shared_ptr<Packet_Base> PK_SC_CREATEROOM_FAIL::processPacket(MachObject & targetMObject)
+{
+	return std::shared_ptr<PK_EMPTY>(nullptr);
+}
+
+void PK_SC_CREATEROOM_FAIL::_doSerialProc()
+{
+	// left blank intentionally
+}
+
+void PK_SC_CREATEROOM_FAIL::_doDeserialProc()
+{
+	// left blank intentionally
+}
