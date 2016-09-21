@@ -247,6 +247,84 @@ void PK_SC_CHAT_QUITUSER::_doDeserialProc()
 	userKey = std::stoi(token);
 }
 
+/* PK_SC_CHAT_CHAT class implement */
+PK_SC_CHAT_CHAT::PK_SC_CHAT_CHAT()
+	: Packet_Base(PTYPE::PT_SC_CHAT_CHAT)
+{
+	// left blank intentionally
+}
+
+PK_SC_CHAT_CHAT::PK_SC_CHAT_CHAT(PTYPE pType, char * buf, size_t bufLen)
+	: Packet_Base(pType, buf, bufLen)
+{
+	// left blank intentionally
+}
+
+std::shared_ptr<Packet_Base> PK_SC_CHAT_CHAT::processPacket(MachObject & targetMObject)
+{
+	return std::shared_ptr<PK_EMPTY>(nullptr);
+}
+
+void PK_SC_CHAT_CHAT::_doSerialProc()
+{
+	_buf << uKey << '|';
+	_buf << chat << '|';
+}
+
+void PK_SC_CHAT_CHAT::_doDeserialProc()
+{
+	std::string token;
+
+	// extract user key
+	std::getline(_buf, token, '|');
+	uKey = std::stoi(token);
+
+	// extract chat content
+	std::getline(_buf, chat, '|');
+}
+
+/* PK_SC_CHAT_LOAD_USERLIST class implement */
+PK_SC_CHAT_LOAD_USERLIST::PK_SC_CHAT_LOAD_USERLIST()
+	: Packet_Base(PTYPE::PT_SC_CHAT_LOAD_USERLIST)
+{
+	// left blank intentionally
+}
+PK_SC_CHAT_LOAD_USERLIST::PK_SC_CHAT_LOAD_USERLIST(PTYPE pType, char * buf, size_t bufLen)
+	: Packet_Base(pType, buf, bufLen)
+{
+	// left blank intentionally
+}
+std::shared_ptr<Packet_Base> PK_SC_CHAT_LOAD_USERLIST::processPacket(MachObject & targetMObject)
+{
+	return std::shared_ptr<PK_EMPTY>(nullptr);
+}
+void PK_SC_CHAT_LOAD_USERLIST::_doSerialProc()
+{
+	_buf << userList.size() << '|';
+
+	for (const auto & uitk : userList)
+	{
+		_buf << uitk;
+	}
+}
+void PK_SC_CHAT_LOAD_USERLIST::_doDeserialProc()
+{
+	std::string token;
+
+	// extract the number of user
+	std::getline(_buf, token, '|');
+	int num = std::stoi(token);
+
+	userList.reserve(num);
+	for (int i = 0; i < num; ++i)
+	{
+		UserInfoToken utk;
+
+		utk << _buf;
+		userList.push_back(utk);
+	}
+}
+
 
 
 /*********************************************
@@ -291,38 +369,3 @@ std::shared_ptr<Packet_Base> extractSCPacket(char * buf, size_t bufLen)
 	}
 }
 
-/* PK_SC_CHAT_CHAT class implement */
-PK_SC_CHAT_CHAT::PK_SC_CHAT_CHAT()
-	: Packet_Base(PTYPE::PT_SC_CHAT_CHAT)	
-{
-	// left blank intentionally
-}
-
-PK_SC_CHAT_CHAT::PK_SC_CHAT_CHAT(PTYPE pType, char * buf, size_t bufLen)
-	: Packet_Base(pType, buf, bufLen)
-{
-	// left blank intentionally
-}
-
-std::shared_ptr<Packet_Base> PK_SC_CHAT_CHAT::processPacket(MachObject & targetMObject)
-{
-	return std::shared_ptr<PK_EMPTY>(nullptr);
-}
-
-void PK_SC_CHAT_CHAT::_doSerialProc()
-{
-	_buf << uKey << '|';
-	_buf << chat << '|';
-}
-
-void PK_SC_CHAT_CHAT::_doDeserialProc()
-{
-	std::string token;
-	
-	// extract user key
-	std::getline(_buf, token, '|');
-	uKey = std::stoi(token);
-
-	// extract chat content
-	std::getline(_buf, chat, '|');
-}
