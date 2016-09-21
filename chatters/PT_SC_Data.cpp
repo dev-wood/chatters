@@ -127,50 +127,6 @@ void PK_SC_LOBBY_JOINROOM_FAIL::_doDeserialProc()
 }
 
 
-
-
-/*********************************************
-* etc. function
-
-*********************************************/
-std::shared_ptr<Packet_Base> extractSCPacket(char * buf, size_t bufLen)
-{
-	std::string temp;
-	const char * idx = buf;
-	while (*idx != '|') {
-		temp += *idx;
-		idx++;
-	}
-
-	int pType = stoi(temp);
-
-	switch ((PTYPE)pType)
-	{
-	case PTYPE::PT_SC_LOGIN_ACCEPT:
-		return std::make_shared<PK_SC_LOGIN_ACCEPT>(pType, buf, bufLen);
-	case PTYPE::PT_SC_LOGIN_FAIL:
-		return std::make_shared<PK_SC_LOGIN_FAIL>(pType, buf, bufLen);
-	case PTYPE::PT_SC_LOBBY_JOINROOM_ACCEPT:
-		return std::make_shared<PK_SC_LOBBY_JOINROOM_ACCEPT>(pType, buf, bufLen);
-	case PTYPE::PT_SC_LOBBY_JOINROOM_FAIL:
-		return std::make_shared<PK_SC_LOBBY_JOINROOM_FAIL>(pType, buf, bufLen);
-	case PTYPE::PT_SC_LOBBY_LOAD_ROOMLIST:
-		return std::make_shared<PK_SC_LOBBY_LOAD_ROOMLIST>(pType, buf, bufLen);
-	case PTYPE::PT_SC_CREATEROOM_OK:
-		return std::make_shared<PK_SC_CREATEROOM_OK>(pType, buf, bufLen);
-	case PTYPE::PT_SC_CREATEROOM_FAIL:
-		return std::make_shared<PK_SC_CREATEROOM_FAIL>(pType, buf, bufLen);
-	case PTYPE::PT_SC_CHAT_QUITUSER:
-		return std::make_shared<PK_SC_CHAT_QUITUSER>(pType, buf, bufLen);
-	case PTYPE::PT_SC_CHAT_CHAT:
-		return std::make_shared<PK_SC_CHAT_CHAT>(pType, buf, bufLen);
-	case PTYPE::PT_SC_CHAT_LOAD_USERLIST:
-		return std::make_shared<PK_SC_CHAT_LOAD_USERLIST>(pType, buf, bufLen);
-	default:
-		return std::make_shared<PK_EMPTY>(PTYPE::PT_EMPTY);
-	}
-}
-
 /* PK_SC_LOBBY_LOAD_ROOMLIST class */
 PK_SC_LOBBY_LOAD_ROOMLIST::PK_SC_LOBBY_LOAD_ROOMLIST()
 	: Packet_Base(PTYPE::PT_SC_LOBBY_LOAD_ROOMLIST)
@@ -216,7 +172,7 @@ void PK_SC_LOBBY_LOAD_ROOMLIST::_doDeserialProc()
 }
 
 /* PK_SC_CREATEROOM_OK class */
-PK_SC_CREATEROOM_OK::PK_SC_CREATEROOM_OK() 
+PK_SC_CREATEROOM_OK::PK_SC_CREATEROOM_OK()
 	: Packet_Base(PTYPE::PT_SC_CREATEROOM_OK)
 {
 	// left blank intentionally
@@ -239,29 +195,98 @@ void PK_SC_CREATEROOM_OK::_doDeserialProc()
 	roomTk << _buf;
 }
 
+/* PK_SC_CREATEROOM_FAIL class implement */
 PK_SC_CREATEROOM_FAIL::PK_SC_CREATEROOM_FAIL()
 	: Packet_Base(PTYPE::PT_SC_CREATEROOM_FAIL)
 {
 	// left blank intentionally
 }
-
 PK_SC_CREATEROOM_FAIL::PK_SC_CREATEROOM_FAIL(PTYPE pType, char * buf, size_t bufLen)
 	: Packet_Base(pType, buf, bufLen)
 {
 	// left blank intentionally
 }
-
 std::shared_ptr<Packet_Base> PK_SC_CREATEROOM_FAIL::processPacket(MachObject & targetMObject)
 {
 	return std::shared_ptr<PK_EMPTY>(nullptr);
 }
-
 void PK_SC_CREATEROOM_FAIL::_doSerialProc()
 {
 	// left blank intentionally
 }
-
 void PK_SC_CREATEROOM_FAIL::_doDeserialProc()
 {
 	// left blank intentionally
+}
+
+/* PK_SC_CHAT_QUITUSER */
+PK_SC_CHAT_QUITUSER::PK_SC_CHAT_QUITUSER()
+	: Packet_Base(PTYPE::PT_SC_CHAT_QUITUSER)
+{
+	// left blank intentionally
+}
+PK_SC_CHAT_QUITUSER::PK_SC_CHAT_QUITUSER(PTYPE pType, char * buf, size_t bufLen)
+	: Packet_Base(pType, buf, bufLen)
+{
+	// left blank intentionally
+}
+std::shared_ptr<Packet_Base> PK_SC_CHAT_QUITUSER::processPacket(MachObject & targetMObject)
+{
+	return std::shared_ptr<PK_EMPTY>(nullptr);
+}
+void PK_SC_CHAT_QUITUSER::_doSerialProc()
+{
+	_buf << userKey << '|';
+}
+void PK_SC_CHAT_QUITUSER::_doDeserialProc()
+{
+	std::string token;
+
+	// extract user key
+	std::getline(_buf, token, '|');
+	userKey = std::stoi(token);
+}
+
+
+
+/*********************************************
+* etc. function
+
+*********************************************/
+std::shared_ptr<Packet_Base> extractSCPacket(char * buf, size_t bufLen)
+{
+	std::string temp;
+	const char * idx = buf;
+	while (*idx != '|') {
+		temp += *idx;
+		idx++;
+	}
+
+	int pType = stoi(temp);
+
+	switch ((PTYPE)pType)
+	{
+	case PTYPE::PT_SC_LOGIN_ACCEPT:
+		return std::make_shared<PK_SC_LOGIN_ACCEPT>(pType, buf, bufLen);
+	case PTYPE::PT_SC_LOGIN_FAIL:
+		return std::make_shared<PK_SC_LOGIN_FAIL>(pType, buf, bufLen);
+	case PTYPE::PT_SC_LOBBY_JOINROOM_ACCEPT:
+		return std::make_shared<PK_SC_LOBBY_JOINROOM_ACCEPT>(pType, buf, bufLen);
+	case PTYPE::PT_SC_LOBBY_JOINROOM_FAIL:
+		return std::make_shared<PK_SC_LOBBY_JOINROOM_FAIL>(pType, buf, bufLen);
+	case PTYPE::PT_SC_LOBBY_LOAD_ROOMLIST:
+		return std::make_shared<PK_SC_LOBBY_LOAD_ROOMLIST>(pType, buf, bufLen);
+	case PTYPE::PT_SC_CREATEROOM_OK:
+		return std::make_shared<PK_SC_CREATEROOM_OK>(pType, buf, bufLen);
+	case PTYPE::PT_SC_CREATEROOM_FAIL:
+		return std::make_shared<PK_SC_CREATEROOM_FAIL>(pType, buf, bufLen);
+	case PTYPE::PT_SC_CHAT_QUITUSER:
+		return std::make_shared<PK_SC_CHAT_QUITUSER>(pType, buf, bufLen);
+	case PTYPE::PT_SC_CHAT_CHAT:
+		return std::make_shared<PK_SC_CHAT_CHAT>(pType, buf, bufLen);
+	case PTYPE::PT_SC_CHAT_LOAD_USERLIST:
+		return std::make_shared<PK_SC_CHAT_LOAD_USERLIST>(pType, buf, bufLen);
+	default:
+		return std::make_shared<PK_EMPTY>(PTYPE::PT_EMPTY);
+	}
 }
