@@ -18,6 +18,24 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\chatters\DBConnector.cpp" />
+    <ClCompile Include="..\chatters\header_common.cpp" />
+    <ClCompile Include="..\chatters\header_server.cpp" />
+    <ClCompile Include="..\chatters\packet.cpp" />
+    <ClCompile Include="..\chatters\PT_CS_Data.cpp" />
+    <ClCompile Include="..\chatters\PT_SC_Data.cpp" />
+    <ClCompile Include="testmain.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\chatters\DBConnector.h" />
+    <ClInclude Include="..\chatters\header_common.h" />
+    <ClInclude Include="..\chatters\header_server.h" />
+    <ClInclude Include="..\chatters\packet.h" />
+    <ClInclude Include="..\chatters\PTYPE.h" />
+    <ClInclude Include="..\chatters\PT_CS_Data.h" />
+    <ClInclude Include="..\chatters\PT_SC_Data.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DB82692D-48FF-48A3-9191-AC345C38B762}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -93,6 +111,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

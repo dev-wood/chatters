@@ -119,22 +119,32 @@ void Packet_Base::_writeHeader()
 	size_t bufSize = _bufSize();	// get packet size
 
 	auto prevPos = _buf.tellp();	// store current input sequence pos
-	_buf.seekp(_buf.beg);	// move input sequence pos to header space
+	_buf.seekp(0, _buf.beg);	// move input sequence pos to header space
 
-	_buf.write((const char*)&bufSize, sizeof(bufSize));	// write packet size in header space
+	_buf.write((const char*)(&bufSize), sizeof(size_t));	// write packet size in header space
 
 	_buf.seekp(prevPos);	// restore previous input sequence pos	
 }
 size_t Packet_Base::_bufSize()
 {
+	//size_t bufSz = 0;
+	//auto cPos = _buf.tellg();	// store current input sequence pos
+	//_buf.seekg(_buf.end);
+	//bufSz = static_cast<int>(_buf.tellg());
+	
+	//_buf.seekg(cPos);	// restore previous input sequence pos
+
+	//bufSz -= sizeof(bufSz);	// exclude packet header space
+
+	//return bufSz;
+	
 	size_t bufSz = 0;
-	auto cPos = _buf.tellg();	// store current input sequence pos
-	_buf.seekg(_buf.end);
+	_buf.seekg(0, _buf.end);
 	bufSz = static_cast<int>(_buf.tellg());
 
-	_buf.seekg(cPos);	// restore previous input sequence pos
+	_buf.seekg(0, _buf.beg);	// restore previous input sequence pos
 
-	bufSz -= sizeof(bufSz);	// exclude packet header space
+	bufSz -= sizeof(size_t);	// exclude packet header space
 
 	return bufSz;
 }

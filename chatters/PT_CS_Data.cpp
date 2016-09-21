@@ -359,8 +359,8 @@ std::shared_ptr<Packet_Base> PK_CS_CHAT_CHAT::processPacket(MachObject & targetM
 void PK_CS_CHAT_CHAT::_doSerialProc()
 {
 	// serialize member field depending on the packet type
-	
-	_buf << chat;
+	_buf << roomKey << '|';
+	_buf << chat << '|';
 }
 void PK_CS_CHAT_CHAT::_doDeserialProc()
 {
