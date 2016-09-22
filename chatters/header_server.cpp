@@ -313,7 +313,7 @@ bool SvMach::joinRoom(RoomKey rKey, UserKey uKey)
 	}
 	else
 	{	// succeed to join room
-		updateUserInfoResult = updateUserInfo(uKey, rKey);	// update user informaion(room#)
+		updateUserInfoResult = _updateUserInfo(uKey, rKey);	// update user informaion(room#)
 	}
 		
 	if (!updateUserInfoResult)	// fail to update user information(room#)
@@ -323,8 +323,6 @@ bool SvMach::joinRoom(RoomKey rKey, UserKey uKey)
 		return false;
 	}
 	else {
-		//rev SvUserInfo::curRmNum update
-		//updateUserInfo(uKey, rKey);
 		return true;
 	}
 }
@@ -343,7 +341,7 @@ bool SvMach::leaveRoom(RoomKey rKey, UserKey uKey)
 	if (!leaveRoomResult)	// fail to leave room
 		return false;
 	else					// succeed to leave room
-		updateUserInfoResult = updateUserInfo(uKey, CHATTERS::NO_ROOM);	// update user informaion(room#)
+		updateUserInfoResult = _updateUserInfo(uKey, CHATTERS::NO_ROOM);	// update user informaion(room#)
 		
 	if (!updateUserInfoResult)	// fail to update user information(room#)
 	{
@@ -352,7 +350,7 @@ bool SvMach::leaveRoom(RoomKey rKey, UserKey uKey)
 	}
 	else {
 		if(rmIter->second.rtk.get_numOfPeer() == 0)
-			removeRoom(rKey);
+			_removeRoom(rKey);
 
 		return true;
 	}
@@ -393,7 +391,7 @@ RoomKey SvMach::openRoom(UserKey uKey, const std::string & title)
 //
 //	return rtnVec;
 //}
-bool SvMach::removeRoom(RoomKey rKey)
+bool SvMach::_removeRoom(RoomKey rKey)
 {
 	auto removed = _rList.erase(rKey);
 	if (removed == 0) {
@@ -402,7 +400,7 @@ bool SvMach::removeRoom(RoomKey rKey)
 
 	return true;
 }
-bool SvMach::updateUserInfo(UserKey uKey, RoomKey rmKey)
+bool SvMach::_updateUserInfo(UserKey uKey, RoomKey rmKey)
 {
 	auto uiIter = findUser(uKey);
 
