@@ -36,6 +36,9 @@
     <ClCompile Include="testmain.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="main_testSvMach.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\chatters\DBConnector.h">
