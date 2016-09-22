@@ -160,6 +160,7 @@ bool SvRoomInfo::addUser(UserKey uKey)
 {
 	if (userList.size() < CHATTERS::MAX_PARTICIPANT) {
 		userList.push_back(uKey);
+		rtk.set_numOfPeer(userList.size());
 		return true;
 	}
 	return false;
@@ -170,6 +171,7 @@ bool SvRoomInfo::removeUser(UserKey uKey)
 	{
 		if (*it == uKey) {
 			userList.erase(it);
+			rtk.set_numOfPeer(userList.size());
 			return true;
 		}
 	}
@@ -218,7 +220,7 @@ bool SvMach::db_signin(const std::string & id, const std::string & pw)
 	if ((errmsg = _dbc.getResultNum(foundNumOfRow)) != SQL_SUCCESS)
 	{	// getResultNum(..) failed
 		std::cout << "DBConnector::getResultNum() got SQL error." << std::endl;
-		exit(1);
+		//exit(1);
 	}
 
 	if (foundNumOfRow == 1)
@@ -243,7 +245,7 @@ bool SvMach::db_signup(const std::string & id, const std::string & pw)
 	if (_dbc.getResultNum(foundRow) != SQL_SUCCESS)
 	{
 		std::cout << "DBConnector::getResultNum(..) get SQL error" << std::endl;
-		exit(1);
+		//exit(1);
 	}
 
 	if (foundRow > 0)	// primary key duplicated.
@@ -304,12 +306,15 @@ bool SvMach::joinRoom(RoomKey rKey, UserKey uKey)
 	bool joinRoomResult = rmIter->second.addUser(uKey);
 	bool updateUserInfoResult;
 	
-	if (!joinRoomResult) {// fail to join room
+	if (!joinRoomResult)
+	{	// fail to join room
 		std::cout << "Fail to join room #" << rKey << "(Request from user #" << uKey << ")" << endl;
 		return false;
 	}
-	else				// succeed to join room
+	else
+	{	// succeed to join room
 		updateUserInfoResult = updateUserInfo(uKey, rKey);	// update user informaion(room#)
+	}
 		
 	if (!updateUserInfoResult)	// fail to update user information(room#)
 	{
@@ -317,8 +322,11 @@ bool SvMach::joinRoom(RoomKey rKey, UserKey uKey)
 		rmIter->second.removeUser(uKey);// rewind changes
 		return false;
 	}
-	else
+	else {
+		//rev SvUserInfo::curRmNum update
+		//updateUserInfo(uKey, rKey);
 		return true;
+	}
 }
 bool SvMach::leaveRoom(RoomKey rKey, UserKey uKey)
 {

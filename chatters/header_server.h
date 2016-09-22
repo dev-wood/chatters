@@ -178,6 +178,7 @@ public:
 
 private:
 	/* Member method */
+	SvMach(const SvMach & mach);
 private:
 	/* Member field */
 	DBConnector _dbc;

@@ -101,9 +101,9 @@ UserKey RoomInfoToken::_getUniqueKey()
 	return _UniqueKey++;
 }
 
-RoomInfoToken::RoomInfoToken()
+RoomInfoToken::RoomInfoToken() : _numOfPeer(0), _title("")
 {
-	// left blank intentionally
+	_key = _getUniqueKey();
 }
 
 RoomInfoToken::RoomInfoToken(const std::string& title)
@@ -133,6 +133,7 @@ RoomInfoToken & RoomInfoToken::operator=(RoomInfoToken && tk)
 	this->_key = tk._key;
 	tk._key = -1;
 	std::swap(this->_title, tk._title);
+	_numOfPeer = tk._numOfPeer;
 
 	return *this;
 }
