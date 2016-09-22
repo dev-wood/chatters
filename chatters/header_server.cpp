@@ -288,6 +288,13 @@ bool SvMach::removeUser(UserKey uKey)
 	if (it == _uList.end())
 		return false;
 	else {
+		RoomKey rmKey = it->second.curRmNum;
+		if (rmKey != CHATTERS::NO_ROOM)
+		{	// if the user has participating in chat room
+			if (!leaveRoom(rmKey, uKey))
+				return false;
+		}
+		
 		closesocket(it->second.get_socket());
 
 		_uList.erase(it);
