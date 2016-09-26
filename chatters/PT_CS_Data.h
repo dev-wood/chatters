@@ -14,7 +14,8 @@ class SvMach;
 
 /*********************************************************************
  * PK_CS_LOGIN_REQUEST class
-	-
+	- Packet 备炼
+	  (packet size)|(packet id)|(user id)|(user password)|
 *********************************************************************/
 struct PK_CS_LOGIN_REQUEST : public Packet_Base
 {
@@ -39,7 +40,8 @@ protected:
 
 /*********************************************************************
  * PK_CS_LOBBY_JOINROOM class
-	-
+	- Packet 备炼
+	  (packet size)|(packet id)|(user key)|(room key)|
 *********************************************************************/
 struct PK_CS_LOBBY_JOINROOM : public Packet_Base
 {
@@ -63,7 +65,8 @@ protected:
 
 /*********************************************************************
  * PK_CS_LOBBY_LOAD_ROOMLIST class
-	-
+	- Packet 备炼
+	  (packet size)|(packet id)|
 *********************************************************************/
 struct PK_CS_LOBBY_LOAD_ROOMLIST : public Packet_Base
 {
@@ -86,7 +89,8 @@ protected:
 
 /*********************************************************************
  * PK_CS_CREATEROOM_CREATEROOM class
-	-
+	- Packet 备炼
+	  (packet size)|(packet id)|(user key)|(room title)|
 *********************************************************************/
 struct PK_CS_CREATEROOM_CREATEROOM : public Packet_Base
 {
@@ -110,7 +114,8 @@ protected:
 
 /*********************************************************************
  * PK_CS_CHAT_QUITROOM class
-	-
+	- Packet 备炼
+	  (packet size)|(packet id)|(user key)|(room key)|
 *********************************************************************/
 struct PK_CS_CHAT_QUITROOM : public Packet_Base
 {
@@ -134,7 +139,8 @@ protected:
 
 /*********************************************************************
  * PK_CS_CHAT_CHAT class
-	-
+	- Packet 备炼
+	  (packet size)|(packet id)|(room key)|(chatting)
 *********************************************************************/
 struct PK_CS_CHAT_CHAT : public Packet_Base
 {

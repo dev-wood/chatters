@@ -17,7 +17,8 @@ class SvPacketManager;
 
 /*********************************************************************
  * PK_SC_LOGIN_ACCEPT class
-	-
+	- Packet 구조
+	  (packet size)|(packet id)|(user key)|(user id)|
 *********************************************************************/
 struct PK_SC_LOGIN_ACCEPT : public Packet_Base
 {
@@ -40,7 +41,8 @@ protected:
 
 /*********************************************************************
 * PK_SC_LOGIN_FAIL class
--
+- Packet 구조
+	  (packet size)|(packet id)|
 *********************************************************************/
 struct PK_SC_LOGIN_FAIL : public Packet_Base
 {
@@ -62,7 +64,8 @@ protected:
 
 /*********************************************************************
  * PK_SC_LOBBY_JOINROOM_ACCEPT class
-	-
+	- Packet 구조 : 유저의 수만큼 <<, >> 안의 내용을 반복
+	  (packet size)|(packet id)|(room key)|(room title)|(user 수)|<<(user key)|(user id)|>>
 *********************************************************************/
 struct PK_SC_LOBBY_JOINROOM_ACCEPT : public Packet_Base
 {
@@ -87,7 +90,8 @@ protected:
 
 /*********************************************************************
  * PK_SC_LOBBY_JOINROOM_FAIL class
-	-
+	- Packet 구조
+	  (packet size)|(packet id)|
 *********************************************************************/
 struct PK_SC_LOBBY_JOINROOM_FAIL : public Packet_Base
 {
@@ -110,7 +114,8 @@ protected:
 
 /*********************************************************************
  * PK_SC_LOBBY_LOAD_ROOMLIST class
-	-
+	- Packet 구조 : 유저의 수만큼 <<, >> 안의 내용을 반복
+	  (packet size)|(packet id)|(room 수)|<<(room key)|(room title)|>>
 *********************************************************************/
 struct PK_SC_LOBBY_LOAD_ROOMLIST : public Packet_Base
 {
@@ -136,7 +141,8 @@ protected:
 
 /*********************************************************************
  * PK_SC_CREATEROOM_OK class
-	-
+	- Packet 구조
+	  (packet size)|(packet id)|(room key)|(room title)|
 *********************************************************************/
 struct PK_SC_CREATEROOM_OK : public Packet_Base
 {
@@ -159,7 +165,8 @@ protected:
 
 /*********************************************************************
  * PK_SC_CREATEROOM_FAIL class
-	-
+	- Packet 구조
+	  (packet size)|(packet id)|
 *********************************************************************/
 struct PK_SC_CREATEROOM_FAIL : public Packet_Base
 {
@@ -181,7 +188,8 @@ protected:
 
 /*********************************************************************
  * PK_SC_CHAT_QUITUSER class
-	-
+	- Packet 구조
+	  (packet size)|(packet id)|(user key)|
 *********************************************************************/
 struct PK_SC_CHAT_QUITUSER : public Packet_Base
 {
@@ -204,7 +212,8 @@ protected:
 
 /*********************************************************************
  * PK_SC_CHAT_CHAT class
-	-
+	- Packet 구조
+	  (packet size)|(packet id)|(user key)|(chatting)|
 *********************************************************************/
 struct PK_SC_CHAT_CHAT : public Packet_Base
 {
@@ -228,7 +237,8 @@ protected:
 
 /*********************************************************************
  * PK_SC_CHAT_LOAD_USERLIST class
-	-
+	- Packet 구조 : 유저의 수만큼 <<, >> 안의 내용을 반복
+	  (packet size)|(packet id)|(user의 수)|<<(user key)|(user id)|>>
 *********************************************************************/
 struct PK_SC_CHAT_LOAD_USERLIST : public Packet_Base
 {
