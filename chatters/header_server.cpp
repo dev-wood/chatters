@@ -101,7 +101,7 @@ SvUserInfo::SvUserInfo(const std::string & id, SOCKET sock)
 	curRmNum(CHATTERS::NO_ROOM),
 	_socket(sock)
 {
-	// left blank intentionally
+	// left blank intentionally9
 }
 SvUserInfo::SvUserInfo(const SvUserInfo & ui)
 {
@@ -113,8 +113,7 @@ SvUserInfo::SvUserInfo(SvUserInfo && ui)
 }
 SvUserInfo::~SvUserInfo()
 {
-	if (_socket != INVALID_SOCKET)
-		closesocket(_socket);
+	// left blank intentionally
 }
 SvUserInfo & SvUserInfo::operator=(SvUserInfo && ui)
 {
@@ -123,6 +122,9 @@ SvUserInfo & SvUserInfo::operator=(SvUserInfo && ui)
 		utk = std::move(ui.utk);
 		curRmNum = ui.curRmNum;
 		_socket = ui._socket;
+
+		ui.curRmNum = RoomInfoToken::INVALID_KEY;
+		ui._socket = INVALID_SOCKET;
 	}
 
 	return *this;
@@ -180,7 +182,7 @@ bool SvRoomInfo::removeUser(UserKey uKey)
 }
 SvRoomInfo::SvRoomInfo()
 {
-	std::cout << "SvRoomInfo() called." << std::endl;
+	// left blank intentionally
 }
 
 
@@ -459,6 +461,7 @@ SvPacketManager & SvPacketManager::Instance()
 }
 void SvPacketManager::sendPacket(std::shared_ptr<Packet_Base> spPk)
 {
+	cout << "SvPacketManager::sendPacket(..) called." << endl;
 	size_t pkSz;
 	DWORD flags = 0;
 	LPPER_IO_DATA ioInfo;
@@ -475,6 +478,7 @@ void SvPacketManager::sendPacket(std::shared_ptr<Packet_Base> spPk)
 		ioInfo->set_refCount(spPk->sockList.size());
 		for (const auto& el : spPk->sockList)
 		{
+			cout << "WSASending packet.." << endl;
 			WSASend(el, &(ioInfo->wsaBuf), 1, NULL, 0, &(ioInfo->overlapped), NULL);
 		}
 	}	
@@ -490,7 +494,8 @@ std::shared_ptr<Packet_Base> SvPacketManager::recvPacket()
 	auto shPk = pm._msgQueue.front();
 	pm._msgQueue.pop();
 
-	return std::move(shPk);	
+	//return std::move(shPk);		//rev
+	return shPk;
 }
 SvPacketManager::SvPacketManager()
 {
@@ -528,7 +533,7 @@ DWORD WINAPI recvThreadMain(LPVOID pComPort)
 	while (1)
 	{
 		GetQueuedCompletionStatus(hComPort, &bytesTrans, (LPDWORD)&sock, (LPOVERLAPPED *)&ioInfo, INFINITE);
-		cout << "GetQueuedComplitionStatus(mode: " << ioInfo->rwMode << ") bytesTrans = " << bytesTrans << endl;
+		cout << endl << "GetQueuedComplitionStatus(mode: " << ioInfo->rwMode << ") bytesTrans = " << bytesTrans << endl;
 
 		if (ioInfo->rwMode == PerIoData::READ_HEADER)
 		{
@@ -619,7 +624,6 @@ DWORD WINAPI packetProcessWorkerThreadMain(LPVOID pComPort)
 		auto shRecvPk = pm.recvPacket();
 
 		shRecvPk->deserialize();
-		cout << "Processing packet.." << endl;
 		auto shSendPk = shRecvPk->processPacket(pm.getAgent());
 
 		if (shSendPk != nullptr)
