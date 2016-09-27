@@ -469,7 +469,7 @@ void SvPacketManager::sendPacket(std::shared_ptr<Packet_Base> spPk)
 
 		ioInfo = new PerIoData(pkSz);
 		memset(&(ioInfo->overlapped), 0, sizeof(OVERLAPPED));
-		memcpy_s(ioInfo->get_buffer(), ioInfo->get_bufferLen(), spPk->get_bufAddr(), pkSz);
+		memcpy_s(ioInfo->get_buffer(), ioInfo->get_bufferLen(), spPk->get_buf().str().c_str(), pkSz);
 		ioInfo->rwMode = PerIoData::WRITE;
 
 		ioInfo->set_refCount(spPk->sockList.size());

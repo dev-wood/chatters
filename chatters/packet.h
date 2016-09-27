@@ -78,7 +78,6 @@ public:
 	// Accessor
 	size_t get_packetSize();	// The size of whole packet include header space.
 	size_t get_bufSize();		// The size of buffer(serialized information).
-	const char * get_bufAddr() const;
 	const std::stringstream& get_buf() const;
 	const ProcInfo& get_ProcInfo() const;
 

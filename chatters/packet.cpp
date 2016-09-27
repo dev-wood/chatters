@@ -80,10 +80,6 @@ size_t Packet_Base::get_bufSize()
 {
 	return _bufSize();
 }
-const char * Packet_Base::get_bufAddr() const
-{
-	return _buf.str().c_str();
-}
 const std::stringstream & Packet_Base::get_buf() const
 {
 	return _buf;
