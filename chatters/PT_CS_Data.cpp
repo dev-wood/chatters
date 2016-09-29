@@ -23,10 +23,14 @@ std::shared_ptr<Packet_Base> PK_CS_LOGIN_REQUEST::processPacket(MachObject & tar
 	if (agent.db_signin(userId, userPassword))
 	{	// sign in success
 		// add user on user list
-		if (agent.addUser(userId, sockList[0]) != InfoToken::INVALID_KEY)
+		auto opResult = agent.addUser(userId, sockList[0]);
+		if (opResult != InfoToken::INVALID_KEY)
 		{	// add user operation succeed
 			// build return packet
 			auto rtnShPk = std::make_shared<PK_SC_LOGIN_ACCEPT>();
+
+			// fill information in return packet
+			rtnShPk->userTk = agent.findUser(opResult)->second.utk;
 
 			// set processing result
 			rtnShPk->setProcessInfo(ProcInfo::ProcCode::SUCCESS);
@@ -94,7 +98,14 @@ std::shared_ptr<Packet_Base> PK_CS_LOBBY_JOINROOM::processPacket(MachObject & ta
 	{	// join room success
 		// build return packet
 		auto rtnShPk = std::make_shared<PK_SC_LOBBY_JOINROOM_ACCEPT>();
-
+		
+		// fill information in return packet
+		rtnShPk->roomTk = agent.findRoom(roomKey)->second.rtk;
+		for (const auto& uKey : agent.findRoom(roomKey)->second.userList)
+		{
+			rtnShPk->userList.push_back(agent.findUser(uKey)->second.utk);
+		}
+		
 		// set processing result
 		rtnShPk->setProcessInfo(ProcInfo::ProcCode::SUCCESS);
 
@@ -157,6 +168,8 @@ std::shared_ptr<Packet_Base> PK_CS_LOBBY_LOAD_ROOMLIST::processPacket(MachObject
 	
 	// build return packet
 	auto rtnShPk = std::make_shared<PK_SC_LOBBY_LOAD_ROOMLIST>();
+
+	// fill information in return packet
 	rtnShPk->pRmList = agent.get_roomList();
 
 	// set processing result
@@ -200,6 +213,8 @@ std::shared_ptr<Packet_Base> PK_CS_CREATEROOM_CREATEROOM::processPacket(MachObje
 	{	// create room success
 		// build return packet
 		auto rtnShPk = std::make_shared<PK_SC_CREATEROOM_OK>();
+
+		// fill information in return packet
 		const auto& rmIter = agent.findRoom(rKey);	//rev const 가 문제 일으킬 수 있음
 
 		rtnShPk->roomTk = rmIter->second.rtk;
@@ -268,6 +283,9 @@ std::shared_ptr<Packet_Base> PK_CS_CHAT_QUITROOM::processPacket(MachObject & tar
 	{	// quit room success
 		// build return packet
 		auto rtnShPk = std::make_shared<PK_SC_CHAT_QUITUSER>();
+
+		// fill information in return packet
+		rtnShPk->userKey = userKey;
 
 		// set processing result
 		rtnShPk->setProcessInfo(ProcInfo::ProcCode::SUCCESS);
@@ -340,6 +358,9 @@ std::shared_ptr<Packet_Base> PK_CS_CHAT_CHAT::processPacket(MachObject & targetM
 	// packet processing procedure
 	// build return packet
 	auto rtnShPk = std::make_shared<PK_SC_CHAT_CHAT>();
+
+	// fill information in return packet 
+	rtnShPk->uKey = uKey;
 	rtnShPk->chat = chat;
 
 	// set processing result
@@ -359,13 +380,23 @@ std::shared_ptr<Packet_Base> PK_CS_CHAT_CHAT::processPacket(MachObject & targetM
 void PK_CS_CHAT_CHAT::_doSerialProc()
 {
 	// serialize member field depending on the packet type
+	_buf << uKey << '|';
 	_buf << roomKey << '|';
 	_buf << chat << '|';
 }
 void PK_CS_CHAT_CHAT::_doDeserialProc()
 {
 	// deserialize member field depending on the packet type
-	
+	std::string token;
+
+	// extract user key
+	std::getline(_buf, token, '|');
+	uKey = std::stoi(token);
+
+	// extract room key
+	std::getline(_buf, token, '|');
+	roomKey = std::stoi(token);
+
 	// extract chat content
 	std::getline(_buf, chat, '|');
 }

@@ -206,6 +206,11 @@ public:
 	/* Member field */
 protected:
 	/* Member method */
+	SvPacketManager();
+	SvPacketManager(const SvPacketManager&);
+	SvPacketManager(SvPacketManager&&);
+
+	SvPacketManager& operator=(const SvPacketManager&);
 protected:
 	/* Member field */
 	static SvPacketManager _instance;

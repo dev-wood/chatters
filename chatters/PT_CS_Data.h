@@ -152,6 +152,7 @@ public:
 	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
+	UserKey uKey;
 	RoomKey roomKey;
 	std::string chat;
 protected:

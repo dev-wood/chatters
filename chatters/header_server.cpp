@@ -492,6 +492,23 @@ std::shared_ptr<Packet_Base> SvPacketManager::recvPacket()
 
 	return std::move(shPk);	
 }
+SvPacketManager::SvPacketManager()
+{
+	// left blank intentionally
+}
+SvPacketManager::SvPacketManager(const SvPacketManager &)
+{
+	// left blank intentionally
+}
+SvPacketManager::SvPacketManager(SvPacketManager &&)
+{
+	// left blank intentionally
+}
+//SvPacketManager & SvPacketManager::operator=(const SvPacketManager &)
+//{
+//	// left blank intentionally
+//	// TODO: 여기에 반환 구문을 삽입합니다.
+//}
 
 
 
@@ -500,6 +517,8 @@ std::shared_ptr<Packet_Base> SvPacketManager::recvPacket()
 *********************************************************************/
 DWORD WINAPI recvThreadMain(LPVOID pComPort)
 {
+	cout << "Receiving thread starts.." << endl;
+
 	HANDLE hComPort = (HANDLE)pComPort;
 	SOCKET sock;
 	DWORD bytesTrans;
@@ -587,17 +606,20 @@ DWORD WINAPI recvThreadMain(LPVOID pComPort)
 			delete(ioInfo);
 		}
 	}
+	cout << "Receiving thread released.." << endl;
 	return 0;
 }
 
 DWORD WINAPI packetProcessWorkerThreadMain(LPVOID pComPort)
 {
+	cout << "Packet processing worker thread starts.." << endl;
 	auto& pm = SvPacketManager::Instance();
 
 	while (1) {
 		auto shRecvPk = pm.recvPacket();
 
 		shRecvPk->deserialize();
+		cout << "Processing packet.." << endl;
 		auto shSendPk = shRecvPk->processPacket(pm.getAgent());
 
 		if (shSendPk != nullptr)
@@ -607,6 +629,8 @@ DWORD WINAPI packetProcessWorkerThreadMain(LPVOID pComPort)
 			pm.sendPacket(shSendPk);
 		}
 	}
+
+	cout << "Packet processing worker thread released." << endl;
 
 	return 0;
 }
