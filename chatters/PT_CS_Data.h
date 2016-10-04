@@ -140,7 +140,7 @@ protected:
 /*********************************************************************
  * PK_CS_CHAT_CHAT class
 	- Packet ±¸Á¶
-	  (packet size)|(packet id)|(room key)|(chatting)
+	  (packet size)|(packet id)|(user key)|(room key)|(chatting)
 *********************************************************************/
 struct PK_CS_CHAT_CHAT : public Packet_Base
 {
