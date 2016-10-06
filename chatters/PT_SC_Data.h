@@ -142,7 +142,7 @@ protected:
 /*********************************************************************
  * PK_SC_CREATEROOM_OK class
 	- Packet ±¸Á¶
-	  (packet size)|(packet id)|(room key)|(room title)|
+	  (packet size)|(packet id)|(room key)|(room title)|(number of peer in the room)|
 *********************************************************************/
 struct PK_SC_CREATEROOM_OK : public Packet_Base
 {
