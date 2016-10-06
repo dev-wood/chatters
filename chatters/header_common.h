@@ -77,8 +77,6 @@ private:
 __declspec(selectany) UserKey UserInfoToken::_UniqueKey = 0;
 std::ostream& operator << (std::ostream&, const UserInfoToken&);
 
-std::stringstream& operator<<(std::stringstream& sstream, UserInfoToken& utk);
-
 class RoomInfoToken : public InfoToken
 {
 public:
@@ -113,9 +111,8 @@ private:
 	int _numOfPeer;
 };
 __declspec(selectany) RoomKey RoomInfoToken::_UniqueKey = 0;
-std::ostream& operator<< (std::ostream&, const RoomInfoToken&);
 
-std::stringstream& operator<<(std::stringstream& sstream, RoomInfoToken& rtk);
+std::ostream& operator<<(std::ostream& os, const RoomInfoToken& rtk);
 
 class MachObject
 {

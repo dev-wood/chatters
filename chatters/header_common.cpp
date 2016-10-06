@@ -82,15 +82,9 @@ UserInfoToken::UserInfoToken(const UserInfoToken & tk)
 }
 std::ostream & operator<<(std::ostream & os, const UserInfoToken &utk)
 {
-	return os << "UserInfoToken object(key: " << utk.get_key()
-		<< ", id: " << utk.get_id()
-		<< ")" << std::endl;
-}
-
-std::stringstream & operator<<(std::stringstream & sstream, UserInfoToken & utk)
-{
-	sstream << utk.get_key() << '|' 
+	os << utk.get_key() << '|' 
 		<< utk.get_id() << '|';
+	return os;
 }
 
 
@@ -189,15 +183,7 @@ void RoomInfoToken::operator<<(std::stringstream & sstream)
 	_numOfPeer = stoi(token);
 }
 
-std::ostream & operator<<(std::ostream & os, const RoomInfoToken & rtk)
-{
-	return os << "RoomInfoToken object(key: " << rtk.get_key()
-		<< ", title: " << rtk.get_title()
-		<< ", numOfPeer: " << rtk.get_numOfPeer()
-		<< ")" << std::endl;
-}
-
-std::stringstream & operator<<(std::stringstream & sstream, RoomInfoToken & rtk)
+std::ostream & operator<<(std::ostream & sstream, const RoomInfoToken & rtk)
 {
 	sstream << rtk.get_key() << '|'
 		<< rtk.get_title() << '|'
