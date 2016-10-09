@@ -116,6 +116,23 @@ private:
 	SOCKET _socket;
 };
 
+class SvUserList
+{
+public:
+	/* Member method */
+	void add(std::shared_ptr<SvUserInfo> shpUInfo);
+	std::shared_ptr<SvUserInfo> remove(UserKey uKey);
+	std::shared_ptr<SvUserInfo> find(UserKey uKey);
+public:
+	/* Member field */
+
+protected:
+	/* Member method */
+protected:
+	/* Member field */
+	std::unordered_map<UserKey, std::shared_ptr<SvUserInfo>> _userInfos;
+};
+
 /*********************************************************************
  * SvRoomInfo class
 	- 현재 생성되어 있는 채팅방 관련 정보를 저장하는 클래스
@@ -141,8 +158,42 @@ private:
 	/* Member field */
 };
 
+class SvRoomList
+{
+public:
+	/* Member method */
+	void add(std::shared_ptr<SvRoomInfo> shpRmInfo);
+	std::shared_ptr<SvRoomInfo> remove(RoomKey rmKey);
+	std::shared_ptr<SvRoomInfo> find(RoomKey rmKey);
+public:
+	/* Member field */
+
+protected:
+	/* Member method */
+protected:
+	/* Member field */
+	std::unordered_map<RoomKey, std::shared_ptr<SvRoomInfo>> _roomInfos;
+};
+
+class SvSocketList
+{
+public:
+	/* Member method */
+	void add(SOCKET sock, UserKey uKey);
+	UserKey remove(SOCKET sock);
+	UserKey find(SOCKET sock);
+public:
+	/* Member field */
+
+protected:
+	/* Member method */
+protected:
+	/* Member field */
+	std::unordered_map<SOCKET, UserKey> _sockets;
+};
+
 /*********************************************************************
- * SvRoomInfo class
+ * SvRoomInfo class	//rev
 	- 현재 생성되어 있는 채팅방 관련 정보를 저장하는 클래스
 
  *********************************************************************/
@@ -230,3 +281,9 @@ protected:
 DWORD WINAPI recvThreadMain(LPVOID pComPort);
 DWORD WINAPI packetProcessWorkerThreadMain(LPVOID pComPort);
 void ErrorHandling(char * mesaage);
+
+//rev
+// 작업목록
+//	1. 각 클래스 구현
+//	2. SvMach class 내 필드 및 함수 수정
+//	3. exception 처리 enhancement로 등록.

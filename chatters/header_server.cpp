@@ -151,6 +151,35 @@ void SvUserInfo::set_socket(SOCKET socket)
 
 
 
+void SvUserList::add(std::shared_ptr<SvUserInfo> shpUInfo)
+{
+	_userInfos.insert(std::make_pair(shpUInfo->utk.get_key(), shpUInfo));
+}
+std::shared_ptr<SvUserInfo> SvUserList::remove(UserKey uKey)
+{
+	auto & it = _userInfos.find(uKey);
+
+	if (it == _userInfos.end())
+	{
+		return std::shared_ptr<SvUserInfo>();
+	}
+	else {
+		_userInfos.erase(uKey);
+		return it->second;
+	}
+}
+std::shared_ptr<SvUserInfo> SvUserList::find(UserKey uKey)
+{
+	auto & it = _userInfos.find(uKey);
+
+	if (it == _userInfos.end())
+		return std::shared_ptr<SvUserInfo>();
+	else
+		return it->second;
+}
+
+
+
 /*********************************************************************
  * SvRoomInfo definition
 *********************************************************************/
@@ -183,6 +212,62 @@ bool SvRoomInfo::removeUser(UserKey uKey)
 SvRoomInfo::SvRoomInfo()
 {
 	// left blank intentionally
+}
+
+
+
+void SvRoomList::add(std::shared_ptr<SvRoomInfo> shpRmInfo)
+{
+	_roomInfos.insert(std::make_pair(shpRmInfo->rtk.get_key(), shpRmInfo));
+}
+std::shared_ptr<SvRoomInfo> SvRoomList::remove(RoomKey rmKey)
+{
+	auto & it = _roomInfos.find(rmKey);
+
+	if (it == _roomInfos.end())
+		return std::shared_ptr<SvRoomInfo>();
+	else {
+		_roomInfos.erase(rmKey);
+		return it->second;
+	}
+}
+std::shared_ptr<SvRoomInfo> SvRoomList::find(RoomKey rmKey)
+{
+	auto & it = _roomInfos.find(rmKey);
+
+	if (it == _roomInfos.end())
+		return std::shared_ptr<SvRoomInfo>();
+	else {
+		return it->second;
+	}
+}
+
+
+
+void SvSocketList::add(SOCKET sock, UserKey uKey)
+{
+	_sockets.insert(std::make_pair(sock, uKey));
+}
+UserKey SvSocketList::remove(SOCKET sock)
+{
+	auto & it = _sockets.find(sock);
+
+	if (it == _sockets.end())
+		return InfoToken::INVALID_KEY;
+	else {
+		_sockets.erase(sock);
+		return it->second;
+	}
+}
+UserKey SvSocketList::find(SOCKET sock)
+{
+	auto & it = _sockets.find(sock);
+
+	if (it == _sockets.end())
+		return InfoToken::INVALID_KEY;
+	else {
+		return it->second;
+	}
 }
 
 
@@ -683,3 +768,4 @@ void ErrorHandling(char * message)
 // 8. auto pm -> auto& pm으로 바꾸기.
 // 10. extractPacket..(..) arg로 버퍼 길이를 같이 받도록 수정
 // 11. Packet_Base(..) ctor 가 buf를 arg로 받을 때 bufLen도 같이 받도록 수정
+
