@@ -116,11 +116,14 @@ private:
 	SOCKET _socket;
 };
 
-class SvUserList
+class SvUserInfoManager
 {
 public:
 	/* Member method */
-	void add(std::shared_ptr<SvUserInfo> shpUInfo);
+	SvUserInfoManager();
+	~SvUserInfoManager();
+
+	std::shared_ptr<SvUserInfo> add(std::string id, SOCKET sock);
 	std::shared_ptr<SvUserInfo> remove(UserKey uKey);
 	std::shared_ptr<SvUserInfo> find(UserKey uKey);
 public:
@@ -128,9 +131,15 @@ public:
 
 protected:
 	/* Member method */
+	SvUserInfoManager(const SvUserInfoManager&);
+	SvUserInfoManager(SvUserInfoManager&&);
+	SvUserInfoManager& operator=(const SvUserInfoManager&);
+	SvUserInfoManager& operator=(SvUserInfoManager&&);
+
+	void clear();
 protected:
 	/* Member field */
-	std::unordered_map<UserKey, std::shared_ptr<SvUserInfo>> _userInfos;
+	std::unordered_map<UserKey, std::shared_ptr<SvUserInfo>> _userList;
 };
 
 /*********************************************************************
@@ -158,11 +167,14 @@ private:
 	/* Member field */
 };
 
-class SvRoomList
+class SvRoomInfoManager
 {
 public:
 	/* Member method */
-	void add(std::shared_ptr<SvRoomInfo> shpRmInfo);
+	SvRoomInfoManager();
+	~SvRoomInfoManager();
+
+	std::shared_ptr<SvRoomInfo> add(std::string title);
 	std::shared_ptr<SvRoomInfo> remove(RoomKey rmKey);
 	std::shared_ptr<SvRoomInfo> find(RoomKey rmKey);
 public:
@@ -170,16 +182,25 @@ public:
 
 protected:
 	/* Member method */
+	SvRoomInfoManager(const SvRoomInfoManager&);
+	SvRoomInfoManager(SvRoomInfoManager&&);
+	SvRoomInfoManager& operator=(const SvRoomInfoManager&);
+	SvRoomInfoManager& operator=(SvRoomInfoManager&&);
+
+	void clear();
 protected:
 	/* Member field */
-	std::unordered_map<RoomKey, std::shared_ptr<SvRoomInfo>> _roomInfos;
+	std::unordered_map<RoomKey, std::shared_ptr<SvRoomInfo>> _roomList;
 };
 
-class SvSocketList
+class SvSocketManager
 {
 public:
 	/* Member method */
-	void add(SOCKET sock, UserKey uKey);
+	SvSocketManager();
+	~SvSocketManager();
+	
+	bool entry(SOCKET sock, UserKey uKey);
 	UserKey remove(SOCKET sock);
 	UserKey find(SOCKET sock);
 public:
@@ -187,9 +208,15 @@ public:
 
 protected:
 	/* Member method */
+	SvSocketManager(const SvSocketManager&);
+	SvSocketManager(SvSocketManager&&);
+	SvSocketManager& operator=(const SvSocketManager&);
+	SvSocketManager& operator=(SvSocketManager&&);
+
+	void clear();
 protected:
 	/* Member field */
-	std::unordered_map<SOCKET, UserKey> _sockets;
+	std::unordered_map<SOCKET, UserKey> _socketList;
 };
 
 /*********************************************************************
@@ -207,21 +234,22 @@ public:
 	bool db_signin(const std::string& id, const std::string& pw);
 	bool db_signup(const std::string& id, const std::string& pw);
 	UserKey addUser(const std::string& id, SOCKET socket);	// add new user to user info list
-	bool removeUser(UserKey uKey);				// remove user from user info list
-	bool joinRoom(RoomKey rKey, UserKey uKey);	// user join in the chatting room
-	bool leaveRoom(RoomKey rKey, UserKey uKey);	// user leaves the chatting room
-	RoomKey openRoom(UserKey uKey, const std::string& title);		// add new chatting room in chatting room list
+	bool removeUser(UserKey uKey);				// remove user from user info list	//rev
+	bool removeUser(SOCKET socket);
+	bool joinRoom(RoomKey rKey, UserKey uKey);	// user join in the chatting room	//rev
+	bool leaveRoom(RoomKey rKey, UserKey uKey);	// user leaves the chatting room	//rev
+	RoomKey openRoom(UserKey uKey, const std::string& title);		// add new chatting room in chatting room list	//rev
 	//std::vector<UserKey> closeRoom(RoomKey rKey);		// remove the chatting room from the chatting room list
+	std::vector<UserKey> dismissRoom(RoomKey rmKey);	// owner of a chatting room dismiss the room
 	
-	std::unordered_map<UserKey, SvUserInfo>::const_iterator findUser(UserKey uKey) const;
-	std::unordered_map<RoomKey, SvRoomInfo>::const_iterator findRoom(RoomKey rKey) const;
-
-	std::unordered_map<UserKey, SvUserInfo>::iterator findUser(UserKey uKey);
-	std::unordered_map<RoomKey, SvRoomInfo>::iterator findRoom(RoomKey rKey);
+	std::shared_ptr<SvUserInfo> findUser(UserKey uKey);	//rev
+	const std::shared_ptr<SvUserInfo> findUser(UserKey uKey) const;	//rev
+	std::shared_ptr<SvRoomInfo> findRoom(RoomKey rmKey);	//rev
+	const std::shared_ptr<SvRoomInfo> findRoom(RoomKey rmKey) const;	//rev
 
 	// accessor
-	const std::unordered_map<UserKey, SvUserInfo>* get_userList() const;
-	const std::unordered_map<RoomKey, SvRoomInfo>* get_roomList() const;
+	//const std::unordered_map<UserKey, SvUserInfo>* get_userList() const;	//rev delete this
+	//const std::unordered_map<RoomKey, SvRoomInfo>* get_roomList() const;	//rev delete this
 public:
 	/* Member field */
 
@@ -229,13 +257,18 @@ private:
 	/* Member method */
 	SvMach(const SvMach & mach);
 
-	bool _removeRoom(RoomKey rKey);	// remove the chatting room from the chatting room list
-	bool _updateUserInfo(UserKey uKey, RoomKey newRmKey);	// update user infomation
+	UserKey _addUser(const std::string& id, SOCKET socket);	// allocate new user info object and entry on user list
+	RoomKey _addRoom(UserKey uKey, const std::string& rmTitle);	// allocate new room info object and entry on user list
+	bool _entrySocket(SOCKET sock, UserKey uKey);	// entry a pair of socket and user key
+	std::shared_ptr<SvUserInfo> _removeUser(UserKey uKey);	// remove target user from the list
+	std::shared_ptr<SvRoomInfo> _removeRoom(RoomKey rKey);	// remove target room from the list	//rev
+	//bool _updateUserInfo(UserKey uKey, RoomKey newRmKey);	// update user infomation	//rev delete this
 private:
 	/* Member field */
 	DBConnector _dbc;
-	std::unordered_map<UserKey, SvUserInfo> _uList;
-	std::unordered_map<RoomKey, SvRoomInfo> _rList;
+	SvUserInfoManager _users;
+	SvRoomInfoManager _rooms;
+	SvSocketManager _sockets;
 };
 
 
@@ -284,6 +317,10 @@ void ErrorHandling(char * mesaage);
 
 //rev
 // 작업목록
-//	1. 각 클래스 구현
 //	2. SvMach class 내 필드 및 함수 수정
 //	3. exception 처리 enhancement로 등록.
+
+//rev
+// completed
+//	1. 각 클래스 구현
+

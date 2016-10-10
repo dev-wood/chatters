@@ -151,31 +151,48 @@ void SvUserInfo::set_socket(SOCKET socket)
 
 
 
-void SvUserList::add(std::shared_ptr<SvUserInfo> shpUInfo)
+SvUserInfoManager::SvUserInfoManager()
 {
-	_userInfos.insert(std::make_pair(shpUInfo->utk.get_key(), shpUInfo));
+	// left blank intentionally
 }
-std::shared_ptr<SvUserInfo> SvUserList::remove(UserKey uKey)
+SvUserInfoManager::~SvUserInfoManager()
 {
-	auto & it = _userInfos.find(uKey);
+	clear();
+}
+std::shared_ptr<SvUserInfo> SvUserInfoManager::add(std::string id, SOCKET sock)
+{
+	auto shpUInfo = std::make_shared<SvUserInfo>(id, sock);
+	_userList.insert(std::make_pair(shpUInfo->utk.get_key(), shpUInfo));
 
-	if (it == _userInfos.end())
+	return shpUInfo;
+}
+std::shared_ptr<SvUserInfo> SvUserInfoManager::remove(UserKey uKey)
+{
+	auto it = _userList.find(uKey);
+
+	if (it == _userList.end())
 	{
 		return std::shared_ptr<SvUserInfo>();
 	}
 	else {
-		_userInfos.erase(uKey);
-		return it->second;
+		auto shpUser = it->second;
+		_userList.erase(uKey);
+		
+		return shpUser;
 	}
 }
-std::shared_ptr<SvUserInfo> SvUserList::find(UserKey uKey)
+std::shared_ptr<SvUserInfo> SvUserInfoManager::find(UserKey uKey)
 {
-	auto & it = _userInfos.find(uKey);
+	auto & it = _userList.find(uKey);
 
-	if (it == _userInfos.end())
+	if (it == _userList.end())
 		return std::shared_ptr<SvUserInfo>();
 	else
 		return it->second;
+}
+void SvUserInfoManager::clear()
+{
+	_userList.clear();
 }
 
 
@@ -216,58 +233,96 @@ SvRoomInfo::SvRoomInfo()
 
 
 
-void SvRoomList::add(std::shared_ptr<SvRoomInfo> shpRmInfo)
+SvRoomInfoManager::SvRoomInfoManager()
 {
-	_roomInfos.insert(std::make_pair(shpRmInfo->rtk.get_key(), shpRmInfo));
+	// left blank intentionally
 }
-std::shared_ptr<SvRoomInfo> SvRoomList::remove(RoomKey rmKey)
-{
-	auto & it = _roomInfos.find(rmKey);
 
-	if (it == _roomInfos.end())
+SvRoomInfoManager::~SvRoomInfoManager()
+{
+	clear();
+}
+std::shared_ptr<SvRoomInfo> SvRoomInfoManager::add(std::string title)
+{
+	auto shpRmInfo = std::make_shared<SvRoomInfo>(title);
+	_roomList.insert(std::make_pair(shpRmInfo->rtk.get_key(), shpRmInfo));
+
+	return shpRmInfo;
+}
+std::shared_ptr<SvRoomInfo> SvRoomInfoManager::remove(RoomKey rmKey)
+{
+	auto & it = _roomList.find(rmKey);
+
+	if (it == _roomList.end())
 		return std::shared_ptr<SvRoomInfo>();
 	else {
-		_roomInfos.erase(rmKey);
-		return it->second;
+		auto shpRoom = it->second;
+		_roomList.erase(rmKey);
+		return shpRoom;
 	}
 }
-std::shared_ptr<SvRoomInfo> SvRoomList::find(RoomKey rmKey)
+std::shared_ptr<SvRoomInfo> SvRoomInfoManager::find(RoomKey rmKey)
 {
-	auto & it = _roomInfos.find(rmKey);
+	auto & it = _roomList.find(rmKey);
 
-	if (it == _roomInfos.end())
+	if (it == _roomList.end())
 		return std::shared_ptr<SvRoomInfo>();
 	else {
 		return it->second;
 	}
 }
-
-
-
-void SvSocketList::add(SOCKET sock, UserKey uKey)
+void SvRoomInfoManager::clear()
 {
-	_sockets.insert(std::make_pair(sock, uKey));
+	_roomList.clear();
 }
-UserKey SvSocketList::remove(SOCKET sock)
-{
-	auto & it = _sockets.find(sock);
 
-	if (it == _sockets.end())
+
+
+SvSocketManager::SvSocketManager()
+{
+	// left blank intentionally
+}
+SvSocketManager::~SvSocketManager()
+{
+	clear();
+}
+bool SvSocketManager::entry(SOCKET sock, UserKey uKey)
+{
+	_socketList.insert(std::make_pair(sock, uKey));
+
+	return true;
+}
+UserKey SvSocketManager::remove(SOCKET sock)
+{
+	auto & it = _socketList.find(sock);
+
+	if (it == _socketList.end())
 		return InfoToken::INVALID_KEY;
 	else {
-		_sockets.erase(sock);
+		UserKey rtnKey = it->second;
+
+		_socketList.erase(sock);
+		closesocket(sock);
+
+		return rtnKey;
+	}
+}
+UserKey SvSocketManager::find(SOCKET sock)
+{
+	auto & it = _socketList.find(sock);
+
+	if (it == _socketList.end())
+		return InfoToken::INVALID_KEY;
+	else {
 		return it->second;
 	}
 }
-UserKey SvSocketList::find(SOCKET sock)
+void SvSocketManager::clear()
 {
-	auto & it = _sockets.find(sock);
-
-	if (it == _sockets.end())
-		return InfoToken::INVALID_KEY;
-	else {
-		return it->second;
-	}
+	for (auto & pair : _socketList)
+		closesocket(pair.first);
+	
+	_socketList.clear();
 }
 
 
@@ -286,8 +341,6 @@ SvMach::SvMach() : _dbc()
 SvMach::~SvMach()
 {
 	_dbc.close();
-	_uList.clear();
-	_rList.clear();
 }
 bool SvMach::db_signin(const std::string & id, const std::string & pw)
 {
@@ -353,23 +406,25 @@ bool SvMach::db_signup(const std::string & id, const std::string & pw)
 }
 UserKey SvMach::addUser(const std::string& id, SOCKET sock)
 {
-	SvUserInfo user(id, sock);
-	
-	auto resPair = _uList.insert(std::make_pair(user.utk.get_key(), std::move(user))); //rev	//? move() 사용하나? // auto? auto&?
-	bool opResult = resPair.second;
-	UserKey uKey = resPair.first->first;
+	auto res = _users.add(id, sock);
 
-	if (opResult)	
-	{	// add new user succesfully
-		return uKey;
-	}
-	else
-	{	// add new user failed
+	if (res == nullptr)
+	{
 		return InfoToken::INVALID_KEY;
 	}
+	else {
+		return res->utk.get_key();
+	}
 }
-bool SvMach::removeUser(UserKey uKey)
+bool SvMach::removeUser(UserKey uKey)	//rev
 {
+	auto shpUser = _users.remove(uKey);
+
+	if (shpUser != nullptr)
+	{
+
+	}
+
 	auto& it = _uList.find(uKey);
 	
 	if (it == _uList.end())
@@ -387,6 +442,11 @@ bool SvMach::removeUser(UserKey uKey)
 		_uList.erase(it);
 		return true;
 	}
+}
+bool SvMach::removeUser(SOCKET socket)
+{
+	//rev
+	return false;
 }
 bool SvMach::joinRoom(RoomKey rKey, UserKey uKey)
 {
