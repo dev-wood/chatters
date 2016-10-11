@@ -234,35 +234,27 @@ public:
 	bool db_signin(const std::string& id, const std::string& pw);
 	bool db_signup(const std::string& id, const std::string& pw);
 	UserKey addUser(const std::string& id, SOCKET socket);	// add new user to user info list
-	bool removeUser(UserKey uKey);				// remove user from user info list	//rev
+	bool removeUser(UserKey uKey);				// remove user from user info list
 	bool removeUser(SOCKET socket);
-	bool joinRoom(RoomKey rKey, UserKey uKey);	// user join in the chatting room	//rev
-	bool leaveRoom(RoomKey rKey, UserKey uKey);	// user leaves the chatting room	//rev
+	bool joinRoom(RoomKey rmKey, UserKey uKey);	// user join in the chatting room	//rev
+	bool leaveRoom(RoomKey rmKey, UserKey uKey);	// user leaves the chatting room	//rev
 	RoomKey openRoom(UserKey uKey, const std::string& title);		// add new chatting room in chatting room list	//rev
-	//std::vector<UserKey> closeRoom(RoomKey rKey);		// remove the chatting room from the chatting room list
-	std::vector<UserKey> dismissRoom(RoomKey rmKey);	// owner of a chatting room dismiss the room
+	//std::vector<UserKey> dismissRoom(RoomKey rmKey);	// owner of a chatting room dismiss the room
 	
-	std::shared_ptr<SvUserInfo> findUser(UserKey uKey);	//rev
-	const std::shared_ptr<SvUserInfo> findUser(UserKey uKey) const;	//rev
-	std::shared_ptr<SvRoomInfo> findRoom(RoomKey rmKey);	//rev
-	const std::shared_ptr<SvRoomInfo> findRoom(RoomKey rmKey) const;	//rev
+	const std::shared_ptr<SvUserInfo> findUser(UserKey uKey);	//rev
+	const std::shared_ptr<SvRoomInfo> findRoom(RoomKey rmKey);	//rev
 
 	// accessor
 	//const std::unordered_map<UserKey, SvUserInfo>* get_userList() const;	//rev delete this
 	//const std::unordered_map<RoomKey, SvRoomInfo>* get_roomList() const;	//rev delete this
+	const std::unordered_map<UserKey, std::shared_ptr<SvUserInfo>>* get_users() const;
+	const std::unordered_map<RoomKey, std::shared_ptr<SvRoomInfo>>* get_rooms() const;
 public:
 	/* Member field */
 
 private:
 	/* Member method */
 	SvMach(const SvMach & mach);
-
-	UserKey _addUser(const std::string& id, SOCKET socket);	// allocate new user info object and entry on user list
-	RoomKey _addRoom(UserKey uKey, const std::string& rmTitle);	// allocate new room info object and entry on user list
-	bool _entrySocket(SOCKET sock, UserKey uKey);	// entry a pair of socket and user key
-	std::shared_ptr<SvUserInfo> _removeUser(UserKey uKey);	// remove target user from the list
-	std::shared_ptr<SvRoomInfo> _removeRoom(RoomKey rKey);	// remove target room from the list	//rev
-	//bool _updateUserInfo(UserKey uKey, RoomKey newRmKey);	// update user infomation	//rev delete this
 private:
 	/* Member field */
 	DBConnector _dbc;

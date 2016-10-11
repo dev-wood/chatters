@@ -258,6 +258,7 @@ std::shared_ptr<SvRoomInfo> SvRoomInfoManager::remove(RoomKey rmKey)
 	else {
 		auto shpRoom = it->second;
 		_roomList.erase(rmKey);
+		
 		return shpRoom;
 	}
 }
@@ -416,181 +417,182 @@ UserKey SvMach::addUser(const std::string& id, SOCKET sock)
 		return res->utk.get_key();
 	}
 }
-bool SvMach::removeUser(UserKey uKey)	//rev
+bool SvMach::removeUser(UserKey uKey)
 {
+	// remove from user list
 	auto shpUser = _users.remove(uKey);
-
+	
 	if (shpUser != nullptr)
 	{
+		// close user's socket
+		_sockets.remove(shpUser->get_socket());
 
-	}
-
-	auto& it = _uList.find(uKey);
-	
-	if (it == _uList.end())
-		return false;
-	else {
-		RoomKey rmKey = it->second.curRmNum;
-		if (rmKey != CHATTERS::NO_ROOM)
-		{	// if the user has participating in chat room
-			if (!leaveRoom(rmKey, uKey))
-				return false;
+		// update room info (if user has one it participate)
+		if (shpUser->curRmNum != CHATTERS::NO_ROOM)
+		{
+			auto shpRm = _rooms.find(shpUser->curRmNum);
+			if (shpRm != nullptr)
+				shpRm->removeUser(uKey);
 		}
-		
-		closesocket(it->second.get_socket());
-
-		_uList.erase(it);
 		return true;
 	}
-}
-bool SvMach::removeUser(SOCKET socket)
-{
-	//rev
 	return false;
 }
-bool SvMach::joinRoom(RoomKey rKey, UserKey uKey)
+bool SvMach::removeUser(SOCKET sock)
 {
-	auto rmIter = findRoom(rKey);
+	// remove socket from socket list
+	auto uKey = _sockets.remove(sock);
 
-	if (rmIter == _rList.end()) {
-		std::cout << "Cannot find Room #" << rKey << "(Request from user #" << uKey << ")" << endl;
-		return false;
-	}
-
-	bool joinRoomResult = rmIter->second.addUser(uKey);
-	bool updateUserInfoResult;
-	
-	if (!joinRoomResult)
-	{	// fail to join room
-		std::cout << "Fail to join room #" << rKey << "(Request from user #" << uKey << ")" << endl;
-		return false;
-	}
-	else
-	{	// succeed to join room
-		updateUserInfoResult = _updateUserInfo(uKey, rKey);	// update user informaion(room#)
-	}
-		
-	if (!updateUserInfoResult)	// fail to update user information(room#)
+	if (uKey != InfoToken::INVALID_KEY)
 	{
-		std::cout << "Fail to update user information of user #" << uKey << ")" << endl;
-		rmIter->second.removeUser(uKey);// rewind changes
-		return false;
-	}
-	else {
-		return true;
-	}
+		// remove user from user list
+		auto shpUser = _users.remove(uKey);
+		
+		if (shpUser != nullptr)
+		{
+			// update room info (if user has one it participate)
+			if (shpUser->curRmNum != CHATTERS::NO_ROOM)
+			{
+				auto shpRm = _rooms.find(shpUser->curRmNum);
+
+				if (shpRm != nullptr) {
+					shpRm->removeUser(uKey);
+					if (shpRm->rtk.get_numOfPeer() == 0)
+						_rooms.remove(shpRm->rtk.get_key());
+				}
+			}
+			return true;
+		}
+	}	
+	return false;
 }
-bool SvMach::leaveRoom(RoomKey rKey, UserKey uKey)
+bool SvMach::joinRoom(RoomKey rmKey, UserKey uKey)
 {
-	auto rmIter = findRoom(rKey);
+	auto shpRm = _rooms.find(rmKey);
+	auto shpUser = _users.find(uKey);
 
-	if (rmIter == _rList.end()) {
-		std::cout << "Cannot find Room(#" << rKey << ")" << endl;
-		return false;
-	}
-	
-	bool leaveRoomResult = rmIter->second.removeUser(uKey);
-	bool updateUserInfoResult;
-
-	if (!leaveRoomResult)	// fail to leave room
-		return false;
-	else					// succeed to leave room
-		updateUserInfoResult = _updateUserInfo(uKey, CHATTERS::NO_ROOM);	// update user informaion(room#)
-		
-	if (!updateUserInfoResult)	// fail to update user information(room#)
+	if ((shpRm != nullptr) && (shpUser != nullptr))
 	{
-		rmIter->second.addUser(uKey);// rewind changes
-		return false;
-	}
-	else {
-		if(rmIter->second.rtk.get_numOfPeer() == 0)
-			_removeRoom(rKey);
+		if (shpUser->curRmNum == CHATTERS::NO_ROOM) {
+			// room information update
+			bool opResult = shpRm->addUser(uKey);
 
-		return true;
+			if (opResult) {
+				// user information update
+				shpUser->curRmNum = rmKey;
+				return true;
+			}
+			else {
+				cout << "Error: Failed to add user to the user list of the room." << endl;
+				shpRm->removeUser(uKey);
+				return false;
+			}
+		}
+		else
+		{
+			cout << "Error: User already entried to the other room." << endl;
+			return false;
+		}
 	}
+	cout << "Error: Cannot find user or room." << endl;
+	return false;
+}
+bool SvMach::leaveRoom(RoomKey rmKey, UserKey uKey)
+{
+	auto shpRm = _rooms.find(rmKey);
+	auto shpUser = _users.find(uKey);
+
+	if (shpRm != nullptr && shpUser != nullptr)
+	{
+		if (shpUser->curRmNum == rmKey) {
+			// room information update
+			bool opResult = shpRm->removeUser(uKey);
+
+			if (opResult) {
+				// user information update
+				shpUser->curRmNum = CHATTERS::NO_ROOM;
+
+				// check the room if it is empty
+				if (shpRm->rtk.get_numOfPeer() == 0)
+					_rooms.remove(rmKey);
+				return true;
+			}
+		}
+		else
+		{
+			cout << "Error: User information(room key) didn't match while SvMach::leaveRoom(..) operation." << endl;
+			return false;
+		}
+	}
+
+	cout << "Error: Cannot find user or room." << endl;
+	return false;
 }
 RoomKey SvMach::openRoom(UserKey uKey, const std::string & title)
 {
-	SvRoomInfo rm(title);
-	RoomKey rmKey = rm.rtk.get_key();
+	auto shpUser = _users.find(uKey);
 
-	auto resPair = _rList.insert(std::make_pair(rm.rtk.get_key(), std::move(rm)));
-	bool opResult = resPair.second;
-	RoomKey rmKey = resPair.first->first;
+	if ((shpUser != nullptr) && (shpUser->curRmNum == CHATTERS::NO_ROOM)) {
+		// create new room
+		auto shpRm = _rooms.add(title);
 
-	if (!opResult)	// fail to add room to room list
-	{
-		std::cout << "Create room failed." << std::endl;
-		return InfoToken::INVALID_KEY;
+		if (shpRm != nullptr)
+		{	// success creating room
+			auto rmKey = shpRm->rtk.get_key();
+			
+			// user participate room as first participant
+			bool opResult = joinRoom(rmKey, uKey);
+			if (opResult)
+				return true;
+			else
+			{
+				_rooms.remove(rmKey);
+				return false;
+			}
+		}
 	}
-
-	bool joinResult = joinRoom(rmKey, uKey);
-
-	if (!joinResult)	// fail to enter the room
-	{
-		_rList.erase(rmKey);	// rewind changes
-		return InfoToken::INVALID_KEY;
-	}
-	
-	return rmKey;
+	return false;
 }
-//std::vector<UserKey> SvMach::closeRoom(RoomKey rKey)
+const std::shared_ptr<SvUserInfo> SvMach::findUser(UserKey uKey) 
+{
+	return _users.find(uKey);
+}
+const std::shared_ptr<SvRoomInfo> SvMach::findRoom(RoomKey rmKey)
+{
+	return _rooms.find(rmKey);
+}
+const std::unordered_map<UserKey, std::shared_ptr<SvUserInfo>>* SvMach::get_users() const
+{
+	return _users.get();
+}
+const std::unordered_map<RoomKey, std::shared_ptr<SvRoomInfo>>* SvMach::get_rooms() const
+{
+	return _rooms.get();
+}
+//std::unordered_map<UserKey, SvUserInfo>::const_iterator SvMach::findUser(UserKey uKey) const
 //{
-//	auto it = _rList.find(rKey);
-//	auto target = _rList.erase(it);
-//
-//	//target	// check
-//	std::vector<UserKey> rtnVec;
-//	std::swap(it->second.userList, rtnVec);
-//
-//	return rtnVec;
+//	return _uList.find(uKey);
 //}
-bool SvMach::_removeRoom(RoomKey rKey)
-{
-	auto removed = _rList.erase(rKey);
-	if (removed == 0) {
-		return false;
-	}
-
-	return true;
-}
-bool SvMach::_updateUserInfo(UserKey uKey, RoomKey rmKey)
-{
-	auto uiIter = findUser(uKey);
-
-	if (uiIter == _uList.end())	// fail to update user information operation
-	{
-		std::cout << "Cannot find user(user#" << uKey << ")" << std::endl;
-		return false;
-	}
-
-	uiIter->second.curRmNum = rmKey;
-	return true;
-}
-std::unordered_map<UserKey, SvUserInfo>::const_iterator SvMach::findUser(UserKey uKey) const
-{
-	return _uList.find(uKey);
-}
-std::unordered_map<RoomKey, SvRoomInfo>::const_iterator SvMach::findRoom(RoomKey rKey) const
-{
-	return _rList.find(rKey);
-}
-std::unordered_map<UserKey, SvUserInfo>::iterator SvMach::findUser(UserKey uKey)
-{
-	return _uList.find(uKey);
-}
-std::unordered_map<RoomKey, SvRoomInfo>::iterator SvMach::findRoom(RoomKey rKey)
-{
-	return _rList.find(rKey);
-}
-const std::unordered_map<UserKey, SvUserInfo>* SvMach::get_userList() const
-{
-	return &_uList;
-}
-const std::unordered_map<RoomKey, SvRoomInfo>* SvMach::get_roomList() const
-{
-	return &_rList;
-}
+//std::unordered_map<RoomKey, SvRoomInfo>::const_iterator SvMach::findRoom(RoomKey rKey) const
+//{
+//	return _rList.find(rKey);
+//}
+//std::unordered_map<UserKey, SvUserInfo>::iterator SvMach::findUser(UserKey uKey)
+//{
+//	return _uList.find(uKey);
+//}
+//std::unordered_map<RoomKey, SvRoomInfo>::iterator SvMach::findRoom(RoomKey rKey)
+//{
+//	return _rList.find(rKey);
+//}
+//const std::unordered_map<UserKey, SvUserInfo>* SvMach::get_userList() const
+//{
+//	return &_uList;
+//}
+//const std::unordered_map<RoomKey, SvRoomInfo>* SvMach::get_roomList() const
+//{
+//	return &_rList;
+//}
 
 
 
