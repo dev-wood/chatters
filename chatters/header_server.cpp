@@ -190,6 +190,10 @@ std::shared_ptr<SvUserInfo> SvUserInfoManager::find(UserKey uKey)
 	else
 		return it->second;
 }
+const std::unordered_map<UserKey, std::shared_ptr<SvUserInfo>> & SvUserInfoManager::get() const
+{
+	return _userList;
+}
 void SvUserInfoManager::clear()
 {
 	_userList.clear();
@@ -271,6 +275,10 @@ std::shared_ptr<SvRoomInfo> SvRoomInfoManager::find(RoomKey rmKey)
 	else {
 		return it->second;
 	}
+}
+const std::unordered_map<RoomKey, std::shared_ptr<SvRoomInfo>>& SvRoomInfoManager::get() const
+{
+	return _roomList;
 }
 void SvRoomInfoManager::clear()
 {
@@ -561,11 +569,11 @@ const std::shared_ptr<SvRoomInfo> SvMach::findRoom(RoomKey rmKey)
 {
 	return _rooms.find(rmKey);
 }
-const std::unordered_map<UserKey, std::shared_ptr<SvUserInfo>>* SvMach::get_users() const
+const std::unordered_map<UserKey, std::shared_ptr<SvUserInfo>>& SvMach::get_users() const
 {
 	return _users.get();
 }
-const std::unordered_map<RoomKey, std::shared_ptr<SvRoomInfo>>* SvMach::get_rooms() const
+const std::unordered_map<RoomKey, std::shared_ptr<SvRoomInfo>>& SvMach::get_rooms() const
 {
 	return _rooms.get();
 }

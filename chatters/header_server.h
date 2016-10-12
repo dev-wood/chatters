@@ -126,6 +126,9 @@ public:
 	std::shared_ptr<SvUserInfo> add(std::string id, SOCKET sock);
 	std::shared_ptr<SvUserInfo> remove(UserKey uKey);
 	std::shared_ptr<SvUserInfo> find(UserKey uKey);
+
+	// accessor
+	const std::unordered_map<UserKey, std::shared_ptr<SvUserInfo>> & get() const;
 public:
 	/* Member field */
 
@@ -177,6 +180,9 @@ public:
 	std::shared_ptr<SvRoomInfo> add(std::string title);
 	std::shared_ptr<SvRoomInfo> remove(RoomKey rmKey);
 	std::shared_ptr<SvRoomInfo> find(RoomKey rmKey);
+
+	// assessor
+	const std::unordered_map<RoomKey, std::shared_ptr<SvRoomInfo>>& get() const;
 public:
 	/* Member field */
 
@@ -220,7 +226,7 @@ protected:
 };
 
 /*********************************************************************
- * SvRoomInfo class	//rev
+ * SvRoomInfo class
 	- 현재 생성되어 있는 채팅방 관련 정보를 저장하는 클래스
 
  *********************************************************************/
@@ -236,19 +242,17 @@ public:
 	UserKey addUser(const std::string& id, SOCKET socket);	// add new user to user info list
 	bool removeUser(UserKey uKey);				// remove user from user info list
 	bool removeUser(SOCKET socket);
-	bool joinRoom(RoomKey rmKey, UserKey uKey);	// user join in the chatting room	//rev
-	bool leaveRoom(RoomKey rmKey, UserKey uKey);	// user leaves the chatting room	//rev
-	RoomKey openRoom(UserKey uKey, const std::string& title);		// add new chatting room in chatting room list	//rev
+	bool joinRoom(RoomKey rmKey, UserKey uKey);	// user join in the chatting room
+	bool leaveRoom(RoomKey rmKey, UserKey uKey);	// user leaves the chatting room
+	RoomKey openRoom(UserKey uKey, const std::string& title);		// add new chatting room in chatting room list
 	//std::vector<UserKey> dismissRoom(RoomKey rmKey);	// owner of a chatting room dismiss the room
 	
-	const std::shared_ptr<SvUserInfo> findUser(UserKey uKey);	//rev
-	const std::shared_ptr<SvRoomInfo> findRoom(RoomKey rmKey);	//rev
+	const std::shared_ptr<SvUserInfo> findUser(UserKey uKey);
+	const std::shared_ptr<SvRoomInfo> findRoom(RoomKey rmKey);
 
 	// accessor
-	//const std::unordered_map<UserKey, SvUserInfo>* get_userList() const;	//rev delete this
-	//const std::unordered_map<RoomKey, SvRoomInfo>* get_roomList() const;	//rev delete this
-	const std::unordered_map<UserKey, std::shared_ptr<SvUserInfo>>* get_users() const;
-	const std::unordered_map<RoomKey, std::shared_ptr<SvRoomInfo>>* get_rooms() const;
+	const std::unordered_map<UserKey, std::shared_ptr<SvUserInfo>>& get_users() const;
+	const std::unordered_map<RoomKey, std::shared_ptr<SvRoomInfo>>& get_rooms() const;
 public:
 	/* Member field */
 
