@@ -417,9 +417,9 @@ std::shared_ptr<Packet_Base> extractCSPacket(char * buf, size_t bufLen)
 		idx++;
 	}
 
-	int pType = stoi(temp);
+	PTYPE pType = static_cast<PTYPE>(stoi(temp));
 
-	switch ((PTYPE)pType)
+	switch (pType)
 	{
 	case PTYPE::PT_CS_LOGIN_REQUEST:
 		return std::make_shared<PK_CS_LOGIN_REQUEST>((PTYPE)pType, buf, bufLen);
@@ -434,7 +434,7 @@ std::shared_ptr<Packet_Base> extractCSPacket(char * buf, size_t bufLen)
 	case PTYPE::PT_CS_CHAT_CHAT:
 		return std::make_shared<PK_CS_CHAT_CHAT>((PTYPE)pType, buf, bufLen);
 	default:
-		return std::make_shared<PK_EMPTY>(PTYPE::PT_EMPTY);
+		return std::make_shared<PK_EMPTY>();
 	}
 }
 

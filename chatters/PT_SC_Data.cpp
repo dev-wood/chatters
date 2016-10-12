@@ -342,9 +342,9 @@ std::shared_ptr<Packet_Base> extractSCPacket(char * buf, size_t bufLen)
 		idx++;
 	}
 
-	int pType = stoi(temp);
+	PTYPE pType = static_cast<PTYPE>(stoi(temp));
 
-	switch ((PTYPE)pType)
+	switch (pType)
 	{
 	case PTYPE::PT_SC_LOGIN_ACCEPT:
 		return std::make_shared<PK_SC_LOGIN_ACCEPT>(pType, buf, bufLen);
@@ -367,7 +367,7 @@ std::shared_ptr<Packet_Base> extractSCPacket(char * buf, size_t bufLen)
 	case PTYPE::PT_SC_CHAT_LOAD_USERLIST:
 		return std::make_shared<PK_SC_CHAT_LOAD_USERLIST>(pType, buf, bufLen);
 	default:
-		return std::make_shared<PK_EMPTY>(PTYPE::PT_EMPTY);
+		return std::make_shared<PK_EMPTY>();
 	}
 }
 

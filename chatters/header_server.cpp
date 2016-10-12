@@ -381,9 +381,10 @@ bool SvMach::db_signup(const std::string & id, const std::string & pw)
 {
 	RETCODE errmsg;
 	int foundRow;
+	std::string stmt;
 
 	// check the primary key(id) available
-	std::string stmt = "SELECT * FROM tb1 WHERE id='" + id + "'";
+	stmt = "SELECT * FROM tb1 WHERE id='" + id + "'";
 	if (errmsg = _dbc.excute(stmt) != SQL_SUCCESS)
 	{
 		std::cout << "DBConnector::excute(..) got SQL error." << std::endl;
@@ -404,7 +405,7 @@ bool SvMach::db_signup(const std::string & id, const std::string & pw)
 	}
 
 	// INSERT INTO tb1 VALUES ('str_id', 'str_pw')
-	std::string stmt = "INSERT INTO tb1 VALUES ('" + id + "', '" + pw + "')";
+	stmt = "INSERT INTO tb1 VALUES ('" + id + "', '" + pw + "')";
 
 	if (errmsg = _dbc.excute(stmt) != SQL_SUCCESS)
 	{
