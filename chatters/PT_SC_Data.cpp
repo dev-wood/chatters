@@ -1,4 +1,5 @@
 #include "PT_SC_Data.h"
+#include "../chatters/header_server.h"
 
 /*********************************************
  * Packet from server to client
@@ -142,14 +143,15 @@ std::shared_ptr<Packet_Base> PK_SC_LOBBY_LOAD_ROOMLIST::processPacket(MachObject
 {
 	return std::shared_ptr<PK_EMPTY>(nullptr);
 }
+class SvMach;
 void PK_SC_LOBBY_LOAD_ROOMLIST::_doSerialProc()
 {
-	_buf << pRmList->size() << '|';
+	_buf << shpRmList->size() << '|';
 
-	for (const auto& el : *pRmList)
+	for (const auto& el : *shpRmList)
 	{
-		_buf << el.second.rtk;
-	}
+		_buf << (el.second)->rtk;
+	}	
 }
 void PK_SC_LOBBY_LOAD_ROOMLIST::_doDeserialProc()
 {

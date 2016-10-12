@@ -127,7 +127,7 @@ public:
 	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& targetMObject);	// Received packet process procedure using strategy pattern
 public:
 	/* Member field */
-	const std::unordered_map<RoomKey, SvRoomInfo> * pRmList;
+	const std::unordered_map<RoomKey, std::shared_ptr<SvRoomInfo>> * shpRmList;
 	std::vector<RoomInfoToken> rtkList;
 
 protected:

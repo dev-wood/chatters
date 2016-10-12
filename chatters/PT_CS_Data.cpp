@@ -30,7 +30,7 @@ std::shared_ptr<Packet_Base> PK_CS_LOGIN_REQUEST::processPacket(MachObject & tar
 			auto rtnShPk = std::make_shared<PK_SC_LOGIN_ACCEPT>();
 
 			// fill information in return packet
-			rtnShPk->userTk = agent.findUser(opResult)->second.utk;
+			rtnShPk->userTk = agent.findUser(opResult)->utk;
 
 			// set processing result
 			rtnShPk->setProcessInfo(ProcInfo::ProcCode::SUCCESS);
@@ -100,10 +100,10 @@ std::shared_ptr<Packet_Base> PK_CS_LOBBY_JOINROOM::processPacket(MachObject & ta
 		auto rtnShPk = std::make_shared<PK_SC_LOBBY_JOINROOM_ACCEPT>();
 		
 		// fill information in return packet
-		rtnShPk->roomTk = agent.findRoom(roomKey)->second.rtk;
-		for (const auto& uKey : agent.findRoom(roomKey)->second.userList)
+		rtnShPk->roomTk = agent.findRoom(roomKey)->rtk;
+		for (const auto& uKey : agent.findRoom(roomKey)->userList)
 		{
-			rtnShPk->userList.push_back(agent.findUser(uKey)->second.utk);
+			rtnShPk->userList.push_back(agent.findUser(uKey)->utk);
 		}
 		
 		// set processing result
@@ -170,7 +170,8 @@ std::shared_ptr<Packet_Base> PK_CS_LOBBY_LOAD_ROOMLIST::processPacket(MachObject
 	auto rtnShPk = std::make_shared<PK_SC_LOBBY_LOAD_ROOMLIST>();
 
 	// fill information in return packet
-	rtnShPk->pRmList = agent.get_roomList();
+	//rtnShPk->pRmList = agent.get_roomList();	//rev to delete
+	rtnShPk->shpRmList = &(agent.get_rooms());
 
 	// set processing result
 	rtnShPk->setProcessInfo(ProcInfo::ProcCode::SUCCESS);
@@ -215,9 +216,9 @@ std::shared_ptr<Packet_Base> PK_CS_CREATEROOM_CREATEROOM::processPacket(MachObje
 		auto rtnShPk = std::make_shared<PK_SC_CREATEROOM_OK>();
 
 		// fill information in return packet
-		const auto& rmIter = agent.findRoom(rKey);	//rev const 가 문제 일으킬 수 있음
+		const auto shpRm = agent.findRoom(rKey);	//rev const 가 문제 일으킬 수 있음
 
-		rtnShPk->roomTk = rmIter->second.rtk;
+		rtnShPk->roomTk = shpRm->rtk;
 
 		// set processing result
 		rtnShPk->setProcessInfo(ProcInfo::SUCCESS);
@@ -277,7 +278,7 @@ std::shared_ptr<Packet_Base> PK_CS_CHAT_QUITROOM::processPacket(MachObject & tar
 	auto& agent = dynamic_cast<SvMach &>(targetMObject);
 
 	// packet processing procedure
-	const auto & rm = agent.findRoom(roomKey)->second;
+	const auto shpRm = agent.findRoom(roomKey);
 	
 	if (agent.leaveRoom(roomKey, userKey))
 	{	// quit room success
@@ -291,8 +292,8 @@ std::shared_ptr<Packet_Base> PK_CS_CHAT_QUITROOM::processPacket(MachObject & tar
 		rtnShPk->setProcessInfo(ProcInfo::ProcCode::SUCCESS);
 
 		// register packet receiver
-		rtnShPk->sockList.reserve(rm.userList.size());
-		rtnShPk->sockList.insert(rtnShPk->sockList.begin(), rm.userList.begin(), rm.userList.end());
+		rtnShPk->sockList.reserve(shpRm->userList.size());
+		rtnShPk->sockList.insert(rtnShPk->sockList.begin(), shpRm->userList.begin(), shpRm->userList.end());
 
 		return rtnShPk;
 	}
@@ -311,8 +312,8 @@ std::shared_ptr<Packet_Base> PK_CS_CHAT_QUITROOM::processPacket(MachObject & tar
 		rtnShPk->setProcessInfo(ProcInfo::ProcCode::FAIL);
 
 		// register packet receiver
-		rtnShPk->sockList.reserve(rm.userList.size());
-		rtnShPk->sockList.insert(rtnShPk->sockList.begin(), rm.userList.begin(), rm.userList.end());
+		rtnShPk->sockList.reserve(shpRm->userList.size());
+		rtnShPk->sockList.insert(rtnShPk->sockList.begin(), shpRm->userList.begin(), shpRm->userList.end());
 
 		return rtnShPk;
 	}	
@@ -353,7 +354,7 @@ std::shared_ptr<Packet_Base> PK_CS_CHAT_CHAT::processPacket(MachObject & targetM
 	
 	// casting agent
 	auto& agent = dynamic_cast<SvMach &>(targetMObject);
-	auto& rmInfo = agent.findRoom(roomKey)->second;
+	const auto shpRm = agent.findRoom(roomKey);
 
 	// packet processing procedure
 	// build return packet
@@ -369,10 +370,10 @@ std::shared_ptr<Packet_Base> PK_CS_CHAT_CHAT::processPacket(MachObject & targetM
 	// register packet receiver
 	rtnShPk->sockList.reserve(CHATTERS::MAX_PARTICIPANT);
 
-	for (const auto & uKey : rmInfo.userList)
+	for (const auto & uKey : shpRm->userList)
 	{
-		const auto& uInfo = agent.findUser(uKey)->second;
-		rtnShPk->sockList.push_back(uInfo.get_socket());
+		const auto shpUser = agent.findUser(uKey);
+		rtnShPk->sockList.push_back(shpUser->get_socket());
 	}
 
 	return rtnShPk;
