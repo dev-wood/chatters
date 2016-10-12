@@ -33,10 +33,10 @@
     <ClCompile Include="..\chatters\PT_SC_Data.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="testmain.cpp">
+    <ClCompile Include="main_testSvMach.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="main_testSvMach.cpp">
+    <ClCompile Include="main_testPacket.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

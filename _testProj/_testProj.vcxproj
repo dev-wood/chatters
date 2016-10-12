@@ -25,10 +25,12 @@
     <ClCompile Include="..\chatters\packet.cpp" />
     <ClCompile Include="..\chatters\PT_CS_Data.cpp" />
     <ClCompile Include="..\chatters\PT_SC_Data.cpp" />
-    <ClCompile Include="testmain.cpp">
+    <ClCompile Include="main_testPacket.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="main_testSvMach.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="main_testSvMach.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\chatters\DBConnector.h" />
