@@ -551,16 +551,18 @@ RoomKey SvMach::openRoom(UserKey uKey, const std::string & title)
 			
 			// user participate room as first participant
 			bool opResult = joinRoom(rmKey, uKey);
-			if (opResult)
-				return true;
+			if (opResult) 
+			{	// success
+				return rmKey;
+			}
 			else
-			{
+			{	// failed
 				_rooms.remove(rmKey);
-				return false;
+				return InfoToken::INVALID_KEY;
 			}
 		}
 	}
-	return false;
+	return InfoToken::INVALID_KEY;
 }
 const std::shared_ptr<SvUserInfo> SvMach::findUser(UserKey uKey) 
 {

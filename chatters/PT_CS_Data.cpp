@@ -212,35 +212,35 @@ std::shared_ptr<Packet_Base> PK_CS_CREATEROOM_CREATEROOM::processPacket(MachObje
 
 	if (rKey != InfoToken::INVALID_KEY)
 	{	// create room success
-		// build return packet
-		auto rtnShPk = std::make_shared<PK_SC_CREATEROOM_OK>();
+		const auto shpRm = agent.findRoom(rKey);
+		if (shpRm != nullptr) {
+			// build return packet
+			auto rtnShPk = std::make_shared<PK_SC_CREATEROOM_OK>();
 
-		// fill information in return packet
-		const auto shpRm = agent.findRoom(rKey);	//rev const 가 문제 일으킬 수 있음
+			// fill information in return packet
+			rtnShPk->roomTk = shpRm->rtk;
 
-		rtnShPk->roomTk = shpRm->rtk;
+			// set processing result
+			rtnShPk->setProcessInfo(ProcInfo::SUCCESS);
 
-		// set processing result
-		rtnShPk->setProcessInfo(ProcInfo::SUCCESS);
+			// register packet receiver
+			rtnShPk->sockList.push_back(sockList[0]);
 
-		// register packet receiver
-		rtnShPk->sockList.push_back(sockList[0]);
-
-		return rtnShPk;
+			return rtnShPk;
+		}
 	}
-	else
-	{	// create room failed
-		// build return packet
-		auto rtnShPk = std::make_shared<PK_SC_CREATEROOM_FAIL>();
 
-		// set processing result
-		rtnShPk->setProcessInfo(ProcInfo::FAIL, "Create Room failed.");
+	// create room failed
+	// build return packet
+	auto rtnShPk = std::make_shared<PK_SC_CREATEROOM_FAIL>();
 
-		// register packet receiver
-		rtnShPk->sockList.push_back(sockList[0]);
+	// set processing result
+	rtnShPk->setProcessInfo(ProcInfo::FAIL, "Create Room failed.");
 
-		return rtnShPk;
-	}
+	// register packet receiver
+	rtnShPk->sockList.push_back(sockList[0]);
+
+	return rtnShPk;
 }
 void PK_CS_CREATEROOM_CREATEROOM::_doSerialProc()
 {
