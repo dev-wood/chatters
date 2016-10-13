@@ -157,6 +157,7 @@ SvUserInfoManager::SvUserInfoManager()
 }
 SvUserInfoManager::~SvUserInfoManager()
 {
+	cout << "~SvUserInfoManager()" << endl;
 	clear();
 }
 std::shared_ptr<SvUserInfo> SvUserInfoManager::add(std::string id, SOCKET sock)
@@ -244,6 +245,7 @@ SvRoomInfoManager::SvRoomInfoManager()
 
 SvRoomInfoManager::~SvRoomInfoManager()
 {
+	cout << "~SvRoomInfoManager()" << endl;
 	clear();
 }
 std::shared_ptr<SvRoomInfo> SvRoomInfoManager::add(std::string title)
@@ -293,6 +295,7 @@ SvSocketManager::SvSocketManager()
 }
 SvSocketManager::~SvSocketManager()
 {
+	cout << "~SvSocketManager()" << endl;
 	clear();
 }
 bool SvSocketManager::entry(SOCKET sock, UserKey uKey)
@@ -350,6 +353,7 @@ SvMach::SvMach() : _dbc()
 SvMach::~SvMach()
 {
 	_dbc.close();
+	cout << "~SvMach()" << endl;
 }
 bool SvMach::db_signin(const std::string & id, const std::string & pw)
 {
