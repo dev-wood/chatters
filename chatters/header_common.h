@@ -12,6 +12,9 @@
 #include <queue>
 #include <unordered_map>
 #include <WinSock2.h>
+#include <conio.h>
+
+
 
 typedef int Key;
 typedef int UserKey;
@@ -167,7 +170,7 @@ protected:
 	- 기타 함수 선언
 
  *********************************************************************/
-
+std::string takePassword();
 
 
 #endif

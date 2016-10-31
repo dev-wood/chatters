@@ -69,7 +69,6 @@ DBConnector::~DBConnector()
 }
 RETCODE DBConnector::connect()
 {
-	std::wstring id, pw;
 	RETCODE rtnmsg;
 
 	if (_connectionFlag == true)
@@ -83,7 +82,10 @@ RETCODE DBConnector::connect()
 	std::cout << "User ID >>";
 	std::getline(std::wcin, _userID);
 	std::cout << "Password >>";
-	std::getline(std::wcin, _pswd);
+	std::string pw = _takePassword();
+	_pswd = convCharT(pw);
+
+	system("cls");
 
 	if ((rtnmsg = SQLAllocHandle(SQL_HANDLE_ENV, SQL_NULL_HANDLE, &_hEnv)) != SQL_SUCCESS) {
 		std::cout << "Alloc handle error: SQL_HANDLE_ENV" << std::endl;
@@ -178,4 +180,36 @@ SQLHSTMT DBConnector::hStmt() const
 void DBConnector::_init()
 {
 	_connectionFlag = false;
+}
+
+std::string DBConnector::_takePassword()
+{
+	char input;
+	std::string pw;
+
+	// take char in range [33, 126], except 124(=vertical bar '|')
+	while ((input = _getch()) != '\r')
+	{
+		if (input == 124)		// ignore vertical bar(|)
+			;
+		else if (input == '\b')	// erase one character from console output line
+		{
+			if (pw.empty())
+				;
+			else {
+				pw.pop_back();
+				std::cout << '\b' << ' ' << '\b';
+			}
+		}
+		else if ((input >= 33) && (input <= 126))
+		{
+			pw += input;
+			std::cout << '*';
+		}
+		else	// ignore rest character
+			;
+	}
+	std::cout << std::endl;
+
+	return pw;
 }

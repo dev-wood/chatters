@@ -6,6 +6,8 @@
 #include <string>
 
 #include <Windows.h>
+#include <conio.h>
+#include <stdlib.h>
 
 // Required header:
 #include <sql.h>
@@ -54,6 +56,7 @@ public:
 private:
 	/* member method */
 	void _init();
+	std::string _takePassword();
 private:
 	/* member field */
 	SQLHENV _hEnv;

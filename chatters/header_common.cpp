@@ -194,3 +194,39 @@ void MachObject::_dcastEnableFunc()
 {
 	// left blank intentionally
 }
+
+
+
+
+/* Etc. functions */
+std::string takePassword()
+{
+	char input;
+	std::string pw;
+
+	// take char in range [33, 126], except 124(=vertical bar '|')
+	while ((input = _getch()) != '\r')
+	{
+		if (input == 124)		// ignore vertical bar(|)
+			;
+		else if (input == '\b')	// erase one character from console output line
+		{
+			if (pw.empty())
+				;
+			else {
+				pw.pop_back();
+				std::cout << '\b' << ' ' << '\b';
+			}
+		}
+		else if ((input >= 33) && (input <= 126))
+		{
+			pw += input;
+			std::cout << '*';
+		}
+		else	// ignore rest character
+			;
+	}
+	std::cout << std::endl;
+
+	return pw;
+}
