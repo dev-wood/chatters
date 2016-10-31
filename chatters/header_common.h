@@ -17,6 +17,13 @@ typedef int Key;
 typedef int UserKey;
 typedef int RoomKey;
 
+
+
+/************************************************************************
+ * Constant values
+	- constant values in global scope
+
+ ************************************************************************/
 namespace CHATTERS
 {
 	const int MAX_PARTICIPANT = 4;
@@ -24,6 +31,13 @@ namespace CHATTERS
 	const int NUM_OF_ROOM_PER_PAGE = 20;
 }
 
+
+
+/************************************************************************
+ * InfoToken class
+	- class having common values in Token classes.
+	- Token class defined for use of being transferred to client via network.
+ ************************************************************************/
 class InfoToken
 {
 public:
@@ -44,6 +58,13 @@ protected:
 	Key _key;
 };
 
+
+
+/************************************************************************
+ * UserInfoToken class
+	- token having user information.
+
+ ************************************************************************/
 class UserInfoToken : public InfoToken
 {
 public:
@@ -77,6 +98,13 @@ private:
 __declspec(selectany) UserKey UserInfoToken::_UniqueKey = 0;
 std::ostream& operator << (std::ostream&, const UserInfoToken&);
 
+
+
+/************************************************************************
+ * RoomInfoToken class
+	- token having room information
+
+ ************************************************************************/
 class RoomInfoToken : public InfoToken
 {
 public:
@@ -114,6 +142,13 @@ __declspec(selectany) RoomKey RoomInfoToken::_UniqueKey = 0;
 
 std::ostream& operator<<(std::ostream& os, const RoomInfoToken& rtk);
 
+
+
+/************************************************************************
+ * MachObject class
+	- Ancestor of server class and client class.
+
+ ************************************************************************/
 class MachObject
 {
 public:
@@ -124,6 +159,14 @@ protected:
 	MachObject();
 	virtual void _dcastEnableFunc();
 };
+
+
+
+/*********************************************************************
+ * etc. functions
+	- 기타 함수 선언
+
+ *********************************************************************/
 
 
 

@@ -94,31 +94,26 @@ UserKey RoomInfoToken::_getUniqueKey()
 {
 	return _UniqueKey++;
 }
-
 RoomInfoToken::RoomInfoToken() : _numOfPeer(0), _title("")
 {
 	_key = _getUniqueKey();
 }
-
 RoomInfoToken::RoomInfoToken(const std::string& title)
 {
 	_title = title;
 	_numOfPeer = 0;
 	_key = _getUniqueKey();
 }
-
 RoomInfoToken::RoomInfoToken(const RoomInfoToken & tk)
 {
 	_title = tk._title;
 	_numOfPeer = tk._numOfPeer;
 	_key = tk._key;
 }
-
 RoomInfoToken::RoomInfoToken(RoomInfoToken && tk)
 {
 	*this = std::move(tk);
 }
-
 RoomInfoToken & RoomInfoToken::operator=(RoomInfoToken && tk)
 {
 	if (this == &tk)
@@ -131,7 +126,6 @@ RoomInfoToken & RoomInfoToken::operator=(RoomInfoToken && tk)
 
 	return *this;
 }
-
 RoomInfoToken & RoomInfoToken::operator=(const RoomInfoToken & rtk)
 {
 	_key = rtk._key;
@@ -140,32 +134,26 @@ RoomInfoToken & RoomInfoToken::operator=(const RoomInfoToken & rtk)
 
 	return *this;
 }
-
 RoomInfoToken::~RoomInfoToken()
 {
 	// left blank intentionally
 }
-
 RoomKey RoomInfoToken::get_key() const
 {
 	return _key;
 }
-
 std::string RoomInfoToken::get_title() const
 {
 	return _title;
 }
-
 int RoomInfoToken::get_numOfPeer() const
 {
 	return _numOfPeer;
 }
-
 void RoomInfoToken::set_numOfPeer(int num)
 {
 	_numOfPeer = num;
 }
-
 void RoomInfoToken::operator<<(std::stringstream & sstream)
 {
 	std::string token;
@@ -182,7 +170,6 @@ void RoomInfoToken::operator<<(std::stringstream & sstream)
 	std::getline(sstream, token, '|');
 	_numOfPeer = stoi(token);
 }
-
 std::ostream & operator<<(std::ostream & sstream, const RoomInfoToken & rtk)
 {
 	sstream << rtk.get_key() << '|'
@@ -203,7 +190,6 @@ MachObject::MachObject()
 {
 	// left blank intentionally
 }
-
 void MachObject::_dcastEnableFunc()
 {
 	// left blank intentionally
