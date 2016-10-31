@@ -311,12 +311,3 @@ DWORD WINAPI recvThreadMain(LPVOID pComPort);
 DWORD WINAPI packetProcessWorkerThreadMain(LPVOID pComPort);
 void ErrorHandling(char * mesaage);
 
-//rev
-// 작업목록
-//	2. SvMach class 내 필드 및 함수 수정
-//	3. exception 처리 enhancement로 등록.
-
-//rev
-// completed
-//	1. 각 클래스 구현
-

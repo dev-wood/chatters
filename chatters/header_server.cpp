@@ -584,30 +584,6 @@ const std::unordered_map<RoomKey, std::shared_ptr<SvRoomInfo>>& SvMach::get_room
 {
 	return _rooms.get();
 }
-//std::unordered_map<UserKey, SvUserInfo>::const_iterator SvMach::findUser(UserKey uKey) const
-//{
-//	return _uList.find(uKey);
-//}
-//std::unordered_map<RoomKey, SvRoomInfo>::const_iterator SvMach::findRoom(RoomKey rKey) const
-//{
-//	return _rList.find(rKey);
-//}
-//std::unordered_map<UserKey, SvUserInfo>::iterator SvMach::findUser(UserKey uKey)
-//{
-//	return _uList.find(uKey);
-//}
-//std::unordered_map<RoomKey, SvRoomInfo>::iterator SvMach::findRoom(RoomKey rKey)
-//{
-//	return _rList.find(rKey);
-//}
-//const std::unordered_map<UserKey, SvUserInfo>* SvMach::get_userList() const
-//{
-//	return &_uList;
-//}
-//const std::unordered_map<RoomKey, SvRoomInfo>* SvMach::get_roomList() const
-//{
-//	return &_rList;
-//}
 
 
 
@@ -671,11 +647,6 @@ SvPacketManager::SvPacketManager(SvPacketManager &&)
 {
 	// left blank intentionally
 }
-//SvPacketManager & SvPacketManager::operator=(const SvPacketManager &)
-//{
-//	// left blank intentionally
-//	// TODO: 여기에 반환 구문을 삽입합니다.
-//}
 
 
 
