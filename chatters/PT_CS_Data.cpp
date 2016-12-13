@@ -6,6 +6,25 @@
  * Packet from client to server
 
 *********************************************/
+/* PK_CS_CONNECTION_CLOSED */
+PK_CS_CONNECTION_CLOSE::PK_CS_CONNECTION_CLOSE() : Packet_Base(PTYPE::PT_CS_CONNECTION_CLOSED)
+{
+	// left blank intentionally
+}
+PK_CS_CONNECTION_CLOSE::PK_CS_CONNECTION_CLOSE(PTYPE ptype, const char * buf, size_t bufLen) 
+	: Packet_Base(PTYPE::PT_CS_CONNECTION_CLOSED, buf, bufLen)
+{
+	// left blank intentionally
+}
+void PK_CS_CONNECTION_CLOSE::_doSerialProc()
+{
+	// left blank intentionally
+}
+void PK_CS_CONNECTION_CLOSE::_doDeserialProc()
+{
+	// left blank intentionally
+}
+
 /* PK_CS_LOGIN_REQUEST class */
 PK_CS_LOGIN_REQUEST::PK_CS_LOGIN_REQUEST() : Packet_Base(PTYPE::PT_CS_LOGIN_REQUEST)
 {
@@ -457,3 +476,4 @@ std::shared_ptr<Packet_Base> extractCSPacket(char * buf, size_t bufLen)
 	return rtnShPk;
 }
 */
+

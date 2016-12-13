@@ -47,6 +47,8 @@ enum struct PTYPE : int
 
 
 	// Client to Server packet
+	PT_CS_CONNECTION_CLOSED,
+
 	PT_CS_LOGIN_REQUEST,
 
 	PT_CS_LOBBY_JOINROOM,

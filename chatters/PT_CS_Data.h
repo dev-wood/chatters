@@ -11,6 +11,30 @@
 class SvMach;
 
 
+//rev
+/*********************************************************************
+ * PK_CS_CONNECTION_CLOSE class
+	- Packet ±¸Á¶
+	  Nothing.
+*********************************************************************/
+struct PK_CS_CONNECTION_CLOSE : public Packet_Base
+{
+public:
+	/* Member method */
+	PK_CS_CONNECTION_CLOSE();
+	PK_CS_CONNECTION_CLOSE(PTYPE ptype, const char* buf, size_t bufLen);
+
+	virtual std::shared_ptr<Packet_Base> processPacket(MachObject& targetMObject);	// Received packet process procedure using strategy pattern
+public:
+	/* Member field */
+protected:
+	/* Member method */
+	virtual void _doSerialProc();	//rev
+	virtual void _doDeserialProc();	//rev
+protected:
+	/* Member field */
+
+};
 
 /*********************************************************************
  * PK_CS_LOGIN_REQUEST class
